@@ -1,13 +1,14 @@
 // load router
-var routes = [];
-routes.push(require("./login"));
-routes.push(require("./articles"));
-routes.push(require("./authors"));
-routes.push(require("./tags"));
-routes.push(require("./users"));
+var routers = [];
+routers.push(require("./login"));
+routers.push(require("./articles"));
+routers.push(require("./authors"));
+routers.push(require("./tags"));
+routers.push(require("./users"));
+routers.push(require("./about"));
 
 module.exports = function (app) {
-	routes.forEach(function (router) {
+	routers.forEach(function (router) {
 		app.use(router);
 	});
 }
