@@ -1,0 +1,34 @@
+{
+    "name": "koaBlog",
+    "version": "0.0.1",
+    "description": "it's a blog program writed by koa",
+    "main": "app.js",
+    "dependencies": {
+        "mysql": "2.7.0",
+        "koa": "0.21.0",
+        "koa-router": "5.1.2",
+        "co-views": "1.0.0",
+        "ejs": "2.3.3",
+        "md5": "2.0.0",
+        "sequelize": "3.3.2",
+        "co-body": "2.0.0",
+        "koa-session": "3.2.0",
+        "koa-static": "1.4.9"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "pretest": "mysql.server stop",
+        "test": "mysql.server start",
+        "posttest": "node --harmony app.js 8080",
+        "restart": "node --harmony app.js 8080"
+    },
+    "keywords": [
+        "koa",
+        "blog"
+    ],
+    "engines": {
+        "node": "0.12.7"
+    },
+    "author": "summer",
+    "license": "MIT"
+}

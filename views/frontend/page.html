@@ -1,0 +1,17 @@
+<div class="col-md-8 col-md-offset-2">
+	<nav>
+		<ul class="pager">
+		<% if (page.previous > 0) { %>
+		<li><a href="<%= page.urlPrefix %>?page=<%= page.previous %>">Prev</a></li>
+		<% } else { %>
+		<li class="disabled"><a>Prev</a></li>    
+		<% } %>
+		<% if (page.next > 0) { %>
+		<li><a href="<%= page.urlPrefix %>?page=<%= page.next %>">Next</a></li>
+		<% } else { %>
+		<li class="disabled"><a>Next</a></li>    
+		<% } %>
+		</ul>
+	</nav>
+</div>
+<div class="col-md-2"></div>

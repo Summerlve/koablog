@@ -1,0 +1,70 @@
+a{
+	color: #940094;
+}
+
+a:hover{
+	text-decoration: none;
+	color: #450045;
+}
+
+.my-login{
+	margin-top: 165px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 36px 30px 20px 30px;
+	width: 380px;
+	height: auto;
+	overflow: hidden;
+	border: 1px solid #fff; 
+	color: #000;
+	border-radius: 9px;
+	box-shadow: 0 0 17px #222; 
+	background: -moz-linear-gradient(top, #fff, #efefef 8%);
+	background: -webkit-gradient(linear, 0 0, 0 100%, from(#f6f6f6), to(#f4f4f4));
+}
+
+.contents-row{
+	margin-top: 30px;
+}
+
+.article-row{
+	margin-bottom: 30px;
+}
+
+.article-row-title{
+	font-size: 20px;
+	margin-bottom: 5px;
+}
+
+.article-row-author{
+	font-size: 18px;
+	margin-bottom: 5px;
+}
+
+.article-row-brief{
+	font-size: 17px;
+}
+
+.author-row{
+	/*margin-bottom: 10px;*/
+}
+
+.author-row-avatar{
+	/*min-width: 300px;
+	min-height: 300px;*/
+}
+
+/*去除Bootstrap自带的margin*/
+.thumbnail{
+	margin-bottom: 0;
+}
+
+/*给每一列添加margin*/
+.author-column{
+	margin-bottom: 30px;
+}
+
+
+
+
+  

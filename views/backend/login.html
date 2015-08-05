@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<title>Login</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<link href="/styles/bootstrap.min.css" rel="stylesheet">
+		<link href="/styles/bootstrap-theme.min.css" rel="stylesheet">
+		<link href="/styles/style.css" rel="stylesheet">
+		<link href="/styles/style-mobile.css" rel="stylesheet">		
+	</head>
+	<body class="my-login-body">
+		<div class="container">
+			<div class="my-login">
+				<form class="form-horizontal" method="POST" action="/login">
+					<div class="form-group">
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<input type="text" class="form-control" id="username" placeholder="用户名" name="username">
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<input type="password" class="form-control" id="password" placeholder="密码" name="password">
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="row">
+							<div class="col-sm-offset-1 col-sm-10">
+								<button type="submit" class="btn btn-primary btn-default btn-block">登陆</button>
+							</div>
+						</div>
+					</div>
+				</form>	
+			</div>
+		</div>
+	</body>
+</html>

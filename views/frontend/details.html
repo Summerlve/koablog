@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <title><%= article.title%></title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <link href="/styles/bootstrap.min.css" rel="stylesheet">
+        <link href="/styles/bootstrap-theme.min.css" rel="stylesheet">
+        <link href="/styles/style.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="jumbotron">
+            <div class="container">
+                <h1 class="text-center">koaBlog</h1>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <!--include options-->
+                <%- include("./options.html", undefined) %>
+                <!--end-->
+            </div>
+            <div class="row">
+               
+            </div> 
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <!--include page-->
+                    <%- include("./page.html", undefined) %>
+                    <!--end-->
+                </div>
+                <div class="col-md-2"></div>
+            </div>     
+        </div>
+        
+        <script src="/scripts/lib/jquery-2.1.4.min.js"></script>
+        <script src="/scripts/lib/underscore-min.js"></script>
+        <script src="/scripts/lib/backbone-min.js"></script>
+        <script src="/scripts/lib/bootstrap.min.js"></script>                 
+        <script src="/scripts/test.js"></script>
+    </body>
+</html>
