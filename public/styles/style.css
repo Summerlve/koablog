@@ -25,7 +25,11 @@ a:hover{
 
 .contents-row{
 	margin-top: 30px;
-	/*将最后一个article-row的margin-bottom反拉回来*/
+	/*
+	将最后一个article-row的margin-bottom
+	或者最后一个author-column的margin-bottom
+	反拉回来
+	*/
 	margin-bottom: -30px;
 }
 
@@ -53,9 +57,9 @@ a:hover{
 	/*margin-bottom: 10px;*/
 }
 
-.author-row-avatar{
-	/*min-width: 300px;
-	min-height: 300px;*/
+/*给每一列添加margin*/
+.author-column{
+	margin-bottom: 30px;
 }
 
 /*去除Bootstrap自带的margin*/
@@ -63,9 +67,9 @@ a:hover{
 	margin-bottom: 0;
 }
 
-/*给每一列添加margin*/
-.author-column{
-	margin-bottom: 30px;
+.author-column-avatar{
+	/*min-width: 300px;
+	min-height: 300px;*/
 }
 
 .page-row{

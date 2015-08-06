@@ -32,7 +32,7 @@
                         <% for (var j = i * authorsPerRow; j < i * authorsPerRow + authorsPerRow; j++) { %>
                             <div class="author-column col-md-<%= colsPerAuthor %>">
                                 <div class="thumbnail">
-                                    <img class="author-row-avatar" src="<%= authors[j].avatar %>" alt="have no avatar">
+                                    <img class="author-column-avatar" src="<%= authors[j].avatar %>" alt="have no avatar">
                                     <div class="caption">
                                         <a href=""><h3><%= authors[j].pen_name %></h3></a>
                                         <p><%= authors[j].introduce%></p>
@@ -47,7 +47,7 @@
                     <% for (var i = rows * authorsPerRow; i < rows * authorsPerRow + remainder; i++) { %>
                         <div class="author-column col-md-<%= colsPerAuthor %>">
                             <div class="thumbnail">
-                                <img class="author-row-avatar" src="<%= authors[i].avatar %>" alt="have no avatar">
+                                <img class="author-column-avatar" src="<%= authors[i].avatar %>" alt="have no avatar">
                                 <div class="caption">
                                     <a href=""><h3><%= authors[i].pen_name %></h3></a>
                                     <p><%= authors[i].introduce%></p>
