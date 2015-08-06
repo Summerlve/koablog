@@ -25,6 +25,8 @@ a:hover{
 
 .contents-row{
 	margin-top: 30px;
+	/*将最后一个article-row的margin-bottom反拉回来*/
+	margin-bottom: -30px;
 }
 
 .article-row{
@@ -43,6 +45,8 @@ a:hover{
 
 .article-row-brief{
 	font-size: 17px;
+	/*去除bs p自带的margin-bottom*/
+	margin-bottom: 0; 
 }
 
 .author-row{
@@ -62,6 +66,12 @@ a:hover{
 /*给每一列添加margin*/
 .author-column{
 	margin-bottom: 30px;
+}
+
+.page-row{
+	/*配合Bootstrap ul自带的样式*/
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 
