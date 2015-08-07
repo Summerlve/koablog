@@ -34,7 +34,7 @@ router
 			this.body = "没有更多的作者了";
 			return ;
 		}
-		
+
 		var count = yield User.count();
 
 		var previous = current - 1;
@@ -52,20 +52,20 @@ router
 			authorsPerRow: authorsPerRow
 		});
 	});
-	
+
 // one of the author
 router
 	.get("/authors/:pen_name", function* (next) {
-		var pen_name = this.param.pen_name;
-		
+		var pen_name = this.params.pen_name;
+
 		var author = yield User.find({
 			where: {
 				pen_name: pen_name
 			}
 		});
-		
+
 		// get the newest 4 articles of this author
-		var articles = Article.findAll({
+		var articles = yield Article.findAll({
 			order: [
 				["id", "DESC"]
 			],
@@ -73,13 +73,15 @@ router
 				author: pen_name
 			},
 			limit: 4
-		}); 
+		});
 		
+		console.log(articles.length);
+
 		this.body = yield render("/frontend/authors/details", {
 			author: author,
 			articles: articles,
-			title: author.pen_name			
+			title: author.pen_name
 		});
 	});
- 
+
 module.exports = router.routes();

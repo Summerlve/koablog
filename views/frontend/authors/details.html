@@ -22,14 +22,30 @@
             <div class="contents-row row">
                 <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
                     <div class="author-details row">
-                        <div class="author-column col-md-<%= colsPerAuthor %>">
+                        <div class="author-column col-md-6">
                             <div class="author-column-thumbnail thumbnail">
-                                <img class="author-column-avatar" src="<%= authors[j].avatar %>" alt="have no avatar">
+                                <img class="author-column-avatar" src="<%= author.avatar %>" alt="have no avatar">
                                 <div class="caption">
-                                    <a href="/authors/<%= authors[j].pen_name %>"><h3><%= authors[j].pen_name %></h3></a>
-                                    <p class="author-column-introduce"><%= authors[j].introduce%></p>
+                                    <h3><%= author.pen_name %></h3>
+                                    <p class="author-column-introduce"><%= author.introduce%></p>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-md-6">
+                            <% for (var i = 0; i < articles.length; i++) { %>
+                                <div class="article-row row">
+                                    <div class="col-md-12">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <a href="/articles/<%= articles[i].id %>">
+                                                    <p class="article-row-title"><%= articles[i].title %></p>
+                                                </a>
+                                                <span class="article-details-tag label label-default"><%= articles[i].tag %></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
                         </div>
                     </div>
                 </div>

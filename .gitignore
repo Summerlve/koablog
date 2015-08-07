@@ -2,3 +2,4 @@
 /test
 .DS_Store
 jsconfig.json
+/database_backup
