@@ -34,7 +34,7 @@
                                 <div class="author-column-thumbnail thumbnail">
                                     <img class="author-column-avatar" src="<%= authors[j].avatar %>" alt="have no avatar">
                                     <div class="caption">
-                                        <a href="/authors/:id"><h3><%= authors[j].pen_name %></h3></a>
+                                        <a href="/authors/<%= authors[j].pen_name %>"><h3><%= authors[j].pen_name %></h3></a>
                                         <p class="author-column-introduce"><%= authors[j].introduce%></p>
                                     </div>
                                 </div>
@@ -42,20 +42,22 @@
                         <% } %>
                         </div>
                     <% } %>
-
-                    <div class="author-row row">
-                    <% for (var i = rows * authorsPerRow; i < rows * authorsPerRow + remainder; i++) { %>
-                        <div class="author-column col-md-<%= colsPerAuthor %>">
-                            <div class="author-column-thumbnail thumbnail">
-                                <img class="author-column-avatar" src="<%= authors[i].avatar %>" alt="have no avatar">
-                                <div class="caption">
-                                    <a href=""><h3><%= authors[i].pen_name %></h3></a>
-                                    <p class="author-column-introduce"><%= authors[i].introduce %></p>
+                    
+                    <% if (remainder > 0) { %>
+                        <div class="author-row row">
+                        <% for (var i = rows * authorsPerRow; i < rows * authorsPerRow + remainder; i++) { %>
+                            <div class="author-column col-md-<%= colsPerAuthor %>">
+                                <div class="author-column-thumbnail thumbnail">
+                                    <img class="author-column-avatar" src="<%= authors[i].avatar %>" alt="have no avatar">
+                                    <div class="caption">
+                                        <a href="/authors/<%= authors[i].pen_name %>"><h3><%= authors[i].pen_name %></h3></a>
+                                        <p class="author-column-introduce"><%= authors[i].introduce %></p>
+                                    </div>
                                 </div>
                             </div>
+                        <% } %>
                         </div>
                     <% } %>
-                    </div>
                 </div>
                 <div class="col-md-2 col-sm-1"></div>
             </div>

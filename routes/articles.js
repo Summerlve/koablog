@@ -55,6 +55,7 @@ router
 router
 	.param("id", function* (id, next) {
 		if (isNaN(parseInt(id, 10))) {
+			// id不是数字的情况，就404。
 			this.status = 404;
 			this.body = "article not found";
 			return ;

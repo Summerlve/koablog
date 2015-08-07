@@ -26,6 +26,7 @@ a:hover{
 .contents-row{
 	margin-top: 30px;
 	/*
+	下面的margin-bottom的作用是：
 	将最后一个article-row的margin-bottom
 	或者最后一个author-column的margin-bottom
 	反拉回来
@@ -85,7 +86,7 @@ a:hover{
 }
 
 .author-row{
-	/*margin-bottom: 10px;*/
+
 }
 
 /*给每一列添加margin*/
@@ -99,16 +100,19 @@ a:hover{
 }
 
 .author-column-avatar{
-	/*min-width: 300px;
-	min-height: 300px;*/
+	
 }
 
 .author-column-introduce{
 	word-wrap: break-word;
 }
 
+.author-details-row{
+	
+}
+
 .page-row{
-	/*配合Bootstrap ul自带的样式*/
+	/*配合Bootstrap ul上下的margin 20px构成30px的间距*/
 	margin-top: 10px;
 	margin-bottom: 10px;
 }

@@ -1,6 +1,8 @@
 var router = require("koa-router")();
-var User = require("../models/User");
 var views = require("co-views");
+var User = require("../models/User");
+var Article = require("../models/Article");
+
 // path
 var viewsPath = global.path.views;
 
@@ -32,9 +34,11 @@ router
 			this.body = "没有更多的作者了";
 			return ;
 		}
+		
+		var count = yield User.count();
 
 		var previous = current - 1;
-		var next_ = authors.length === limit ? current + 1 : 0;
+		var next_ = count - limit * current > 0 ? current + 1 : 0;
 
 		this.body = yield render("/frontend/authors/authors", {
 			title: "Authors",
@@ -51,20 +55,31 @@ router
 	
 // one of the author
 router
-	.param("id", function* (id, next) {
-		if (isNaN(parseInt(id, 10))) {
-			this.status = 404;
-			this.body = "author not found";
-			return ;
-		}
-		else {
-			this.id = id;
-		}
-		yield next;
-	})
-	.get("/authors/:id", function* (next) {
-		var id = this.id;
-		console.log(id);
+	.get("/authors/:pen_name", function* (next) {
+		var pen_name = this.param.pen_name;
+		
+		var author = yield User.find({
+			where: {
+				pen_name: pen_name
+			}
+		});
+		
+		// get the newest 4 articles of this author
+		var articles = Article.findAll({
+			order: [
+				["id", "DESC"]
+			],
+			where: {
+				author: pen_name
+			},
+			limit: 4
+		}); 
+		
+		this.body = yield render("/frontend/authors/details", {
+			author: author,
+			articles: articles,
+			title: author.pen_name			
+		});
 	});
  
 module.exports = router.routes();
