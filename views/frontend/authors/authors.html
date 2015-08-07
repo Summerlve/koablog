@@ -2,19 +2,19 @@
 <html lang="zh-CN">
     <head>
         <!--include head-->
-        <%- include("./head.html", undefined) %>
+        <%- include("../general/head.html", undefined) %>
         <!--end of include head-->
     </head>
     <body>
 	 	<!--include jumbotron-->
-        <%- include("./jumbotron.html", undefined) %>
+        <%- include("../general/jumbotron.html", undefined) %>
         <!--end of include jumbotron-->
 		<!--container-fluid-->
         <div class="container-fluid">
             <!--classifications row-->
             <div class="row">
                 <!--include classifications-->
-                <%- include("./classifications.html", undefined) %>
+                <%- include("../general/classifications.html", undefined) %>
                 <!--end-->
             </div>
             <!--end of classifications row-->
@@ -23,7 +23,7 @@
                 <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
                     <%
                         var length = authors.length;
-                	    var remainder = length % authorsPerRow; 
+                	    var remainder = length % authorsPerRow;
                     	var rows = Math.floor(length / authorsPerRow);
                         var colsPerAuthor = Math.floor(12 / authorsPerRow);
                     %>
@@ -31,26 +31,26 @@
                         <div class="author-row row">
                         <% for (var j = i * authorsPerRow; j < i * authorsPerRow + authorsPerRow; j++) { %>
                             <div class="author-column col-md-<%= colsPerAuthor %>">
-                                <div class="thumbnail">
+                                <div class="author-column-thumbnail thumbnail">
                                     <img class="author-column-avatar" src="<%= authors[j].avatar %>" alt="have no avatar">
                                     <div class="caption">
-                                        <a href=""><h3><%= authors[j].pen_name %></h3></a>
-                                        <p><%= authors[j].introduce%></p>
+                                        <a href="/authors/:id"><h3><%= authors[j].pen_name %></h3></a>
+                                        <p class="author-column-introduce"><%= authors[j].introduce%></p>
                                     </div>
                                 </div>
                             </div>
-                        <% } %>    
+                        <% } %>
                         </div>
                     <% } %>
-                    
+
                     <div class="author-row row">
                     <% for (var i = rows * authorsPerRow; i < rows * authorsPerRow + remainder; i++) { %>
                         <div class="author-column col-md-<%= colsPerAuthor %>">
-                            <div class="thumbnail">
+                            <div class="author-column-thumbnail thumbnail">
                                 <img class="author-column-avatar" src="<%= authors[i].avatar %>" alt="have no avatar">
                                 <div class="caption">
                                     <a href=""><h3><%= authors[i].pen_name %></h3></a>
-                                    <p><%= authors[i].introduce%></p>
+                                    <p class="author-column-introduce"><%= authors[i].introduce %></p>
                                 </div>
                             </div>
                         </div>
@@ -62,7 +62,7 @@
             <!--end of contents row-->
             <!--page row-->
             <div class="page-row row">
-                <%- include("./page.html", undefined) %>
+                <%- include("../general/page.html", undefined) %>
             </div>
             <!--end of page row-->
         </div>
@@ -71,7 +71,7 @@
         <script src="/scripts/lib/jquery-2.1.4.min.js"></script>
         <script src="/scripts/lib/underscore-min.js"></script>
         <script src="/scripts/lib/backbone-min.js"></script>
-        <script src="/scripts/lib/bootstrap.min.js"></script>                 
+        <script src="/scripts/lib/bootstrap.min.js"></script>
         <script src="/scripts/test.js"></script>
         <!--end of import js-->
     </body>

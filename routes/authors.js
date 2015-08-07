@@ -15,27 +15,28 @@ var render = views(viewsPath, {
 	}
 });
 
+// page of authors
 router
 	.get("/authors", function* (next) {
 		// page默认为1
 		var current = parseInt(this.query.page || 1, 10);
-		
+
 		var authors = yield User.findAll({
 			order: ["id"],
 			offset: (current - 1) * limit,
 			limit: limit
 		});
-		
+
 		if (authors.length === 0) {
 			this.status = 404;
 			this.body = "没有更多的作者了";
 			return ;
 		}
-		
+
 		var previous = current - 1;
 		var next_ = authors.length === limit ? current + 1 : 0;
-		
-		this.body = yield render("/frontend/authors", {
+
+		this.body = yield render("/frontend/authors/authors", {
 			title: "Authors",
 			authors: authors,
 			page: {
@@ -47,48 +48,23 @@ router
 			authorsPerRow: authorsPerRow
 		});
 	});
-
+	
+// one of the author
 router
-	.get("/authors/:author/articles", function * (next) {
-		var page = this.query.page;
-		console.log(page);
-		this.body = page;
-	});
-
-router
-	.get("/authors/:author/profile", function* (next) {		
-		var author = this.params.author;
-		
-		// 判断作者是否存在
-		var user = yield User.find({
-			attributes: ["id"],
-			where: {
-				pen_name: author
-			}	
-		});
-		
-		if (user === null) {
+	.param("id", function* (id, next) {
+		if (isNaN(parseInt(id, 10))) {
 			this.status = 404;
-			this.body = "can not found this author";
+			this.body = "author not found";
 			return ;
 		}
-		
-		// 返回该作者的所有文章（也需要分页）
-		var articles = yield Article.findAll({
-			where: {
-				author: author
-			},
-			order: ["id"],
-			offset: 1,
-			limit: 5
-		});
-		
-		if (articles.length === 0) {
-			this.body = "this author don't have any article";
-		}
 		else {
-			this.body = articles;
+			this.id = id;
 		}
+		yield next;
+	})
+	.get("/authors/:id", function* (next) {
+		var id = this.id;
+		console.log(id);
 	});
-	
+ 
 module.exports = router.routes();

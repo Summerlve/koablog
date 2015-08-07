@@ -15,10 +15,10 @@ a:hover{
 	width: 380px;
 	height: auto;
 	overflow: hidden;
-	border: 1px solid #fff; 
+	border: 1px solid #fff;
 	color: #000;
 	border-radius: 9px;
-	box-shadow: 0 0 17px #222; 
+	box-shadow: 0 0 17px #222;
 	background: -moz-linear-gradient(top, #fff, #efefef 8%);
 	background: -webkit-gradient(linear, 0 0, 0 100%, from(#f6f6f6), to(#f4f4f4));
 }
@@ -38,19 +38,50 @@ a:hover{
 }
 
 .article-row-title{
-	font-size: 20px;
 	margin-bottom: 5px;
+	font-size: 20px;
 }
 
 .article-row-author{
-	font-size: 18px;
 	margin-bottom: 5px;
+	font-size: 18px;
 }
 
 .article-row-brief{
+	margin-bottom: 0;
 	font-size: 17px;
 	/*去除bs p自带的margin-bottom*/
-	margin-bottom: 0; 
+	word-wrap: break-word;
+}
+
+.article-details{
+	margin-bottom: 30px;
+}
+
+.article-details-header{
+	margin-top: 0;
+	margin-bottom: 30px;
+}
+
+.article-details-title{
+	margin: 0;
+}
+
+.article-details-author{
+	margin: 0;
+}
+
+.article-details-tag{
+	margin-left: 30px;
+	font-size: 16px;
+}
+
+.article-details-content{
+	margin-top: 30px;
+	margin-bottom: 0;
+	font-size: 18px;
+	/*去除bs p自带的margin-bottom*/
+	word-wrap: break-word;
 }
 
 .author-row{
@@ -63,7 +94,7 @@ a:hover{
 }
 
 /*去除Bootstrap自带的margin*/
-.thumbnail{
+.author-column-thumbnail{
 	margin-bottom: 0;
 }
 
@@ -72,13 +103,12 @@ a:hover{
 	min-height: 300px;*/
 }
 
+.author-column-introduce{
+	word-wrap: break-word;
+}
+
 .page-row{
 	/*配合Bootstrap ul自带的样式*/
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
-
-
-
-
-  

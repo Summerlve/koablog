@@ -2,49 +2,56 @@
 <html lang="zh-CN">
     <head>
         <!--include head-->
-        <%- include("./head.html", undefined) %>
+        <%- include("../general/head.html", undefined) %>
         <!--end of include head-->
     </head>
     <body>
         <!--jumbotron-->
-        <%- include("./jumbotron.html", undefined) %>
+        <%- include("../general/jumbotron.html", undefined) %>
         <!--jumbotron-->
         <!--container-fluid-->
         <div class="container-fluid">
             <!--classifications row-->
             <div class="row">
                 <!--include classifications-->
-                <%- include("./classifications.html", undefined) %>
+                <%- include("../general/classifications.html", undefined) %>
                 <!--end-->
             </div>
             <!--end of classifications row-->
             <!--contents row-->
             <div class="contents-row row">
                 <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
-                    <div class="row">
+                    <% for (var i = 0; i < articles.length; i++) { %>
+                    <div class="article-row row">
                         <div class="col-md-12">
-                            <div class="page-header text-center">
-                                <h1>这是一个Blog程序 <small>由Summer书写</small></h1>
-                                
+                            <div class="media">
+                                <div class="media-body">
+                                    <a href="/articles/<%= articles[i].id %>">
+                                        <p class="article-row-title"><%= articles[i].title %></p>
+                                    </a>
+                                    <p class="article-row-author"><%= articles[i].author %></p>
+                                    <p class="article-row-brief"><%= articles[i].content %></p>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <% } %>
                 </div>
                 <div class="col-md-2 col-sm-1"></div>
             </div>
             <!--end of contents row-->
-            <!--footer-->
-            <div class="row">
-                
+            <!--page row-->
+            <div class="page-row row">
+                <%- include("../general/page.html", undefined) %>
             </div>
-            <!--end of footer-->
+            <!--end of page row-->
         </div>
         <!--end of container-fluid-->
         <!--import js-->
         <script src="/scripts/lib/jquery-2.1.4.min.js"></script>
         <script src="/scripts/lib/underscore-min.js"></script>
         <script src="/scripts/lib/backbone-min.js"></script>
-        <script src="/scripts/lib/bootstrap.min.js"></script>                 
+        <script src="/scripts/lib/bootstrap.min.js"></script>
         <script src="/scripts/test.js"></script>
         <!--end of import js-->
     </body>
