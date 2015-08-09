@@ -4,7 +4,7 @@ var views = require("co-views");
 // path
 var viewsPath = global.path.views;
 // page
-var limit = global.page.limit;
+var limit = 5;
 // render
 var render = views(viewsPath, {
 	map: {

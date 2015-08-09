@@ -1,3 +1,7 @@
+*{
+	font-size: 14px;	
+}
+
 a{
 	color: #940094;
 }
@@ -79,9 +83,9 @@ a:hover{
 
 .article-details-content{
 	margin-top: 30px;
+	/*去除bs p自带的margin-bottom*/
 	margin-bottom: 0;
 	font-size: 18px;
-	/*去除bs p自带的margin-bottom*/
 	word-wrap: break-word;
 }
 
@@ -89,8 +93,9 @@ a:hover{
 
 }
 
-/*给每一列添加margin*/
+
 .author-column{
+	/*给每一列添加margin-bootom*/
 	margin-bottom: 30px;
 }
 
@@ -109,6 +114,33 @@ a:hover{
 
 .author-details{
 	
+}
+
+.author-details-column{
+	margin-bottom: 30px;
+}
+
+.author-details-column-thumbnail{
+	margin-bottom: 0;
+}
+
+.author-details-column-avatar{
+
+}
+
+.author-details-column-introduce{
+	word-wrap: break-word;
+}
+
+.tag-row{
+}
+
+.tag-column{
+	margin-bottom: 30px;	
+}
+
+.tag{
+	font-size: 18px;
 }
 
 .page-row{

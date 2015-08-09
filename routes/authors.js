@@ -7,7 +7,7 @@ var Article = require("../models/Article");
 var viewsPath = global.path.views;
 
 // page and row
-var limit = global.page.limit;
+var limit = 4;
 var authorsPerRow = 2; // 一行有numPerRow个作者，因为bootstrap的栅格一行有12列，所以此处必须能把12整除
 
 // render
@@ -63,6 +63,12 @@ router
 				pen_name: pen_name
 			}
 		});
+		
+		if (author === null) {
+			this.status = 404;
+			this.body = "author not found";
+			return ;
+		}
 
 		// get the newest 4 articles of this author
 		var articles = yield Article.findAll({
@@ -74,8 +80,6 @@ router
 			},
 			limit: 4
 		});
-		
-		console.log(articles.length);
 
 		this.body = yield render("/frontend/authors/details", {
 			author: author,

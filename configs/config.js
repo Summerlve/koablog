@@ -36,10 +36,6 @@ global.path = {};
 global.path.static = path.join(root, "public");
 global.path.views = path.join(root, "views");
 
-// page
-global.page = {};
-// 分页大小
-global.page.limit = 4; 
 
 
 

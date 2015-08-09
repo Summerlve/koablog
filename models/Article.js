@@ -35,7 +35,12 @@ var Article = sequelize.define("koaBlog_view_article", {
 	createAt: {
 		type: Sequelize.DATE,
 		allowNull: false,
-		field: "createAt"
+		field: "createAt",
+		get: function () {
+			var createAt = this.getDataValue("createAt");
+			var time = [createAt.getFullYear(), createAt.getMonth() + 1, createAt.getDay() + 1].join("/"); 
+			return time;
+		}
 	}
 });
 

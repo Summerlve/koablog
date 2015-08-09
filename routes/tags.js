@@ -1,10 +1,31 @@
 var router = require("koa-router")();
 var Tag = require("../models/Tag");
-var Article = require("../models/Article");
+var views = require("co-views");
+
+// path
+var viewsPath = global.path.views;
+
+// row
+var tagsPerRow = 6; // 每行6个tag
+
+// render
+var render = views(viewsPath, {
+	map: {
+		html: "ejs"
+	}
+});
 
 router
-	.get("/tag", function* (next) {
+	.get("/tags", function* (next) {
+		var tags = yield Tag.findAll({
+			order: ["id"]
+		});
 		
+		this.body = yield render("/frontend/tags/tags", {
+			tags: tags,
+			title: "Tags",
+			tagsPerRow: tagsPerRow
+		});
 	});
 
 router
