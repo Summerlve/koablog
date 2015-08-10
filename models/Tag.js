@@ -1,7 +1,7 @@
 var Sequelize = require("sequelize");
 var sequelize = global.sequelize;
 
-var Tag = sequelize.define("koaBlog_tag", {
+var Tag = sequelize.define("koablog_tag", {
 	id: {
 		type: Sequelize.INTEGER(11),
 		allowNull: false,

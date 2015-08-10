@@ -2,7 +2,7 @@ var Sequelize = require("sequelize");
 var sequelize = global.sequelize;
 var User = require("./User");
 
-var Article = sequelize.define("koaBlog_view_article", {
+var Article = sequelize.define("koablog_view_article", {
 	id: {
 		type: Sequelize.INTEGER(11),
 		allowNull: false,
