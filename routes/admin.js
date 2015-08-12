@@ -15,12 +15,13 @@ var render = views(viewsPath, {
 });
 
 router
-	.get("/login", function* (next) {
+	.get("/admin", function* (next) {
 		if (this.session.authenticated) {
 			this.body = yield render("/backend/panel", {
 				title: "Panel",
 				user: {
-					username: this.session.username
+					username: this.session.username,
+					id: this.session.id
 				}
 			});
 		}
@@ -32,25 +33,25 @@ router
 	});
 
 router
-	.post("/login", function* (next) {
+	.post("/admin", function* (next) {
 		var body = yield parse(this);
-
-		console.log(MD5(body.password + "koaBlog"));
+		
+		console.log(MD5(body.password));
+		
 		var user = yield User
 							.find({
 								attributes: ["id", "username"],
 								where: {
 									username: body.username,
-									password: body.password
+									password: MD5(body.password)
 								}
 							});
 
 		if (user !== null) {
 			this.session.authenticated = true;
 			// put the user.id and user.username into session
-			this.session.userid = user.id;
+			this.session.id = user.id;
 			this.session.username = user.username;
-
 		}
 		else {
 			this.session.authenticated = false;
