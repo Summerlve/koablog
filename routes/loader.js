@@ -1,6 +1,6 @@
 // load router
 var routers = [];
-routers.push(require("./login"));
+routers.push(require("./admin"));
 routers.push(require("./articles"));
 routers.push(require("./authors"));
 routers.push(require("./tags"));

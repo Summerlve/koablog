@@ -1,14 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 	<head>
-		<title>Login</title>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-		<link href="/styles/bootstrap.min.css" rel="stylesheet">
-		<link href="/styles/bootstrap-theme.min.css" rel="stylesheet">
-		<link href="/styles/style.css" rel="stylesheet">
-		<link href="/styles/style-mobile.css" rel="stylesheet">		
+        <!--include head-->
+        <%- include("../general/head.html", undefined) %>
+        <!--end of include head-->
 	</head>
 	<body class="my-login-body">
 		<div class="container">
@@ -35,8 +30,11 @@
 							</div>
 						</div>
 					</div>
-				</form>	
+				</form>
 			</div>
 		</div>
+		<!--import javascripts-->
+        <%- include("../general/footer.html", undefined) %>
+		<!--end of import javascripts-->
 	</body>
 </html>
