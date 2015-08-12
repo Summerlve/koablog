@@ -1,5 +1,5 @@
 *{
-	font-size: 14px;	
+	font-size: 14px;
 }
 
 a{
@@ -105,7 +105,7 @@ a:hover{
 }
 
 .author-column-avatar{
-	
+
 }
 
 .author-column-introduce{
@@ -113,7 +113,7 @@ a:hover{
 }
 
 .author-details{
-	
+
 }
 
 .author-details-column{
@@ -136,7 +136,7 @@ a:hover{
 }
 
 .tag-column{
-	margin-bottom: 30px;	
+	margin-bottom: 30px;
 }
 
 .tag{
@@ -147,4 +147,16 @@ a:hover{
 	/*配合Bootstrap ul上下的margin 20px构成30px的间距*/
 	margin-top: 10px;
 	margin-bottom: 10px;
+}
+
+ /*
+ 	mobile's style 
+ */
+@media screen and (max-width: 768px) {
+	.my-login{
+		margin: 145px 18px auto 18px;
+		padding: 33px 52px 11px 52px;
+		width: auto;
+		height: auto;
+	}
 }
