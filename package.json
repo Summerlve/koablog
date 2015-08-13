@@ -17,10 +17,8 @@
     },
     "devDependencies": {},
     "scripts": {
-        "pretest": "mysql.server stop",
-        "test": "mysql.server start",
-        "posttest": "node --harmony app.js 8080",
-        "restart": "node --harmony app.js 8080"
+        "pretest": "mysql.server restart",
+        "test": "supervisor --harmony app.js"
     },
     "keywords": [
         "koa",
