@@ -1,6 +1,7 @@
 var router = require("koa-router")();
 var parse = require("co-body");
 var User = require("../models/User");
+var identity = require("../middlewares/identity");
 
 router	
 	.get("/users", function* (next) {
@@ -17,14 +18,12 @@ router
 	});
 
 router
-	.post("/users", function* (next) {
-		var user = yield parse(this);
-		console.log(123123);
-		console.log(user);
-		this.body = {
-			statusCode: 201,
-			reasonPhrase: "create succeed"	
-		};
-	});
+	.post(
+		"/users",
+		identity,
+		function* (next) {
+			var groupId = this.groupId;
+			var permission
+		});
 	
 module.exports = router.routes();

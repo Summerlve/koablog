@@ -23,11 +23,7 @@ app.use(serve(staticFilePath));
 // session
 var session = require("koa-session");
 app.keys = ["koaBlog"];
-app.use(session({
-	encode: function () {
-		console.log("encode");
-	}
-}, app));
+app.use(session(app));
 
 // routes loader
 var loader = require("./routes/loader");

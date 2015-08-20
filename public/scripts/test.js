@@ -1,40 +1,35 @@
-// var User = Backbone.Model.extend({
-// 	defaults: {
-// 		id: 0,
-// 		username: void 0,
-// 		pen_name: void 0
-// 	}
-// });
+var token = "";
 
-// var Users = Backbone.Collection.extend({
-// 	model: User,
-// 	url: "/user",
-// 	initialize: function () {
-// 		this.fetch();
-// 	}
-// });
+$.ajax({
+	url: "/authentication",
+	cache: false,
+	data: {
+		username: "dzxx0563zh@126.com",
+		password: "123456"
+	},
+	method: "POST",
+	success: function (data, status, jqXHR) {
+		token = data.access_token;
 
-// var test = new Users();
-
-// test.on("add", function (user) {
-// 	console.log(user);
-// });
-
-// test.create({
-// 	id: null,
-// 	username: "backboneTest",
-// 	password: "123456",
-// 	pen_name: "backboneTest"
-// }, {
-// 	wait: true
-// });
-
-// test.on("sync", function (collection, res, options) {
-// 	console.log(res);
-// });
-
-
-
-
-
-
+		$.ajaxSetup({
+			headers: {
+				"Authorization": "jwt " + token
+			}
+		});
+		
+		$.ajax({
+			url: "/users",
+			cache: false,
+			method: "POST",
+			success: function (data) {
+				console.log(data);
+			},
+			error: function (xhr, status, reason) {
+				console.log(status)
+			}
+		});
+	},
+	error: function (jqXHR, status, reasonPhrase) {
+		
+	}
+});

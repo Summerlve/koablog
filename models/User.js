@@ -38,6 +38,12 @@ var User = sequelize.define("koablog_user", {
 		allowNull: true,
 		unique: false,
 		field: "introduce"
+	},
+	token: {
+		type: Sequelize.STRING(255),
+		allowNull: true,
+		unique: true,
+		field: "token"
 	}
 });
 

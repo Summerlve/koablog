@@ -3,6 +3,8 @@ var views = require("co-views");
 var parse = require("co-body");
 var User = require("../models/User");
 var MD5 = require("md5");
+var jwt = require("jsonwebtoken");
+var cert = global.cert;
 
 // path
 var viewsPath = global.path.views;
@@ -15,28 +17,15 @@ var render = views(viewsPath, {
 });
 
 router
-	.get("/admin", function* (next) {
-		if (this.session.authenticated) {
-			this.body = yield render("/backend/panel", {
-				title: "Panel",
-				user: {
-					username: this.session.username,
-					id: this.session.id
-				}
-			});
-		}
-		else {
-			this.body = yield render("/backend/login", {
-				title: "login"
-			});
-		}
+	.get("/panel", function* (next) {
+		this.body = yield render("/backend/panel", {
+			title: "Panel"
+		});
 	});
 
 router
-	.post("/admin", function* (next) {
+	.post("/authentication", function* (next) {
 		var body = yield parse(this);
-		
-		console.log(MD5(body.password));
 		
 		var user = yield User
 							.find({
@@ -46,17 +35,27 @@ router
 									password: MD5(body.password)
 								}
 							});
-
+		
 		if (user !== null) {
-			this.session.authenticated = true;
-			// put the user.id and user.username into session
-			this.session.id = user.id;
-			this.session.username = user.username;
+			//token
+			var token = jwt.sign({
+				id: user.id
+			}, cert);
+			
+			this.body = {
+				access_token: token,
+				token_type: "jwt",
+				expires_in: 3600,
+				refresh_token:""
+			}	
 		}
 		else {
-			this.session.authenticated = false;
+			this.status = 401;
+			this.body = {
+				status_code: 401,
+				error_description: "username or password is not correct"
+			}
 		}
-		this.redirect("/login");
 	});
 
 module.exports = router.routes();
