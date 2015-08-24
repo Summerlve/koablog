@@ -1,6 +1,6 @@
 # 记事
 
-	前端使用backbone与bootstrap
+	前端使用vuejs与bootstrap和jQuery
 
 	后端使用koa、sequelize
 
@@ -18,12 +18,11 @@
 
 /authors
 	GET		/authors?page=1 所有的作者，分页
-	GET		/authors/:name/profile 某一个作者的资料
+	GET		/authors/:authorName 某一个作者的资料
 	
 /articles
 	GET		/articles?page=1 所有的文章，分页
 	GET		/articles/:id 某一篇文章
-	GET		/articles/pages/:page 是分页
 	POST 	/articles
 	
 /users
@@ -33,7 +32,7 @@
 
 /tags
 
-/login
+
 
 
 

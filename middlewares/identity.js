@@ -7,7 +7,12 @@ var cert = global.cert;
 function* identity (next) {
 	// get token from http header field "authorization"
 	var token = this.get("authorization").split(" ")[1];
-
+	
+	if (!token) {
+		this.status = 401;
+		return ;
+	}
+	
 	var decode = jwt.verify(token, cert);	
 	var userId = decode.id;
 	
