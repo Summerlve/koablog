@@ -25,7 +25,8 @@ router
 
 router
 	.post("/authentication", function* (next) {
-		var body = yield parse(this);
+		var body = yield parse.form(this);
+		console.log(parse.form);
 		
 		var user = yield User
 							.find({
