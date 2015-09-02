@@ -38,19 +38,19 @@
 		methods: {
 			submit: function (e) {
 				var self = this;
-				
+
 				e.preventDefault();
-				
+
 				var posting = $.post(
 					"/authentication",
 					this.$data,
 					"json"
 				);
-				
+
 				posting
 					.done(function (data) {
 						self.$el.querySelector("button").blur();
-						window.localStorage.setItem("token", data.access_token);
+						window.localStorage.setItem("token", JSON.stringify(data));
 					})
 					.fail(function (error) {
 						self.hasError = true;

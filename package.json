@@ -1,34 +1,36 @@
 {
-    "name": "koablog",
-    "version": "0.0.1",
-    "description": "blog program by koa",
-    "main": "app.js",
-    "directories": {
-        "test": "test"
-    },
-    "dependencies": {
-        "co-body": "^4.0.0",
-        "co-views": "^2.0.0",
-        "ejs": "^2.3.3",
-        "jsonwebtoken": "^5.0.5",
-        "koa": "^1.0.0",
-        "koa-compress": "^1.0.8",
-        "koa-router": "^5.1.2",
-        "koa-session": "^3.2.0",
-        "koa-static": "^1.4.9",
-        "md5": "^2.0.0",
-        "mysql": "^2.7.0",
-        "sequelize": "^3.6.0"
-    },
-    "devDependencies": {},
-    "scripts": {
-        "pretest": "mysql.server start",
-        "test": "supervisor --harmony app.js"
-    },
-    "keywords": [
-        "koa",
-        "blog"
-    ],
-    "author": "summer",
-    "license": "MIT"
+  "name": "koablog",
+  "version": "0.0.1",
+  "description": "blog program by koa",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "co-body": "^4.0.0",
+    "co-views": "^2.0.0",
+    "ejs": "^2.3.3",
+    "jsonwebtoken": "^5.0.5",
+    "koa": "^1.0.0",
+    "koa-compress": "^1.0.8",
+    "koa-router": "^5.1.2",
+    "koa-session": "^3.2.0",
+    "koa-static": "^1.4.9",
+    "md5": "^2.0.0",
+    "moment": "^2.10.6",
+    "mysql": "^2.7.0",
+    "redis": "^1.0.0",
+    "sequelize": "^3.6.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "pretest": "mysql.server start",
+    "test": "supervisor --harmony app.js"
+  },
+  "keywords": [
+    "koa",
+    "blog"
+  ],
+  "author": "summer",
+  "license": "MIT"
 }
