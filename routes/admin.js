@@ -40,7 +40,7 @@ router
 
 		var user = yield User
 							.find({
-								attributes: ["id", "username"],
+								attributes: ["id", "username", "avatar", "pen_name"],
 								where: {
 									username: body.username,
 									password: MD5(body.password)
@@ -67,10 +67,12 @@ router
 			redisClient.set(token, "");
 			redisClient.expire(token, seconds);
 
+			console.log(user);
 			// return token
 			this.body = {
 				token: token,
-				expires: expires
+				expires: expires,
+				user: user
 			};
 		}
 		else {

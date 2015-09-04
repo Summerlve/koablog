@@ -3,6 +3,17 @@
 		el: function () {
 			return "body";
 		},
+		data: function () {
+			return {
+				currentView: ""
+			}
+		},
+		created: function () {
+			var self = this;
+			this.$on("login-succeed", function () {
+				self.currentView = "panel";
+			});
+		},
 		ready: function () {
 			// check the token
 			if (!window.localStorage.getItem("token")) {
@@ -17,11 +28,6 @@
 				this.currentView = "authentication";
 			} else {
 				this.currentView = "panel"
-			}
-		},
-		data: function () {
-			return {
-				currentView: ""
 			}
 		},
 		components: {

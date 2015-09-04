@@ -71,6 +71,17 @@
 			el: function () {
 				return "body";
 			},
+			data: function () {
+				return {
+					currentView: ""
+				}
+			},
+			created: function () {
+				var self = this;
+				this.$on("login-succeed", function () {
+					self.currentView = "panel";
+				});
+			},
 			ready: function () {
 				// check the token
 				if (!window.localStorage.getItem("token")) {
@@ -85,11 +96,6 @@
 					this.currentView = "authentication";
 				} else {
 					this.currentView = "panel"
-				}
-			},
-			data: function () {
-				return {
-					currentView: ""
 				}
 			},
 			components: {
@@ -134,6 +140,9 @@
 						.done(function (data) {
 							self.$el.querySelector("button").blur();
 							window.localStorage.setItem("token", JSON.stringify(data));
+
+							// 通知app，登录成功，切换到panel。
+							self.$dispatch("login-succeed");
 						})
 						.fail(function (error) {
 							self.hasError = true;
@@ -166,9 +175,15 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
+	        created: function () {
+	            this.$on("classifications-changed", function (vm) {
+	                // 接受到了navigation的通知之后，再通知contents切换view
+	                this.$broadcast("classifications-changed", vm);
+	            });
+	        },
 	        components: {
 	            navigation: __webpack_require__(17),
-	            content: __webpack_require__(26)
+	            contents: __webpack_require__(34)
 	        }
 	    };
 
@@ -176,7 +191,7 @@
 /* 11 */
 /***/ function(module, exports) {
 
-	module.exports = "<navigation></navigation>\n    <content></content>";
+	module.exports = "<div>\n        <navigation v-ref=\"navigation\"></navigation>\n        <contents v-ref=\"content\"></contents>\n    </div>";
 
 /***/ },
 /* 12 */,
@@ -199,25 +214,39 @@
 	        data: function () {
 	            return {
 	                classifications: [
-	                    {name:"Authors", href: "#/authors"},
+	                    // the index of 0 is the default.
 	                    {name:"Articles", href: "#/articles"},
+	                    {name:"Authors", href: "#/authors"},
 	                    {name:"Tags", href: "#/tags"}
 	                ]
 	            };
 	        },
 	        methods: {
 	            onClick: function (e) {
+	                // when one of classifications was clicked , change the status.
+	                // get the current son component instance.
 	                var links = this.$.links;
+	                var vm = null;
+	                links.forEach(function (current, index, array) {
+	                    if (current.$el === e.currentTarget) vm = current;
+	                });
 
+	                // 通知panel
+	                this.$dispatch("classifications-changed", vm);
+
+	                var cur = e.currentTarget;
 	                for (var i = 0; i < links.length; i++) {
-	                    var cur = links[i].$el;
-	                    if (e.currentTarget !== cur) {
-	                        cur.removeAttribute("class");
+	                    var link = links[i].$el;
+	                    if (cur !== link) {
+	                        link.removeAttribute("class");
 	                    } else {
-	                        e.currentTarget.setAttribute("class", "active");
+	                        cur.setAttribute("class", "active");
 	                    }
 	                }
 	            }
+	        },
+	        ready: function () {
+	            this.$.links[0].$el.click(); // 默认navigation中的第一个项选中。
 	        }
 	    };
 
@@ -225,7 +254,7 @@
 /* 19 */
 /***/ function(module, exports) {
 
-	module.exports = "<nav class=\"navbar navbar-default navbar-fixed-top\">\n    <div class=\"container-fluid\">\n        <div class=\"row\">\n            <div class=\"col-md-11 col-md-offset-1\">\n                <div class=\"navbar-header\">\n                    <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navigation\" aria-expanded=\"false\">\n                        <span class=\"sr-only\">Toggle navigation</span>\n                        <span class=\"icon-bar\"></span>\n                        <span class=\"icon-bar\"></span>\n                        <span class=\"icon-bar\"></span>\n                    </button>\n                    <a class=\"navbar-brand\" href=\"/articles\">Home</a>\n                </div>\n                <div class=\"collapse navbar-collapse\" id=\"navigation\">\n                    <ul class=\"nav navbar-nav\">\n                        <li v-on=\"click: onClick\" v-ref=\"links\" v-repeat=\"item in classifications\">\n                            <a href=\"{{item.href}}\">{{item.name}}</a>\n                        </li>\n                    </ul>\n                </div>\n            </div>\n        </div>\n    </div>\n</nav>";
+	module.exports = "<nav class=\"navbar navbar-default navbar-fixed-top\">\n        <div class=\"container\">\n            <div class=\"navbar-header\">\n                <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navigation\" aria-expanded=\"false\">\n                    <span class=\"sr-only\">Toggle navigation</span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                </button>\n                <!-- <a class=\"navbar-brand\" href=\"/articles\">Home</a> -->\n            </div>\n            <div class=\"collapse navbar-collapse\" id=\"navigation\">\n                <ul class=\"nav navbar-nav\">\n                    <li v-on=\"click: onClick\" v-ref=\"links\" v-repeat=\"item in classifications\">\n                        <a href=\"{{item.href}}\">{{item.name}}</a>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </nav>";
 
 /***/ },
 /* 20 */
@@ -233,10 +262,10 @@
 
 	var router = Router({
 	    "/authors": function () {
-	        console.log("authors");
+
 	    },
 	    "/articles": function () {
-	        console.log("articles");
+
 	    }
 	});
 
@@ -246,30 +275,73 @@
 /***/ },
 /* 21 */,
 /* 22 */
-/***/ function(module, exports) {
-
-	
-
-/***/ },
-/* 23 */,
-/* 24 */,
-/* 25 */,
-/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(27)
-	module.exports.template = __webpack_require__(28)
+	module.exports = __webpack_require__(23)
+	module.exports.template = __webpack_require__(24)
 
 
 /***/ },
-/* 27 */
+/* 23 */
+/***/ function(module, exports) {
+
+	module.exports = {
+
+	    };
+
+/***/ },
+/* 24 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                articles vm\n            </div>\n        </div>\n    </div>";
+
+/***/ },
+/* 25 */,
+/* 26 */,
+/* 27 */,
+/* 28 */,
+/* 29 */,
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(39)
+	module.exports.template = __webpack_require__(40)
+
+
+/***/ },
+/* 31 */,
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(37)
+	module.exports.template = __webpack_require__(38)
+
+
+/***/ },
+/* 33 */,
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(35)
+	module.exports.template = __webpack_require__(36)
+
+
+/***/ },
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
 	        data: function () {
 	            return {
-	                currentView: "articles"
+	                currentView: ""
 	            };
+	        },
+	        created: function () {
+	            var self = this;
+	            this.$on("classifications-changed", function (vm) {
+	                var viewName = vm.item.name.toLowerCase();
+	                self.currentView = viewName;
+	            });
 	        },
 	        components: {
 	            articles: __webpack_require__(22),
@@ -279,24 +351,38 @@
 	    };
 
 /***/ },
-/* 28 */
+/* 36 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container-fluid\">\n        <div class=\"row\">\n\n        </div>\n    </div>";
+	module.exports = "<component is=\"{{currentView}}\" keep-alive></component>";
 
 /***/ },
-/* 29 */,
-/* 30 */
+/* 37 */
 /***/ function(module, exports) {
 
-	
+	module.exports = {
+
+	    };
 
 /***/ },
-/* 31 */,
-/* 32 */
+/* 38 */
 /***/ function(module, exports) {
 
-	
+	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <p>\n                    tags vm\n                </p>\n            </div>\n        </div>\n    </div>";
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
+	module.exports = {
+
+	    };
+
+/***/ },
+/* 40 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <p>\n                    authors vm\n                </p>\n            </div>\n        </div>\n    </div>";
 
 /***/ }
 /******/ ]);

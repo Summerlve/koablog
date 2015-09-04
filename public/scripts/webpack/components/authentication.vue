@@ -51,6 +51,9 @@
 					.done(function (data) {
 						self.$el.querySelector("button").blur();
 						window.localStorage.setItem("token", JSON.stringify(data));
+
+						// 通知app，登录成功，切换到panel。
+						self.$dispatch("login-succeed");
 					})
 					.fail(function (error) {
 						self.hasError = true;
