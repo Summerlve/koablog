@@ -2,13 +2,14 @@
 	font-size: 14px;
 }
 
+/*强制所有的<a>都是这样的样式*/
 a{
-	color: #940094;
+	color: #940094 !important;
 }
 
 a:hover{
-	text-decoration: none;
-	color: #450045;
+	text-decoration: none !important;
+	color: #450045 !important;
 }
 
 .my-login{
@@ -150,7 +151,7 @@ a:hover{
 }
 
  /*
- 	mobile's style 
+ 	mobile's style
  */
 @media screen and (max-width: 768px) {
 	.my-login{

@@ -37,7 +37,5 @@ var GroupToUser = sequelize.define("koablog_group_to_user", {
 	}
 })
 
-module.exports = {
-	Group: Group,
-	GroupToUser: GroupToUser
-};
+module.exports.Group = Group;
+module.exports.GroupToUser = GroupToUser;
