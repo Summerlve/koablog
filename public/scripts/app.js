@@ -339,7 +339,7 @@
 /* 24 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                articles vm\n            </div>\n        </div>\n    </div>";
+	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <div class=\"btn-group-vertical btn-group-xs\" role=\"group\" aria-label=\"Extra-small button group\">\n      <button type=\"button\" class=\"btn btn-default\">Left</button>\n      <button type=\"button\" class=\"btn btn-default\">Middle</button>\n      <button type=\"button\" class=\"btn btn-default\">Right</button>\n    </div>\n            </div>\n        </div>\n    </div>";
 
 /***/ },
 /* 25 */,
