@@ -10,6 +10,14 @@
 
 <script>
     module.exports = {
+        data: function () {
 
+        },
+        methods: {
+
+        },
+        created: function () {
+
+        }
     };
 </script>

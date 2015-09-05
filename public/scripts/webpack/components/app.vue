@@ -10,8 +10,13 @@
 		},
 		created: function () {
 			var self = this;
+
 			this.$on("login-succeed", function () {
 				self.currentView = "panel";
+			});
+
+			this.$on("logout-succeed", function () {
+				self.currentView = "authentication";
 			});
 		},
 		ready: function () {

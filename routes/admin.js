@@ -6,13 +6,8 @@ var MD5 = require("md5");
 var jwt = require("jsonwebtoken");
 var moment = require("moment");
 
-// create redis socket , and listening to the error event.
-var redis = require("redis");
-var host = "127.0.0.1";
-var redisClient = redis.createClient(6379, host, {});
-redisClient.on("error", (error) => {
-	console.log("Redis Error", error);
-});
+// use redis to store token.
+var redisClient = global.redisClient;
 
 // get the cert to decode or encode jwt.
 var cert = global.cert;
@@ -26,6 +21,9 @@ var render = views(viewsPath, {
 		html: "ejs"
 	}
 });
+
+// middlewares
+var getToken = require("../middlewares/getToken");
 
 router
 	.get("/panel", function* (next) {
@@ -67,7 +65,6 @@ router
 			redisClient.set(token, "");
 			redisClient.expire(token, seconds);
 
-			console.log(user);
 			// return token
 			this.body = {
 				token: token,
@@ -83,5 +80,24 @@ router
 			}
 		}
 	});
+
+// 注销功能：删除存储在redis里面的token，如果删除成功则通知前端。
+// 当前端和后端都将token删除之后则注销成功。
+router
+	.delete(
+		"/authentication",
+		getToken,
+		function* (next) {
+			// 从上一个中间件中获取token。
+			var token = this.token;
+
+			// 在redis中删除这个token。
+			redisClient.del(token);
+			this.body = {
+				status_code: 200,
+				description: "log out succeed"
+			};
+		}
+	);
 
 module.exports = router.routes();

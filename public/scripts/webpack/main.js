@@ -1,3 +1,4 @@
+Vue.options.debug = true;
 var App = require("./components/app.vue");
 var router = require("./routes.js");
 

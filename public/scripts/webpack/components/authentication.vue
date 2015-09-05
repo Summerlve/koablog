@@ -18,7 +18,7 @@
 			<div class="form-group">
 				<div class="row">
 					<div class="col-sm-offset-1 col-sm-10">
-						<button v-on="click: submit" type="submit" class="btn btn-primary btn-default btn-block">登陆</button>
+						<button v-on="click: logIn" type="submit" class="btn btn-primary btn-default btn-block">登陆</button>
 					</div>
 				</div>
 			</div>
@@ -36,18 +36,19 @@
 			};
 		},
 		methods: {
-			submit: function (e) {
+			logIn: function (e) {
 				var self = this;
 
 				e.preventDefault();
 
-				var posting = $.post(
-					"/authentication",
-					this.$data,
-					"json"
-				);
+				var loggingIn = $.ajax({
+					url: "/authentication",
+					data: this.$data,
+					dataType: "json",
+					method: "POST"
+				});
 
-				posting
+				loggingIn
 					.done(function (data) {
 						self.$el.querySelector("button").blur();
 						window.localStorage.setItem("token", JSON.stringify(data));
