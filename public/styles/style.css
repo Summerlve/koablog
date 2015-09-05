@@ -2,12 +2,22 @@
 	font-size: 14px;
 }
 
-/*强制所有的<a>都是这样的样式*/
+/* 将<a>变成紫色 */
 a{
-	color: #940094 !important;
+	color: #940094;
 }
 
 a:hover{
+	text-decoration: none;
+	color: #450045;
+}
+
+/* 将navbar里面的<a>强制变成紫色 */
+.navbar a{
+	color: #940094 !important;
+}
+
+.navbar a:hover{
 	text-decoration: none !important;
 	color: #450045 !important;
 }
@@ -145,7 +155,7 @@ a:hover{
 }
 
 .page-row{
-	/*配合Bootstrap ul上下的margin 20px构成30px的间距*/
+	/* 配合Bootstrap ul上下的margin 20px构成30px的间距 */
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
