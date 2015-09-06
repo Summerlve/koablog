@@ -45,8 +45,8 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	Vue.options.debug = true;
-	var App = __webpack_require__(4);
-	var router = __webpack_require__(20);
+	var App = __webpack_require__(10);
+	var router = __webpack_require__(34);
 
 	$(function () {
 		var app = new App();
@@ -58,14 +58,20 @@
 /* 1 */,
 /* 2 */,
 /* 3 */,
-/* 4 */
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(5)
+	module.exports = __webpack_require__(11)
 
 
 /***/ },
-/* 5 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = Vue.extend({
@@ -105,21 +111,21 @@
 				}
 			},
 			components: {
-				authentication: __webpack_require__(6),
-				panel: __webpack_require__(9)
+				authentication: __webpack_require__(12),
+				panel: __webpack_require__(15)
 			}
 		});
 
 /***/ },
-/* 6 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(7)
-	module.exports.template = __webpack_require__(8)
+	module.exports = __webpack_require__(13)
+	module.exports.template = __webpack_require__(14)
 
 
 /***/ },
-/* 7 */
+/* 13 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -164,21 +170,21 @@
 		};
 
 /***/ },
-/* 8 */
+/* 14 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"my-login\">\n\t\t<form class=\"form-horizontal\">\n\t\t\t<div v-class=\"has-error: hasError\" class=\"form-group\">\n\t\t\t\t<div class=\"row\">\n\t\t\t\t\t<div class=\"col-sm-offset-1 col-sm-10\">\n\t\t\t\t\t\t<input v-model=\"username\" v-on=\"focus: focusIn\" type=\"text\" class=\"form-control\" id=\"username\" placeholder=\"用户名\" name=\"username\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div v-class=\"has-error: hasError\" class=\"form-group\">\n\t\t\t\t<div class=\"row\">\n\t\t\t\t\t<div class=\"col-sm-offset-1 col-sm-10\">\n\t\t\t\t\t\t<input v-model=\"password\" v-on=\"focus: focusIn\" type=\"password\" class=\"form-control\" id=\"password\" placeholder=\"密码\" name=\"password\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<div class=\"row\">\n\t\t\t\t\t<div class=\"col-sm-offset-1 col-sm-10\">\n\t\t\t\t\t\t<button v-on=\"click: logIn\" type=\"submit\" class=\"btn btn-primary btn-default btn-block\">登陆</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</form>\n\t</div>";
 
 /***/ },
-/* 9 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(10)
-	module.exports.template = __webpack_require__(11)
+	module.exports = __webpack_require__(16)
+	module.exports.template = __webpack_require__(33)
 
 
 /***/ },
-/* 10 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
@@ -190,22 +196,11 @@
 	        },
 	        components: {
 	            navigation: __webpack_require__(17),
-	            contents: __webpack_require__(34)
+	            contents: __webpack_require__(20)
 	        }
 	    };
 
 /***/ },
-/* 11 */
-/***/ function(module, exports) {
-
-	module.exports = "<div>\n        <navigation v-ref=\"navigation\"></navigation>\n        <contents v-ref=\"content\"></contents>\n    </div>";
-
-/***/ },
-/* 12 */,
-/* 13 */,
-/* 14 */,
-/* 15 */,
-/* 16 */,
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -296,84 +291,14 @@
 
 /***/ },
 /* 20 */
-/***/ function(module, exports) {
-
-	var router = Router({
-	    "/authors": function () {
-
-	    },
-	    "/articles": function () {
-
-	    }
-	});
-
-	module.exports = router;
-
-
-/***/ },
-/* 21 */,
-/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(23)
-	module.exports.template = __webpack_require__(24)
+	module.exports = __webpack_require__(21)
+	module.exports.template = __webpack_require__(32)
 
 
 /***/ },
-/* 23 */
-/***/ function(module, exports) {
-
-	module.exports = {
-	        data: function () {
-
-	        },
-	        methods: {
-
-	        },
-	        created: function () {
-
-	        }
-	    };
-
-/***/ },
-/* 24 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <div class=\"btn-group-vertical btn-group-xs\" role=\"group\" aria-label=\"Extra-small button group\">\n      <button type=\"button\" class=\"btn btn-default\">Left</button>\n      <button type=\"button\" class=\"btn btn-default\">Middle</button>\n      <button type=\"button\" class=\"btn btn-default\">Right</button>\n    </div>\n            </div>\n        </div>\n    </div>";
-
-/***/ },
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(39)
-	module.exports.template = __webpack_require__(40)
-
-
-/***/ },
-/* 31 */,
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(37)
-	module.exports.template = __webpack_require__(38)
-
-
-/***/ },
-/* 33 */,
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(35)
-	module.exports.template = __webpack_require__(36)
-
-
-/***/ },
-/* 35 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = {
@@ -391,19 +316,62 @@
 	        },
 	        components: {
 	            articles: __webpack_require__(22),
-	            authors: __webpack_require__(30),
-	            tags: __webpack_require__(32)
+	            authors: __webpack_require__(26),
+	            tags: __webpack_require__(29)
 	        }
 	    };
 
 /***/ },
-/* 36 */
-/***/ function(module, exports) {
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = "<component is=\"{{currentView}}\" keep-alive></component>";
+	module.exports = __webpack_require__(23)
+	module.exports.template = __webpack_require__(25)
+
 
 /***/ },
-/* 37 */
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = {
+	        data: function () {
+	            return {
+	                editorInput: ""
+	            };
+	        },
+	        methods: {
+
+	        },
+	        created: function () {
+
+	        },
+	        components: {
+	            editor: __webpack_require__(24)
+	        }
+	    };
+
+/***/ },
+/* 24 */
+/***/ function(module, exports) {
+
+	
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <div class=\"btn-group-vertical btn-group-xs\" role=\"group\" aria-label=\"Extra-small button group\">\n                  <button type=\"button\" class=\"btn btn-default\">Left</button>\n                  <button type=\"button\" class=\"btn btn-default\">Middle</button>\n                  <button type=\"button\" class=\"btn btn-default\">Right</button>\n                </div>\n            </div>\n        </div>\n    </div>";
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(27)
+	module.exports.template = __webpack_require__(28)
+
+
+/***/ },
+/* 27 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -411,24 +379,60 @@
 	    };
 
 /***/ },
-/* 38 */
+/* 28 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <p>\n                    authors vm\n                </p>\n            </div>\n        </div>\n    </div>";
+
+/***/ },
+/* 29 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(30)
+	module.exports.template = __webpack_require__(31)
+
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	module.exports = {
+
+	    };
+
+/***/ },
+/* 31 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <p>\n                    tags vm\n                </p>\n            </div>\n        </div>\n    </div>";
 
 /***/ },
-/* 39 */
+/* 32 */
 /***/ function(module, exports) {
 
-	module.exports = {
-
-	    };
+	module.exports = "<component is=\"{{currentView}}\" keep-alive></component>";
 
 /***/ },
-/* 40 */
+/* 33 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <p>\n                    authors vm\n                </p>\n            </div>\n        </div>\n    </div>";
+	module.exports = "<div>\n        <navigation v-ref=\"navigation\"></navigation>\n        <contents v-ref=\"content\"></contents>\n    </div>";
+
+/***/ },
+/* 34 */
+/***/ function(module, exports) {
+
+	var router = Router({
+	    "/authors": function () {
+
+	    },
+	    "/articles": function () {
+
+	    }
+	});
+
+	module.exports = router;
+
 
 /***/ }
 /******/ ]);
