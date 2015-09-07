@@ -65,7 +65,7 @@ router
 			redisClient.set(token, "");
 			redisClient.expire(token, seconds);
 
-			// return token
+			// return json
 			this.body = {
 				token: token,
 				expires: expires,

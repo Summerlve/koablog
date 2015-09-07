@@ -131,8 +131,10 @@
 	module.exports = {
 			data: function () {
 				return {
-					username: "",
-					password: "",
+					user: {
+						username: "",
+						password: ""
+					},
 					hasError: false
 				};
 			},
@@ -144,7 +146,7 @@
 
 					var loggingIn = $.ajax({
 						url: "/authentication",
-						data: this.$data,
+						data: this.$data.user,
 						dataType: "json",
 						method: "POST"
 					});
@@ -173,7 +175,7 @@
 /* 14 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"my-login\">\n\t\t<form class=\"form-horizontal\">\n\t\t\t<div v-class=\"has-error: hasError\" class=\"form-group\">\n\t\t\t\t<div class=\"row\">\n\t\t\t\t\t<div class=\"col-sm-offset-1 col-sm-10\">\n\t\t\t\t\t\t<input v-model=\"username\" v-on=\"focus: focusIn\" type=\"text\" class=\"form-control\" id=\"username\" placeholder=\"用户名\" name=\"username\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div v-class=\"has-error: hasError\" class=\"form-group\">\n\t\t\t\t<div class=\"row\">\n\t\t\t\t\t<div class=\"col-sm-offset-1 col-sm-10\">\n\t\t\t\t\t\t<input v-model=\"password\" v-on=\"focus: focusIn\" type=\"password\" class=\"form-control\" id=\"password\" placeholder=\"密码\" name=\"password\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<div class=\"row\">\n\t\t\t\t\t<div class=\"col-sm-offset-1 col-sm-10\">\n\t\t\t\t\t\t<button v-on=\"click: logIn\" type=\"submit\" class=\"btn btn-primary btn-default btn-block\">登陆</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</form>\n\t</div>";
+	module.exports = "<div class=\"my-login\">\n\t\t<form class=\"form-horizontal\">\n\t\t\t<div v-class=\"has-error: hasError\" class=\"form-group\">\n\t\t\t\t<div class=\"row\">\n\t\t\t\t\t<div class=\"col-sm-offset-1 col-sm-10\">\n\t\t\t\t\t\t<input v-model=\"user.username\" v-on=\"focus: focusIn\" type=\"text\" class=\"form-control\" id=\"username\" placeholder=\"用户名\" name=\"username\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div v-class=\"has-error: hasError\" class=\"form-group\">\n\t\t\t\t<div class=\"row\">\n\t\t\t\t\t<div class=\"col-sm-offset-1 col-sm-10\">\n\t\t\t\t\t\t<input v-model=\"user.password\" v-on=\"focus: focusIn\" type=\"password\" class=\"form-control\" id=\"password\" placeholder=\"密码\" name=\"password\">\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"form-group\">\n\t\t\t\t<div class=\"row\">\n\t\t\t\t\t<div class=\"col-sm-offset-1 col-sm-10\">\n\t\t\t\t\t\t<button v-on=\"click: logIn\" type=\"submit\" class=\"btn btn-primary btn-default btn-block\">登陆</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</form>\n\t</div>";
 
 /***/ },
 /* 15 */
@@ -336,7 +338,7 @@
 	module.exports = {
 	        data: function () {
 	            return {
-	                editorInput: ""
+
 	            };
 	        },
 	        methods: {
@@ -352,15 +354,17 @@
 
 /***/ },
 /* 24 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	
+	module.exports = __webpack_require__(35)
+	module.exports.template = __webpack_require__(36)
+
 
 /***/ },
 /* 25 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <div class=\"btn-group-vertical btn-group-xs\" role=\"group\" aria-label=\"Extra-small button group\">\n                  <button type=\"button\" class=\"btn btn-default\">Left</button>\n                  <button type=\"button\" class=\"btn btn-default\">Middle</button>\n                  <button type=\"button\" class=\"btn btn-default\">Right</button>\n                </div>\n            </div>\n        </div>\n    </div>";
+	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <editor></editor>\n            </div>\n        </div>\n    </div>";
 
 /***/ },
 /* 26 */
@@ -410,7 +414,7 @@
 /* 32 */
 /***/ function(module, exports) {
 
-	module.exports = "<component is=\"{{currentView}}\" keep-alive></component>";
+	module.exports = "<component is=\"{{currentView}}\"></component>";
 
 /***/ },
 /* 33 */
@@ -433,6 +437,37 @@
 
 	module.exports = router;
 
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	module.exports = {
+	        data: function () {
+	            return {
+	                editorInput: "&lt;p&gt;Initial editor content.&lt;/p&gt;"
+	            };
+	        },
+	        methods: {
+	            sentData: function (e) {
+	                input = CKEDITOR.instances.editor.getData();
+	                console.log(input);
+	                console.log(this.editorInput);
+	            }
+	        },
+	        ready: function () {
+	            var editor = this.$el;
+	            CKEDITOR.replace("editor", {
+	                customConfig: "/scripts/ckeditor_config.js"
+	            });
+	        }
+	    };
+
+/***/ },
+/* 36 */
+/***/ function(module, exports) {
+
+	module.exports = "<textarea name=\"editor\" id=\"editor\">\n        {{editorInput}}\n    </textarea>\n\n    <button v-on=\"click: sentData\">save</button>";
 
 /***/ }
 /******/ ]);

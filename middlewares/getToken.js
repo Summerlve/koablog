@@ -24,8 +24,9 @@ function* getToken (next) {
     var token = authorization.split(" ")[1];
 
     // 尝试检查token是否能够解析，如果不能的话有很大可能是伪造的。
+    var decode = null;
     try {
-        var decode = jwt.verify(token, cert);
+        decode = jwt.verify(token, cert);
     } catch (e) {
         this.status = 400;
         this.body = {
@@ -36,7 +37,20 @@ function* getToken (next) {
         return ;
     }
 
+    // 检查token是否过期
+    var expires = decode.exp;
+    if (expires <= Date.now()) {
+        this.status = 400;
+        this.body = {
+            status_code: 400,
+            error_description: "token out of date"
+        }
+
+        return ;
+    }
+
     // 在reids里面查找token，如果没有找到的话，应该可以确定是伪造的了。
+    // 但也有可能是redis重启之后token全部丢失的原因。
     var isTokenExsit = redisClient.co_get(token);
     if (!isTokenExsit) {
         this.status = 400;

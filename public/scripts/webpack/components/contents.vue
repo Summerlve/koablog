@@ -1,5 +1,5 @@
 <template>
-    <component is="{{currentView}}" keep-alive></component>
+    <component is="{{currentView}}"></component>
 </template>
 
 <script>
