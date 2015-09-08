@@ -13,23 +13,24 @@
             <div class="collapse navbar-collapse" id="navigation">
                 <ul class="nav navbar-nav">
                     <li v-on="click: onClick" v-ref="links" v-repeat="item in classifications">
-                        <a href="{{item.href}}">{{item.name}}</a>
+                        <a v-attr="href: item.href" v-text="item.name"></a>
                     </li>
 
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
-                        <a  class="dropdown-toggle"
+                        <a
+                            class="dropdown-toggle"
                             data-toggle="dropdown"
                             role="button"
                             aria-haspopup="true"
                             aria-expanded="false">
-                            {{user.pen_name}}
+                            <span v-text="user.pen_name"></span>
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
                             <li v-repeat="menu in dropdownMenu">
-                                <a href="{{menu.href}}">{{menu.name}}</a>
+                                <a v-attr="href: menu.href" v-text="menu.name"></a>
                             </li>
                             <li role="separator" class="divider"></li>
                             <li><a v-on="click: logOut">Log out</a></li>

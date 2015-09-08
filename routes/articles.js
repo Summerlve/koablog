@@ -21,7 +21,7 @@ router
 	.get("/articles", function* (next) {
 		// page默认为1
 		var current = parseInt(this.query.page || 1, 10);
-		
+
 		var articles = yield Article.findAll({
 			order: ["id"],
 			offset: (current - 1) * limit,
@@ -33,9 +33,9 @@ router
 			this.body = "没有更多的内容了";
 			return ;
 		}
-		
+
 		var count = yield Article.count();
-		 
+
 		var previous = current - 1;
 		var next_ = count - limit * current > 0 ? current + 1 : 0;
 
@@ -79,7 +79,7 @@ router
 			this.body = "article not found";
 			return ;
 		}
-		
+
 		// 检测previous、next页面
 		var previous = yield Article.find({
 			order: [
@@ -92,16 +92,16 @@ router
 			},
 			limit: 1
 		});
-		
+
 		var next_ = yield Article.find({
 			order: ["id"],
 			where: {
 				id: {
-					$gt: id 
+					$gt: id
 				}
 			},
 			limit: 1
-		});	
+		});
 
 		this.body = yield render("/frontend/articles/details", {
 			article: article,
