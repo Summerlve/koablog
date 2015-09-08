@@ -2,7 +2,8 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <input type="email" id="article-title" placeholder="标题">
+                <!-- <label for="new-article-title"> 文章标题：</label> -->
+                <input type="text" class="form-control input-lg" id="new-article-title" placeholder="文章标题" style="margin-bottom: 20px;">
             </div>
         </div>
         <div class="row">

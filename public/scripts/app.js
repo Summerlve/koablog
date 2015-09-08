@@ -369,7 +369,7 @@
 	module.exports = {
 	        data: function () {
 	            return {
-	                content: "<p>Initiasdfasdfl editor content.&lt;/p&gt;",
+	                content: "Initiasdfasdfl editor content <name's name>",
 	                editor: null // 用于保存编辑器实例
 	            };
 	        },
@@ -397,7 +397,7 @@
 	                customConfig: "/scripts/ckeditor_config.js"
 	            });
 
-	            this.content = this.editor.getData();
+	            this.editor.setData(this.content);
 
 	            this.editor.on("change", function (e) {
 	                self.content = e.editor.getData();
@@ -409,13 +409,13 @@
 /* 26 */
 /***/ function(module, exports) {
 
-	module.exports = "<textarea name=\"editor\" id=\"editor\" v-text=\"content\">\n    </textarea>";
+	module.exports = "<textarea name=\"editor\" id=\"editor\">\n    </textarea>";
 
 /***/ },
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <input type=\"email\" id=\"article-title\" placeholder=\"标题\">\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <editor></editor>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"col-md-1 col-md-offset-11\">\n                <button v-on=\"click: uploadClicked\" class=\"btn btn-default btn-lg\" type=\"submit\" style=\"margin-top: 20px;\">上传</button>\n            </div>\n        </div>\n    </div>";
+	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <!-- <label for=\"new-article-title\"> 文章标题：</label> -->\n                <input type=\"text\" class=\"form-control input-lg\" id=\"new-article-title\" placeholder=\"文章标题\" style=\"margin-bottom: 20px;\">\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <editor></editor>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"col-md-1 col-md-offset-11\">\n                <button v-on=\"click: uploadClicked\" class=\"btn btn-default btn-lg\" type=\"submit\" style=\"margin-top: 20px;\">上传</button>\n            </div>\n        </div>\n    </div>";
 
 /***/ },
 /* 28 */

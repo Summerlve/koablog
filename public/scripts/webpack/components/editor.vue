@@ -1,5 +1,5 @@
 <template>
-    <textarea name="editor" id="editor" v-text="content">
+    <textarea name="editor" id="editor">
     </textarea>
 </template>
 
@@ -7,7 +7,7 @@
     module.exports = {
         data: function () {
             return {
-                content: "<p>Initiasdfasdfl editor content.&lt;/p&gt;",
+                content: "Initiasdfasdfl editor content <name's name>",
                 editor: null // 用于保存编辑器实例
             };
         },
@@ -35,7 +35,7 @@
                 customConfig: "/scripts/ckeditor_config.js"
             });
 
-            this.content = this.editor.getData();
+            this.editor.setData(this.content);
 
             this.editor.on("change", function (e) {
                 self.content = e.editor.getData();
