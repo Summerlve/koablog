@@ -46,7 +46,7 @@
 
 	Vue.options.debug = true;
 	var App = __webpack_require__(10);
-	var router = __webpack_require__(34);
+	var router = __webpack_require__(36);
 
 	$(function () {
 		var app = new App();
@@ -182,7 +182,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(16)
-	module.exports.template = __webpack_require__(33)
+	module.exports.template = __webpack_require__(35)
 
 
 /***/ },
@@ -296,7 +296,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(21)
-	module.exports.template = __webpack_require__(32)
+	module.exports.template = __webpack_require__(34)
 
 
 /***/ },
@@ -318,8 +318,8 @@
 	        },
 	        components: {
 	            articles: __webpack_require__(22),
-	            authors: __webpack_require__(26),
-	            tags: __webpack_require__(29)
+	            authors: __webpack_require__(28),
+	            tags: __webpack_require__(31)
 	        }
 	    };
 
@@ -328,7 +328,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(23)
-	module.exports.template = __webpack_require__(25)
+	module.exports.template = __webpack_require__(27)
 
 
 /***/ },
@@ -356,90 +356,12 @@
 /* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(35)
-	module.exports.template = __webpack_require__(36)
+	module.exports = __webpack_require__(25)
+	module.exports.template = __webpack_require__(26)
 
 
 /***/ },
 /* 25 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <editor></editor>\n            </div>\n        </div>\n    </div>";
-
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(27)
-	module.exports.template = __webpack_require__(28)
-
-
-/***/ },
-/* 27 */
-/***/ function(module, exports) {
-
-	module.exports = {
-
-	    };
-
-/***/ },
-/* 28 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <p>\n                    authors vm\n                </p>\n            </div>\n        </div>\n    </div>";
-
-/***/ },
-/* 29 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(30)
-	module.exports.template = __webpack_require__(31)
-
-
-/***/ },
-/* 30 */
-/***/ function(module, exports) {
-
-	module.exports = {
-
-	    };
-
-/***/ },
-/* 31 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <p>\n                    tags vm\n                </p>\n            </div>\n        </div>\n    </div>";
-
-/***/ },
-/* 32 */
-/***/ function(module, exports) {
-
-	module.exports = "<component is=\"{{currentView}}\"></component>";
-
-/***/ },
-/* 33 */
-/***/ function(module, exports) {
-
-	module.exports = "<div>\n        <navigation v-ref=\"navigation\"></navigation>\n        <contents v-ref=\"content\"></contents>\n    </div>";
-
-/***/ },
-/* 34 */
-/***/ function(module, exports) {
-
-	var router = Router({
-	    "/authors": function () {
-
-	    },
-	    "/articles": function () {
-
-	    }
-	});
-
-	module.exports = router;
-
-
-/***/ },
-/* 35 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -473,10 +395,88 @@
 	    };
 
 /***/ },
-/* 36 */
+/* 26 */
 /***/ function(module, exports) {
 
 	module.exports = "<textarea name=\"editor\" id=\"editor\" v-text=\"contentOfEditor\">\n    </textarea>\n    <button v-on=\"click: sentData\">save</button>";
+
+/***/ },
+/* 27 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <editor></editor>\n            </div>\n        </div>\n    </div>";
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(29)
+	module.exports.template = __webpack_require__(30)
+
+
+/***/ },
+/* 29 */
+/***/ function(module, exports) {
+
+	module.exports = {
+
+	    };
+
+/***/ },
+/* 30 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <p>\n                    authors vm\n                </p>\n            </div>\n        </div>\n    </div>";
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(32)
+	module.exports.template = __webpack_require__(33)
+
+
+/***/ },
+/* 32 */
+/***/ function(module, exports) {
+
+	module.exports = {
+
+	    };
+
+/***/ },
+/* 33 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <p>\n                    tags vm\n                </p>\n            </div>\n        </div>\n    </div>";
+
+/***/ },
+/* 34 */
+/***/ function(module, exports) {
+
+	module.exports = "<component is=\"{{currentView}}\"></component>";
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	module.exports = "<div>\n        <navigation v-ref=\"navigation\"></navigation>\n        <contents v-ref=\"content\"></contents>\n    </div>";
+
+/***/ },
+/* 36 */
+/***/ function(module, exports) {
+
+	var router = Router({
+	    "/authors": function () {
+
+	    },
+	    "/articles": function () {
+
+	    }
+	});
+
+	module.exports = router;
+
 
 /***/ }
 /******/ ]);
