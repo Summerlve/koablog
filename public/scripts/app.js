@@ -289,7 +289,7 @@
 /* 19 */
 /***/ function(module, exports) {
 
-	module.exports = "<nav class=\"navbar navbar-default navbar-fixed-top\">\n        <div class=\"container\">\n            <div class=\"navbar-header\">\n                <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navigation\" aria-expanded=\"false\">\n                    <span class=\"sr-only\">Toggle navigation</span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                </button>\n                <a class=\"navbar-brand\" href=\"/articles\">Home</a>\n            </div>\n            <div class=\"collapse navbar-collapse\" id=\"navigation\">\n                <ul class=\"nav navbar-nav\">\n                    <li v-on=\"click: onClick\" v-ref=\"links\" v-repeat=\"item in classifications\">\n                        <a v-attr=\"href: item.href\" v-text=\"item.name\"></a>\n                    </li>\n\n                </ul>\n                <ul class=\"nav navbar-nav navbar-right\">\n                    <li class=\"dropdown\">\n                        <a\n                            class=\"dropdown-toggle\"\n                            data-toggle=\"dropdown\"\n                            role=\"button\"\n                            aria-haspopup=\"true\"\n                            aria-expanded=\"false\">\n                            <span v-text=\"user.pen_name\"></span>\n                            <span class=\"caret\"></span>\n                        </a>\n                        <ul class=\"dropdown-menu\">\n                            <li v-repeat=\"menu in dropdownMenu\">\n                                <a v-attr=\"href: menu.href\" v-text=\"menu.name\"></a>\n                            </li>\n                            <li role=\"separator\" class=\"divider\"></li>\n                            <li><a v-on=\"click: logOut\">Log out</a></li>\n                        </ul>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </nav>";
+	module.exports = "<nav class=\"navbar navbar-default navbar-fixed-top\">\n        <div class=\"container\">\n            <div class=\"navbar-header\">\n                <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navigation\" aria-expanded=\"false\">\n                    <span class=\"sr-only\">Toggle navigation</span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                </button>\n                <a class=\"navbar-brand\" href=\"/articles\">Home</a>\n            </div>\n            <div class=\"collapse navbar-collapse\" id=\"navigation\">\n                <ul class=\"nav navbar-nav\">\n                    <li v-on=\"click: onClick\" v-ref=\"links\" v-repeat=\"item in classifications\">\n                        <a v-attr=\"href: item.href\" v-text=\"item.name\"></a>\n                    </li>\n                </ul>\n                <ul class=\"nav navbar-nav navbar-right\">\n                    <li class=\"dropdown\">\n                        <a\n                            class=\"dropdown-toggle\"\n                            data-toggle=\"dropdown\"\n                            role=\"button\"\n                            aria-haspopup=\"true\"\n                            aria-expanded=\"false\">\n                            <span v-text=\"user.pen_name\"></span>\n                            <span class=\"caret\"></span>\n                        </a>\n                        <ul class=\"dropdown-menu\">\n                            <li v-repeat=\"menu in dropdownMenu\">\n                                <a v-attr=\"href: menu.href\" v-text=\"menu.name\"></a>\n                            </li>\n                            <li role=\"separator\" class=\"divider\"></li>\n                            <li><a v-on=\"click: logOut\">Log out</a></li>\n                        </ul>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </nav>";
 
 /***/ },
 /* 20 */
@@ -342,7 +342,9 @@
 	            };
 	        },
 	        methods: {
-
+	            uploadClicked: function (e) {
+	                this.$broadcast("upload");
+	            }
 	        },
 	        created: function () {
 
@@ -367,29 +369,38 @@
 	module.exports = {
 	        data: function () {
 	            return {
-	                contentOfEditor: "&lt;p&gt;Initiasdfasdfl editor content.&lt;/p&gt;",
-	                instanceOfEditor: null // 用于保存编辑器实例
+	                content: "<p>Initiasdfasdfl editor content.&lt;/p&gt;",
+	                editor: null // 用于保存编辑器实例
 	            };
 	        },
+	        props: [
+
+	        ],
 	        methods: {
-	            sentData: function (e) {
-	                console.log(this.contentOfEditor);
-	                console.log(this.instanceOfEditor.getData());
-	            }
+
+	        },
+	        created: function () {
+	            // hackthis
+	            var self = this;
+
+	            // 监听上传事件
+	            this.$on("upload", function () {
+	                console.log(this.content);
+	            });
 	        },
 	        ready: function () {
 	            // hackthis
 	            var self = this;
 
 	            // 实例化编辑器，并且设置自定义的配置文件
-	            this.instanceOfEditor = CKEDITOR.replace("editor", {
-	                // customConfig: "/scripts/ckeditor_config.js"
+	            this.editor = CKEDITOR.replace("editor", {
+	                customConfig: "/scripts/ckeditor_config.js"
 	            });
 
-	            this.contentOfEditor = this.instanceOfEditor.getData();
+	            this.content = this.editor.getData();
 
-	            this.instanceOfEditor.on("change", function (e) {
-	                self.contentOfEditor = e.editor.getData();
+	            this.editor.on("change", function (e) {
+	                self.content = e.editor.getData();
 	            });
 	        }
 	    };
@@ -398,13 +409,13 @@
 /* 26 */
 /***/ function(module, exports) {
 
-	module.exports = "<textarea name=\"editor\" id=\"editor\" v-text=\"contentOfEditor\">\n    </textarea>\n    <button v-on=\"click: sentData\">save</button>";
+	module.exports = "<textarea name=\"editor\" id=\"editor\" v-text=\"content\">\n    </textarea>";
 
 /***/ },
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <editor></editor>\n            </div>\n        </div>\n    </div>";
+	module.exports = "<div class=\"container\">\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <input type=\"email\" id=\"article-title\" placeholder=\"标题\">\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"col-md-12\">\n                <editor></editor>\n            </div>\n        </div>\n        <div class=\"row\">\n            <div class=\"col-md-1 col-md-offset-11\">\n                <button v-on=\"click: uploadClicked\" class=\"btn btn-default btn-lg\" type=\"submit\" style=\"margin-top: 20px;\">上传</button>\n            </div>\n        </div>\n    </div>";
 
 /***/ },
 /* 28 */

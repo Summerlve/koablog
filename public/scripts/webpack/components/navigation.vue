@@ -15,7 +15,6 @@
                     <li v-on="click: onClick" v-ref="links" v-repeat="item in classifications">
                         <a v-attr="href: item.href" v-text="item.name"></a>
                     </li>
-
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
