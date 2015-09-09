@@ -32,5 +32,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.removeDialogTabs = 'image:advanced;link:advanced';
 
 	// setting the editor's height.
-    config.height = "400px";
+    config.height = "270px";
+
+	config.removePlugins = "resize";
 };
