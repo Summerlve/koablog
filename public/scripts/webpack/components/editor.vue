@@ -24,31 +24,23 @@
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <!-- <label for="new-article-title" class="control-label">Title:</label> -->
-                            <input
-                                v-model="newArticle.title"
-                                type="text"
-                                class="form-control"
-                                id="new-article-title"
-                                placeholder="标题"
-                                style="border-radius: 0;">
-                        </div>
-                        <div class="form-group">
-                            <!-- <label for="new-article-tag" class="control-label">Tag:</label> -->
-                            <input
-                                v-model="newArticle.tag"
-                                type="text"
-                                class="form-control"
-                                id="new-article-tag"
-                                placeholder="添加相关标签"
-                                style="border-radius: 0;">
-                        </div>
-                    </form>
+                    <input
+                        type="text"
+                        v-model="newArticle.title"
+                        maxlength="120"
+                        class="new-article-title"
+                        id="new-article-title"
+                        placeholder="标题">
+                    <input
+                        type="text"
+                        v-model="newArticle.tag"
+                        maxlength="120"
+                        class="new-article-tag"
+                        id="new-article-tag"
+                        placeholder="添加相关标签">
                     <!-- editor begin -->
                     <textarea name="editor" id="editor"></textarea>
-                     <!-- editor end -->
+                    <!-- editor end -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -68,15 +60,13 @@
                 newArticle: {
                     title: "",
                     tag: "",
-                    content: "Initi editor content" // 编辑器的内容，既是文章的内容
+                    content: "" // 编辑器的内容，既是文章的内容
                 }
             };
         },
         methods: {
             createNewArticle: function (e) {
-                var editor = this.$.editor;
-
-                this.$options.modal.modal("hide");
+                this.modal.modal("hide");
             }
         },
         created: function () {
@@ -98,12 +88,31 @@
             });
 
             // 在初始化编辑器之后将this.content渲染到编辑器中
-            this.editor.setData(this.newArticle.content);
+            // this.editor.setData(this.newArticle.content);
 
             // 在编辑器的内容改变时，自动更新this.content
             this.editor.on("change", function (e) {
                 self.content = e.editor.getData();
             });
+
+            // 将modal添加到当前的组建实例上，以便于访问
+            this.modal = $("#new-article-modal");
+
+            // repaire ckeditor inside bootstrap modals
+            $.fn.modal.Constructor.prototype.enforceFocus = function() {
+                $( document )
+                    .off( 'focusin.bs.modal' ) // guard against infinite focus loop
+                    .on( 'focusin.bs.modal', $.proxy( function( e ) {
+                        if (
+                            this.$element[ 0 ] !== e.target && !this.$element.has( e.target ).length
+                            // CKEditor compatibility fix start.
+                            && !$( e.target ).closest( '.cke_dialog, .cke' ).length
+                            // CKEditor compatibility fix end.
+                        ) {
+                            this.$element.trigger( 'focus' );
+                        }
+                    }, this ) );
+            };
         }
     };
 </script>

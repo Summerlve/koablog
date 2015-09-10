@@ -1,8 +1,26 @@
 <template>
     <div class="container">
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new-article-modal">
-            create a new article
-        </button>
+        <div class="btn-group-vertical" role="group" aria-label="Vertical button group">
+            <button
+                v-on="click: recentArticles"
+                type="button"
+                class="btn btn-default">
+                Recent 5
+            </button>
+            <button
+                type="button"
+                class="btn btn-default"
+                data-toggle="modal"
+                data-target="#new-article-modal">
+                New
+            </button>
+            <button
+                type="button"
+                class="btn btn-default">
+                Button
+            </button>
+        </div>
+
         <editor></editor>
     </div>
 </template>
@@ -15,7 +33,23 @@
             };
         },
         methods: {
+            recentArticles: function (e) {
+                // get the recent 5 articles.
+                var getting = $.ajax({
+                    url: "/articles",
+                    data: {},
+                    dataType: "json", // this is the 'Accepts' header field
+                    method: "GET" // this is http method
+                });
 
+                getting
+                    .done(function (data) {
+
+                    })
+                    .fail(function (error) {
+
+                    });
+            }
         },
         created: function () {
 

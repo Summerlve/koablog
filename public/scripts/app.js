@@ -342,7 +342,23 @@
 	            };
 	        },
 	        methods: {
+	            recentArticles: function (e) {
+	                // get the recent 5 articles.
+	                var getting = $.ajax({
+	                    url: "/articles",
+	                    data: {},
+	                    dataType: "json", // this is the 'Accepts' header field
+	                    method: "GET" // this is http method
+	                });
 
+	                getting
+	                    .done(function (data) {
+
+	                    })
+	                    .fail(function (error) {
+
+	                    });
+	            }
 	        },
 	        created: function () {
 
@@ -372,15 +388,13 @@
 	                newArticle: {
 	                    title: "",
 	                    tag: "",
-	                    content: "Initi editor content" // 编辑器的内容，既是文章的内容
+	                    content: "" // 编辑器的内容，既是文章的内容
 	                }
 	            };
 	        },
 	        methods: {
 	            createNewArticle: function (e) {
-	                var editor = this.$.editor;
-
-	                this.$options.modal.modal("hide");
+	                this.modal.modal("hide");
 	            }
 	        },
 	        created: function () {
@@ -402,12 +416,31 @@
 	            });
 
 	            // 在初始化编辑器之后将this.content渲染到编辑器中
-	            this.editor.setData(this.newArticle.content);
+	            // this.editor.setData(this.newArticle.content);
 
 	            // 在编辑器的内容改变时，自动更新this.content
 	            this.editor.on("change", function (e) {
 	                self.content = e.editor.getData();
 	            });
+
+	            // 将modal添加到当前的组建实例上，以便于访问
+	            this.modal = $("#new-article-modal");
+
+	            // repaire ckeditor inside bootstrap modals
+	            $.fn.modal.Constructor.prototype.enforceFocus = function() {
+	                $( document )
+	                    .off( 'focusin.bs.modal' ) // guard against infinite focus loop
+	                    .on( 'focusin.bs.modal', $.proxy( function( e ) {
+	                        if (
+	                            this.$element[ 0 ] !== e.target && !this.$element.has( e.target ).length
+	                            // CKEditor compatibility fix start.
+	                            && !$( e.target ).closest( '.cke_dialog, .cke' ).length
+	                            // CKEditor compatibility fix end.
+	                        ) {
+	                            this.$element.trigger( 'focus' );
+	                        }
+	                    }, this ) );
+	            };
 	        }
 	    };
 
@@ -415,13 +448,13 @@
 /* 26 */
 /***/ function(module, exports) {
 
-	module.exports = "<div\n        class=\"modal fade\"\n        id=\"new-article-modal\"\n        tabindex=\"-1\"\n        role=\"dialog\"\n        aria-labelledby=\"new-article-modal-title\"\n        aria-describedby=\"create new article\">\n        <div\n            class=\"modal-dialog modal-lg\"\n            role=\"document\"\n            aria-hidden=\"true\">\n            <div class=\"modal-content\">\n                <div class=\"modal-header\">\n                    <button\n                        type=\"button\"\n                        class=\"close\"\n                        data-dismiss=\"modal\"\n                        aria-label=\"Close\">\n                        <span aria-hidden=\"true\">&times;</span>\n                    </button>\n                    <h4 class=\"modal-title\" id=\"new-article-modal-title\">\n                        Create a new article\n                    </h4>\n                </div>\n                <div class=\"modal-body\">\n                    <form>\n                        <div class=\"form-group\">\n                            <!-- <label for=\"new-article-title\" class=\"control-label\">Title:</label> -->\n                            <input\n                                v-model=\"newArticle.title\"\n                                type=\"text\"\n                                class=\"form-control\"\n                                id=\"new-article-title\"\n                                placeholder=\"标题\"\n                                style=\"border-radius: 0;\">\n                        </div>\n                        <div class=\"form-group\">\n                            <!-- <label for=\"new-article-tag\" class=\"control-label\">Tag:</label> -->\n                            <input\n                                v-model=\"newArticle.tag\"\n                                type=\"text\"\n                                class=\"form-control\"\n                                id=\"new-article-tag\"\n                                placeholder=\"添加相关标签\"\n                                style=\"border-radius: 0;\">\n                        </div>\n                    </form>\n                    <!-- editor begin -->\n                    <textarea name=\"editor\" id=\"editor\"></textarea>\n                     <!-- editor end -->\n                </div>\n                <div class=\"modal-footer\">\n                    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n                    <button v-on=\"click: createNewArticle\" type=\"button\" class=\"btn btn-primary\">Save</button>\n                </div>\n            </div>\n        </div>\n    </div>";
+	module.exports = "<div\n        class=\"modal fade\"\n        id=\"new-article-modal\"\n        tabindex=\"-1\"\n        role=\"dialog\"\n        aria-labelledby=\"new-article-modal-title\"\n        aria-describedby=\"create new article\">\n        <div\n            class=\"modal-dialog modal-lg\"\n            role=\"document\"\n            aria-hidden=\"true\">\n            <div class=\"modal-content\">\n                <div class=\"modal-header\">\n                    <button\n                        type=\"button\"\n                        class=\"close\"\n                        data-dismiss=\"modal\"\n                        aria-label=\"Close\">\n                        <span aria-hidden=\"true\">&times;</span>\n                    </button>\n                    <h4 class=\"modal-title\" id=\"new-article-modal-title\">\n                        Create a new article\n                    </h4>\n                </div>\n                <div class=\"modal-body\">\n                    <input\n                        type=\"text\"\n                        v-model=\"newArticle.title\"\n                        maxlength=\"120\"\n                        class=\"new-article-title\"\n                        id=\"new-article-title\"\n                        placeholder=\"标题\">\n                    <input\n                        type=\"text\"\n                        v-model=\"newArticle.tag\"\n                        maxlength=\"120\"\n                        class=\"new-article-tag\"\n                        id=\"new-article-tag\"\n                        placeholder=\"添加相关标签\">\n                    <!-- editor begin -->\n                    <textarea name=\"editor\" id=\"editor\"></textarea>\n                    <!-- editor end -->\n                </div>\n                <div class=\"modal-footer\">\n                    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n                    <button v-on=\"click: createNewArticle\" type=\"button\" class=\"btn btn-primary\">Save</button>\n                </div>\n            </div>\n        </div>\n    </div>";
 
 /***/ },
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container\">\n        <button type=\"button\" class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#new-article-modal\">\n            create a new article\n        </button>\n        <editor></editor>\n    </div>";
+	module.exports = "<div class=\"container\">\n        <div class=\"btn-group-vertical\" role=\"group\" aria-label=\"Vertical button group\">\n            <button\n                v-on=\"click: recentArticles\"\n                type=\"button\"\n                class=\"btn btn-default\">\n                Recent 5\n            </button>\n            <button\n                type=\"button\"\n                class=\"btn btn-default\"\n                data-toggle=\"modal\"\n                data-target=\"#new-article-modal\">\n                New\n            </button>\n            <button\n                type=\"button\"\n                class=\"btn btn-default\">\n                Button\n            </button>\n        </div>\n\n        <editor></editor>\n    </div>";
 
 /***/ },
 /* 28 */

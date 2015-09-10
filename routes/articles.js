@@ -1,6 +1,8 @@
 var router = require("koa-router")();
 var Article = require("../models/Article");
 var views = require("co-views");
+var parse = require("co-body");
+
 // path
 var viewsPath = global.path.views;
 // page
@@ -19,36 +21,67 @@ router
 // page of the articles
 router
 	.get("/articles", function* (next) {
-		// page默认为1
-		var current = parseInt(this.query.page || 1, 10);
+		switch (this.accepts("json", "html")) {
+			case "json": {
+				// 当请求json时
+				var body = yield parse.form(this);
+				var filter = body.filter;
+				var limit = body.limit;
+				var page = body.page;
 
-		var articles = yield Article.findAll({
-			order: ["id"],
-			offset: (current - 1) * limit,
-			limit: limit
-		});
+				var articles = yield Article.findAll({
+					order: ["id"],
+					offset: (current - 1) * limit,
+					limit: limit
+				});
 
-		if (articles.length === 0) {
-			this.status = 404;
-			this.body = "没有更多的内容了";
-			return ;
-		}
+				if (articles.length === 0) {
+					this.status = 404;
+					this.body = "没有更多的内容了";
+					return ;
+				}
 
-		var count = yield Article.count();
+				this.body = articles;
 
-		var previous = current - 1;
-		var next_ = count - limit * current > 0 ? current + 1 : 0;
+			}break;
+			case "html": {
+				// 当请求html时
+				// page默认为1
+				var current = parseInt(this.query.page || 1, 10);
 
-		this.body = yield render("/frontend/articles/articles", {
-			title: "Articles",
-			articles: articles,
-			page: {
-				urlPrefix: "/articles",
-				current: current,
-				previous: previous,
-				next: next_
+				var articles = yield Article.findAll({
+					order: ["id"],
+					offset: (current - 1) * limit,
+					limit: limit
+				});
+
+				if (articles.length === 0) {
+					this.status = 404;
+					this.body = "没有更多的内容了";
+					return ;
+				}
+
+				var count = yield Article.count();
+
+				var previous = current - 1;
+				var next_ = count - limit * current > 0 ? current + 1 : 0;
+
+				this.body = yield render("/frontend/articles/articles", {
+					title: "Articles",
+					articles: articles,
+					page: {
+						urlPrefix: "/articles",
+						current: current,
+						previous: previous,
+						next: next_
+					}
+				});
+			}break;
+			default: {
+				// 只允许json和html。
+				this.throw(406, "json and html only");
 			}
-		});
+		}
 	});
 
 // one of the articles
