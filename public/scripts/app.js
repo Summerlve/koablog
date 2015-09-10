@@ -346,17 +346,19 @@
 	                // get the recent 5 articles.
 	                var getting = $.ajax({
 	                    url: "/articles",
-	                    data: {},
+	                    data: {
+	                        sort: "-createAt"
+	                    },
 	                    dataType: "json", // this is the 'Accepts' header field
 	                    method: "GET" // this is http method
 	                });
 
 	                getting
 	                    .done(function (data) {
-
+	                        console.dir(data);
 	                    })
 	                    .fail(function (error) {
-
+	                        console.log(error);
 	                    });
 	            }
 	        },

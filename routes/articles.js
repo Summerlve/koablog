@@ -24,24 +24,28 @@ router
 		switch (this.accepts("json", "html")) {
 			case "json": {
 				// 当请求json时
-				var body = yield parse.form(this);
-				var filter = body.filter;
-				var limit = body.limit;
-				var page = body.page;
+				var sort = this.query.sort;
+				console.log(sort);
 
-				var articles = yield Article.findAll({
-					order: ["id"],
-					offset: (current - 1) * limit,
-					limit: limit
-				});
-
-				if (articles.length === 0) {
-					this.status = 404;
-					this.body = "没有更多的内容了";
-					return ;
-				}
-
-				this.body = articles;
+				this.body = {
+					sort: sort
+				};
+				// var limit = body.limit;
+				// var page = body.page;
+				//
+				// var articles = yield Article.findAll({
+				// 	order: ["id"],
+				// 	offset: (current - 1) * limit,
+				// 	limit: limit
+				// });
+				//
+				// if (articles.length === 0) {
+				// 	this.status = 404;
+				// 	this.body = "没有更多的内容了";
+				// 	return ;
+				// }
+				//
+				// this.body = articles;
 
 			}break;
 			case "html": {
