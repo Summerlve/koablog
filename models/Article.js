@@ -1,8 +1,10 @@
-var Sequelize = require("sequelize");
-var sequelize = global.sequelize;
-var User = require("./User");
+"use strict";
+let Sequelize = require("sequelize");
+let sequelize = global.sequelize;
+let User = require("./User");
+let moment = require("moment");
 
-var Article = sequelize.define("koablog_view_article", {
+let Article = sequelize.define("koablog_view_article", {
 	id: {
 		type: Sequelize.INTEGER(11),
 		allowNull: false,
@@ -14,7 +16,7 @@ var Article = sequelize.define("koablog_view_article", {
 		type: Sequelize.STRING(40),
 		allowNull: false,
 		unique: false,
-		field: "title"	
+		field: "title"
 	},
 	author: {
 		type: Sequelize.STRING(40),
@@ -37,9 +39,14 @@ var Article = sequelize.define("koablog_view_article", {
 		allowNull: false,
 		field: "createAt",
 		get: function () {
-			var createAt = this.getDataValue("createAt");
-			var time = [createAt.getFullYear(), createAt.getMonth() + 1, createAt.getDay() + 1].join("/"); 
-			return time;
+			// 时间处理就是个坑
+			let createAt = this.getDataValue("createAt");
+			// 转换成ISO 8601的时间字符串
+			createAt = createAt.toISOString();
+			// 用moment.js格式化成UTC＋8(东八区)
+			createAt = moment(createAt, "YYYY-MM-DD HH:mm:ss").format();
+			// 返回的createAt是字符串
+			return createAt;
 		}
 	}
 });

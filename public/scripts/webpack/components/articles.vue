@@ -38,10 +38,12 @@
                 var getting = $.ajax({
                     url: "/articles",
                     data: {
-                        sort: "-createAt"
+                        sort: "-createAt",
+                        limit: 5,
+                        offset: 0
                     },
-                    dataType: "json", // this is the 'Accepts' header field
-                    method: "GET" // this is http method
+                    dataType: "json", // set 'Accepts' header field
+                    method: "GET" // set http method
                 });
 
                 getting

@@ -1,29 +1,30 @@
-var router = require("koa-router")();
-var views = require("co-views");
-var parse = require("co-body");
-var User = require("../models/User");
-var MD5 = require("md5");
-var jwt = require("jsonwebtoken");
-var moment = require("moment");
+"use strict";
+let router = require("koa-router")();
+let views = require("co-views");
+let parse = require("co-body");
+let User = require("../models/User");
+let MD5 = require("md5");
+let jwt = require("jsonwebtoken");
+let moment = require("moment");
 
 // use redis to store token.
-var redisClient = global.redisClient;
+let redisClient = global.redisClient;
 
 // get the cert to decode or encode jwt.
-var cert = global.cert;
+let cert = global.cert;
 
 // get the view's path
-var viewsPath = global.path.views;
+let viewsPath = global.path.views;
 
 // render
-var render = views(viewsPath, {
+let render = views(viewsPath, {
 	map: {
 		html: "ejs"
 	}
 });
 
 // middlewares
-var getToken = require("../middlewares/getToken");
+let getToken = require("../middlewares/getToken");
 
 router
 	.get("/panel", function* (next) {
@@ -34,9 +35,9 @@ router
 
 router
 	.post("/authentication", function* (next) {
-		var body = yield parse.form(this);
+		let body = yield parse.form(this);
 
-		var user = yield User
+		let user = yield User
 							.find({
 								attributes: ["id", "username", "avatar", "pen_name"],
 								where: {
@@ -51,12 +52,13 @@ router
 			this.set("Cache-Control", "no-store");
 
 			// expires time is 7 days
-			var days = 7;
-			var seconds = days * 24 * 60 * 60
-			var expires = moment().add(seconds, "seconds").valueOf(); // this is unix timestamp
+			let days = 7;
+			let seconds = days * 24 * 60 * 60;
+			// this is unix timestamp with utc time
+			let expires = moment().utcOffset(8).add(seconds, "seconds").valueOf();
 
 			// create token
-			var token = jwt.sign({
+			let token = jwt.sign({
 				iss: user.id,
 				exp: expires
 			}, cert);
@@ -89,7 +91,7 @@ router
 		getToken,
 		function* (next) {
 			// 从上一个中间件中获取token。
-			var token = this.token;
+			let token = this.token;
 
 			// 在redis中删除这个token。
 			redisClient.del(token);

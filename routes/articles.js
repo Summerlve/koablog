@@ -1,20 +1,21 @@
-var router = require("koa-router")();
-var Article = require("../models/Article");
-var views = require("co-views");
-var parse = require("co-body");
+"use strict";
+let router = require("koa-router")();
+let Article = require("../models/Article");
+let views = require("co-views");
+let parse = require("co-body");
 
 // path
-var viewsPath = global.path.views;
+let viewsPath = global.path.views;
 // page
-var limit = 5;
+let limit = 5;
 // render
-var render = views(viewsPath, {
+let render = views(viewsPath, {
 	map: {
 		html: "ejs"
 	}
 });
 
-// redirect / to the /articles
+// redirect '/' to the '/articles'
 router
 	.redirect("/", "/articles");
 
@@ -24,36 +25,39 @@ router
 		switch (this.accepts("json", "html")) {
 			case "json": {
 				// 当请求json时
-				var sort = this.query.sort;
-				console.log(sort);
+				// 取得查询字符串中的key、value
+				let sort = this.query.sort;
+				let limit = this.query.limit;
+				let offset = this.query.offset;
 
-				this.body = {
-					sort: sort
-				};
-				// var limit = body.limit;
-				// var page = body.page;
-				//
-				// var articles = yield Article.findAll({
-				// 	order: ["id"],
-				// 	offset: (current - 1) * limit,
-				// 	limit: limit
-				// });
-				//
-				// if (articles.length === 0) {
-				// 	this.status = 404;
-				// 	this.body = "没有更多的内容了";
-				// 	return ;
-				// }
-				//
-				// this.body = articles;
+				let sign = sort.slice(0, 1); // get the sort's sign
+				let orderByWhat = sort.slice(1); // order by what
+
+				let sortingWay = sign === "+" ? "ASC" : "DESC";
+
+				let articles = yield Article.findAll({
+					order: [
+						[orderByWhat, sortingWay]
+					],
+					offset: offset,
+					limit: limit
+				});
+
+				if (articles.length === 0) {
+					this.status = 404;
+					this.body = "没有更多的内容了";
+					return ;
+				}
+
+				this.body = articles;
 
 			}break;
 			case "html": {
 				// 当请求html时
 				// page默认为1
-				var current = parseInt(this.query.page || 1, 10);
+				let current = parseInt(this.query.page || 1, 10);
 
-				var articles = yield Article.findAll({
+				let articles = yield Article.findAll({
 					order: ["id"],
 					offset: (current - 1) * limit,
 					limit: limit
@@ -65,10 +69,10 @@ router
 					return ;
 				}
 
-				var count = yield Article.count();
+				let count = yield Article.count();
 
-				var previous = current - 1;
-				var next_ = count - limit * current > 0 ? current + 1 : 0;
+				let previous = current - 1;
+				let next_ = count - limit * current > 0 ? current + 1 : 0;
 
 				this.body = yield render("/frontend/articles/articles", {
 					title: "Articles",
@@ -103,9 +107,9 @@ router
 		yield next;
 	})
 	.get("/articles/:id", function* (next) {
-		var id = parseInt(this.id, 10);
+		let id = parseInt(this.id, 10);
 
-		var article = yield Article.find({
+		let article = yield Article.find({
 			where: {
 				id: id
 			}
@@ -118,7 +122,7 @@ router
 		}
 
 		// 检测previous、next页面
-		var previous = yield Article.find({
+		let previous = yield Article.find({
 			order: [
 				["id", "DESC"]
 			],
@@ -130,7 +134,7 @@ router
 			limit: 1
 		});
 
-		var next_ = yield Article.find({
+		let next_ = yield Article.find({
 			order: ["id"],
 			where: {
 				id: {
