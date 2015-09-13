@@ -9,6 +9,7 @@
 			}
 		},
 		created: function () {
+			// hackthis
 			var self = this;
 
 			this.$on("login-succeed", function () {
@@ -20,6 +21,9 @@
 			});
 		},
 		ready: function () {
+			// hackthis
+			var self = this;
+
 			// check the token
 			if (!window.localStorage.getItem("token")) {
 				this.currentView = "authentication";

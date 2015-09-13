@@ -6,7 +6,7 @@
         <!--end of include head-->
     </head>
     <body style="padding-top: 70px;">
-        <component is="{{currentView}}"></component>
+        <component is="{{currentView}}" v-ref="currentView"></component>
         <!--import javascripts-->
         <%- include("../general/javascripts.html", undefined) %>
 		<!--end of import javascripts-->

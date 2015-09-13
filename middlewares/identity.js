@@ -1,29 +1,31 @@
-var MD5 = require("md5");
-var jwt = require("jsonwebtoken");
-var GroupToUser = require("../models/Group").GroupToUser;
-var cert = global.cert;
+"use strict";
+/* 识别group的中间件
+ * 将获取的group_id添加到context上
+ * this.groupId
+ */
+let MD5 = require("md5");
+let jwt = require("jsonwebtoken");
+let GroupToUser = require("../models/Group").GroupToUser;
+let cert = global.cert;
 
 // identity
 function* identity (next) {
-	// get token from http header field "authorization"
-	var token = this.get("authorization").split(" ")[1];
+	// get token from getToken middleware
+	let token = this.token;
 
-	if (!token) {
-		this.status = 401;
-		return ;
-	}
+	let decode = jwt.verify(token, cert);
+	let userId = decode.iss;
 
-	var decode = jwt.verify(token, cert);
-	var userId = decode.id;
-
-	var group = yield GroupToUser
+	let userGroup = yield GroupToUser
 							.find({
 								attributes: ["group_id"],
 								where: {
 									user_id: userId
 								}
 							});
-	this.groupId = group.group_id;
+
+	// 将groupId添加到context上
+	this.groupId = userGroup.group_id;
 
 	yield next;
 }

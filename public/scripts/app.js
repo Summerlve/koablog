@@ -46,11 +46,9 @@
 
 	Vue.options.debug = true;
 	var App = __webpack_require__(10);
-	var router = __webpack_require__(36);
 
 	$(function () {
 		var app = new App();
-		router.init();
 	});
 
 
@@ -84,6 +82,7 @@
 				}
 			},
 			created: function () {
+				// hackthis
 				var self = this;
 
 				this.$on("login-succeed", function () {
@@ -95,6 +94,9 @@
 				});
 			},
 			ready: function () {
+				// hackthis
+				var self = this;
+
 				// check the token
 				if (!window.localStorage.getItem("token")) {
 					this.currentView = "authentication";
@@ -231,6 +233,9 @@
 	                user: user
 	            };
 	        },
+	        ready: function () {
+	            this.$.links[0].$el.click(); // 默认navigation中的第一个项选中。
+	        },
 	        methods: {
 	            onClick: function (e) {
 	                // when one of classifications was clicked , change the status.
@@ -244,6 +249,7 @@
 	                // 通知panel
 	                this.$dispatch("classifications-changed", vm);
 
+	                // 移除其他的classifications的active类
 	                var cur = e.currentTarget;
 	                for (var i = 0; i < links.length; i++) {
 	                    var link = links[i].$el;
@@ -279,9 +285,6 @@
 	                        alert("退出失败");
 	                    });
 	            }
-	        },
-	        ready: function () {
-	            this.$.links[0].$el.click(); // 默认navigation中的第一个项选中。
 	        }
 	    };
 
@@ -316,6 +319,9 @@
 	                self.currentView = viewName;
 	            });
 	        },
+	        ready: function (){
+	                
+	        },
 	        components: {
 	            articles: __webpack_require__(22),
 	            authors: __webpack_require__(28),
@@ -338,11 +344,14 @@
 	module.exports = {
 	        data: function () {
 	            return {
+	                recentArticles: [
 
+	                ]
 	            };
 	        },
 	        methods: {
-	            recentArticles: function (e) {
+	            getRecentArticles: function (e) {
+	                var self = this;
 	                // get the recent 5 articles.
 	                var getting = $.ajax({
 	                    url: "/articles",
@@ -357,7 +366,8 @@
 
 	                getting
 	                    .done(function (data) {
-	                        console.dir(data);
+	                        self.recentArticles = data;
+	                        self.$emit("recentArticlesLoaded");
 	                    })
 	                    .fail(function (error) {
 	                        console.log(error);
@@ -365,10 +375,26 @@
 	            }
 	        },
 	        created: function () {
+	            this.getRecentArticles();
+	        },
+	        ready: function () {
 
 	        },
 	        components: {
-	            editor: __webpack_require__(24)
+	            editor: __webpack_require__(24),
+	            recentArticleItem: __webpack_require__(38)
+	        },
+	        filters: {
+	            timeFormat: function (value) {
+	                var time = new Date(value);
+	                var timeString = [
+	                    time.getFullYear(),
+	                    time.getMonth() + 1,
+	                    time.getDate()
+	                ].join("-");
+
+	                return timeString;
+	            }
 	        }
 	    };
 
@@ -458,7 +484,7 @@
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container\">\n        <div class=\"btn-group-vertical\" role=\"group\" aria-label=\"Vertical button group\">\n            <button\n                v-on=\"click: recentArticles\"\n                type=\"button\"\n                class=\"btn btn-default\">\n                Recent 5\n            </button>\n            <button\n                type=\"button\"\n                class=\"btn btn-default\"\n                data-toggle=\"modal\"\n                data-target=\"#new-article-modal\">\n                New\n            </button>\n            <button\n                type=\"button\"\n                class=\"btn btn-default\">\n                Button\n            </button>\n        </div>\n\n        <editor></editor>\n    </div>";
+	module.exports = "<div class=\"container contents-articles-container\">\n        <div class=\"row\">\n            <div class=\"col-md-2\">\n                <div class=\"btn-group-vertical btn-group-sm\" role=\"group\" aria-label=\"Vertical button group\">\n                    <button\n                        v-on=\"click: getRecentArticles\"\n                        id=\"getRecentArticles\"\n                        class=\"btn btn-default\"\n                        type=\"button\">\n                        Recent 5\n                    </button>\n                    <button\n                        id=\"new\"\n                        class=\"btn btn-default\"\n                        data-toggle=\"modal\"\n                        data-target=\"#new-article-modal\"\n                        type=\"button\">\n                        New\n                    </button>\n                    <button\n                        type=\"button\"\n                        class=\"btn btn-default\">\n                        Button\n                    </button>\n                </div>\n            </div>\n\n            <!-- recent 5 articles -->\n            <div class=\"col-md-9\">\n                <div class=\"row\">\n                    <div class=\"col-md-5\">\n                        <recent-article-item\n                            wait-for=\"recent-articles-loaded\"\n                            v-repeat=\"article in recentArticles\">\n                        </recent-article-item>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <editor></editor>\n    </div>";
 
 /***/ },
 /* 28 */
@@ -517,20 +543,32 @@
 	module.exports = "<div>\n        <navigation v-ref=\"navigation\"></navigation>\n        <contents v-ref=\"content\"></contents>\n    </div>";
 
 /***/ },
-/* 36 */
+/* 36 */,
+/* 37 */,
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(39)
+	module.exports.template = __webpack_require__(40)
+
+
+/***/ },
+/* 39 */
 /***/ function(module, exports) {
 
-	var router = Router({
-	    "/authors": function () {
+	module.exports = {
+	        methods: {
+	            onClick: function (e) {
+	                
+	            }
+	        }
+	    };
 
-	    },
-	    "/articles": function () {
+/***/ },
+/* 40 */
+/***/ function(module, exports) {
 
-	    }
-	});
-
-	module.exports = router;
-
+	module.exports = "<div class=\"media\">\n        <div class=\"media-body\">\n            <h4 class=\"media-heading\">\n                <span v-text=\"article.title\"></span>\n                <span v-text=\"article.tag\"></span>\n                <span v-text=\"article.createAt | timeFormat\"></span>\n            </h4>\n            <span v-text=\"article.author\"></span>\n        </div>\n        <div class=\"media-right media-middle\">\n            <button\n                v-on=\"click: onClick\"\n                type=\"button\"\n                class=\"btn btn-default btn-xs\">\n                <span class=\"glyphicon glyphicon-option-horizontal\" aria-hidden=\"true\"></span>\n            </button>\n        </div>\n    </div>";
 
 /***/ }
 /******/ ]);

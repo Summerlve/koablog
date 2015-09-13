@@ -1,7 +1,8 @@
-var Sequelize = require("sequelize");
-var sequelize = global.sequelize;
+"use strict";
+let Sequelize = require("sequelize");
+let sequelize = global.sequelize;
 
-var Group = sequelize.define("koablog_group", {
+let Group = sequelize.define("koablog_group", {
 	id: {
 		type: Sequelize.INTEGER(11),
 		primaryKey: true,
@@ -17,25 +18,4 @@ var Group = sequelize.define("koablog_group", {
 	}
 });
 
-var GroupToUser = sequelize.define("koablog_group_to_user", {
-	id: {
-		type: Sequelize.INTEGER(11),
-		primaryKey: true,
-		allowNull: false,
-		unique: true,
-		field: "id"
-	},
-	group_id: {
-		type: Sequelize.INTEGER(11),
-		allowNull: false,
-		field: "group_id"
-	},
-	user_id: {
-		type: Sequelize.INTEGER(11),
-		allowNull: false,
-		field: "user_id"
-	}
-})
-
 module.exports.Group = Group;
-module.exports.GroupToUser = GroupToUser;

@@ -59,6 +59,9 @@
                 user: user
             };
         },
+        ready: function () {
+            this.$.links[0].$el.click(); // 默认navigation中的第一个项选中。
+        },
         methods: {
             onClick: function (e) {
                 // when one of classifications was clicked , change the status.
@@ -72,6 +75,7 @@
                 // 通知panel
                 this.$dispatch("classifications-changed", vm);
 
+                // 移除其他的classifications的active类
                 var cur = e.currentTarget;
                 for (var i = 0; i < links.length; i++) {
                     var link = links[i].$el;
@@ -107,9 +111,6 @@
                         alert("退出失败");
                     });
             }
-        },
-        ready: function () {
-            this.$.links[0].$el.click(); // 默认navigation中的第一个项选中。
         }
     };
 </script>

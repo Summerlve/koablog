@@ -1,8 +1,9 @@
+"use strict";
 /*	database config
  *	use Sequelize ORM
  */
-var Sequelize = require("sequelize");
-var sequelize = new Sequelize("koablog", "root", "123456cxzse$", {
+let Sequelize = require("sequelize");
+let sequelize = new Sequelize("koablog", "root", "123456cxzse$", {
 	host: "localhost",
 	dialect: "mysql",
 	port: 3306,
@@ -23,18 +24,20 @@ global.sequelize = sequelize;
  * use redis to store token
  */
 // create redis socket , and listening to the error event.
-var redis = require("redis");
-var host = "127.0.0.1";
-var redisClient = redis.createClient(6379, host, {});
+let redis = require("redis");
+let host = "127.0.0.1";
+let redisClient = redis.createClient(6379, host, {});
 
 redisClient.on("error", (error) => {
 	console.log("Redis Error", error);
 });
 
 // 对于redis实例方法的promise封装。
-redisClient.co_get = function (key) {
+// 明明用了ES6，可是node没实现，还是需要hackthis，艹。
+redisClient.co_exists = function (key) {
+	let self = this;
     return new Promise((resolve, reject) => {
-        this.get(key, (error, reply) => {
+        self.exists(key, (error, reply) => {
             if (error) reject(error);
             else resolve(reply);
         });
@@ -47,8 +50,8 @@ global.redisClient = redisClient;
  *	set views's path
  *	set static file's path
  */
-var path = require("path");
-var root = path.dirname(__dirname); // Located in the root directory of the project
+let path = require("path");
+let root = path.dirname(__dirname); // Located in the root directory of the project
 
 global.path = {};
 global.path.static = path.join(root, "public");

@@ -1,5 +1,5 @@
 # 记事
-	前端使用vuejs与bootstrap和jQuery和Vue.js
+	前端使用Bootstrap和jQuery和Vue.js，
 	后端使用koa、sequelize
 	数据库是mysql
 	restful设计
@@ -10,20 +10,15 @@
 /authors
 	GET		/authors?page=1 所有的作者，分页
 	GET		/authors/:authorName 某一个作者的资料
-	
+
 /articles
 	GET		/articles?page=1 所有的文章，分页
 	GET		/articles/:id 某一篇文章
 	POST 	/articles
-	
+
 /users
 	GET		/users/:user
 
 /groups
 
 /tags
-
-
-
-
-

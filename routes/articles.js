@@ -3,7 +3,6 @@ let router = require("koa-router")();
 let Article = require("../models/Article");
 let views = require("co-views");
 let parse = require("co-body");
-
 // path
 let viewsPath = global.path.views;
 // page
@@ -14,6 +13,9 @@ let render = views(viewsPath, {
 		html: "ejs"
 	}
 });
+
+// middlewares
+let getToken = require("../middlewares/getToken");
 
 // redirect '/' to the '/articles'
 router
@@ -153,5 +155,24 @@ router
 			}
 		});
 	});
+
+// add new article
+router
+	.post(
+		"/articles",
+		getToken,
+		function* (next) {
+
+		}
+	);
+
+router
+	.delete(
+		"/articles",
+		getToken,
+		function* (next) {
+			
+		}
+	);
 
 module.exports = router.routes();

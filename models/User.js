@@ -1,7 +1,8 @@
-var Sequelize = require("sequelize");
-var sequelize = global.sequelize;
+"use strict";
+let Sequelize = require("sequelize");
+let sequelize = global.sequelize;
 
-var User = sequelize.define("koablog_user", {
+let User = sequelize.define("koablog_user", {
 	id: {
 		type: Sequelize.INTEGER(11),
 		allowNull: false,
@@ -13,7 +14,7 @@ var User = sequelize.define("koablog_user", {
 		type: Sequelize.STRING(40),
 		allowNull: false,
 		unique: true,
-		field: "username"	
+		field: "username"
 	},
 	password: {
 		type: Sequelize.STRING(40),
@@ -39,11 +40,10 @@ var User = sequelize.define("koablog_user", {
 		unique: false,
 		field: "introduce"
 	},
-	token: {
-		type: Sequelize.STRING(255),
-		allowNull: true,
-		unique: true,
-		field: "token"
+	group_id: {
+		type: Sequelize.INTEGER(11),
+		allowNull: false,
+		field: "group_id"
 	}
 });
 

@@ -16,6 +16,9 @@
                 self.currentView = viewName;
             });
         },
+        ready: function (){
+                
+        },
         components: {
             articles: require("./articles.vue"),
             authors: require("./authors.vue"),
