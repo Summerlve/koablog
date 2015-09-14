@@ -9,12 +9,21 @@
             <span v-text="article.author"></span>
         </div>
         <div class="media-right media-middle">
-            <button
-                v-on="click: onClick"
-                type="button"
-                class="btn btn-default btn-xs">
-                <span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span>
-            </button>
+            <div class="dropdown">
+                <button
+                    v-on="click: onClick"
+                    type="button"
+                    class="btn btn-default btn-xs dropdown-toggle"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Action</a></li>
+                    <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li><a href="#">Separated link</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -23,7 +32,7 @@
     module.exports = {
         methods: {
             onClick: function (e) {
-                
+
             }
         }
     };

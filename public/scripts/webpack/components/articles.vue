@@ -19,9 +19,10 @@
                         New
                     </button>
                     <button
+                        v-on="click: myArticles"
                         type="button"
                         class="btn btn-default">
-                        Button
+                        我的文章
                     </button>
                 </div>
             </div>
@@ -31,8 +32,9 @@
                 <div class="row">
                     <div class="col-md-5">
                         <recent-article-item
+                            v-show="recentArticles.isShow"
                             wait-for="recent-articles-loaded"
-                            v-repeat="article in recentArticles">
+                            v-repeat="article in recentArticles.data">
                         </recent-article-item>
                     </div>
                 </div>
@@ -46,9 +48,10 @@
     module.exports = {
         data: function () {
             return {
-                recentArticles: [
-
-                ]
+                recentArticles: {
+                    data: [],
+                    isShow: true
+                }
             };
         },
         methods: {
@@ -68,15 +71,24 @@
 
                 getting
                     .done(function (data) {
-                        self.recentArticles = data;
+                        self.recentArticles.data = data;
                         self.$emit("recentArticlesLoaded");
                     })
                     .fail(function (error) {
                         console.log(error);
                     });
+
+                // 展现recentArticles区域
+                this.$data.recentArticles.isShow = true;
+            },
+            myArticles: function (e) {
+                // 隐藏recentsArticles区域
+                this.$data.recentArticles.isShow = false;
+                // 展现我的文章区域
             }
         },
         created: function () {
+            // 在创建组建实例的时候，获取最近5篇文章的数据
             this.getRecentArticles();
         },
         ready: function () {

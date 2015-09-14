@@ -344,9 +344,10 @@
 	module.exports = {
 	        data: function () {
 	            return {
-	                recentArticles: [
-
-	                ]
+	                recentArticles: {
+	                    data: [],
+	                    isShow: true
+	                }
 	            };
 	        },
 	        methods: {
@@ -366,15 +367,24 @@
 
 	                getting
 	                    .done(function (data) {
-	                        self.recentArticles = data;
+	                        self.recentArticles.data = data;
 	                        self.$emit("recentArticlesLoaded");
 	                    })
 	                    .fail(function (error) {
 	                        console.log(error);
 	                    });
+
+	                // 展现recentArticles区域
+	                this.$data.recentArticles.isShow = true;
+	            },
+	            myArticles: function (e) {
+	                // 隐藏recentsArticles区域
+	                this.$data.recentArticles.isShow = false;
+	                // 展现我的文章区域
 	            }
 	        },
 	        created: function () {
+	            // 在创建组建实例的时候，获取最近5篇文章的数据
 	            this.getRecentArticles();
 	        },
 	        ready: function () {
@@ -484,7 +494,7 @@
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container contents-articles-container\">\n        <div class=\"row\">\n            <div class=\"col-md-2\">\n                <div class=\"btn-group-vertical btn-group-sm\" role=\"group\" aria-label=\"Vertical button group\">\n                    <button\n                        v-on=\"click: getRecentArticles\"\n                        id=\"getRecentArticles\"\n                        class=\"btn btn-default\"\n                        type=\"button\">\n                        Recent 5\n                    </button>\n                    <button\n                        id=\"new\"\n                        class=\"btn btn-default\"\n                        data-toggle=\"modal\"\n                        data-target=\"#new-article-modal\"\n                        type=\"button\">\n                        New\n                    </button>\n                    <button\n                        type=\"button\"\n                        class=\"btn btn-default\">\n                        Button\n                    </button>\n                </div>\n            </div>\n\n            <!-- recent 5 articles -->\n            <div class=\"col-md-9\">\n                <div class=\"row\">\n                    <div class=\"col-md-5\">\n                        <recent-article-item\n                            wait-for=\"recent-articles-loaded\"\n                            v-repeat=\"article in recentArticles\">\n                        </recent-article-item>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <editor></editor>\n    </div>";
+	module.exports = "<div class=\"container contents-articles-container\">\n        <div class=\"row\">\n            <div class=\"col-md-2\">\n                <div class=\"btn-group-vertical btn-group-sm\" role=\"group\" aria-label=\"Vertical button group\">\n                    <button\n                        v-on=\"click: getRecentArticles\"\n                        id=\"getRecentArticles\"\n                        class=\"btn btn-default\"\n                        type=\"button\">\n                        Recent 5\n                    </button>\n                    <button\n                        id=\"new\"\n                        class=\"btn btn-default\"\n                        data-toggle=\"modal\"\n                        data-target=\"#new-article-modal\"\n                        type=\"button\">\n                        New\n                    </button>\n                    <button\n                        v-on=\"click: myArticles\"\n                        type=\"button\"\n                        class=\"btn btn-default\">\n                        我的文章\n                    </button>\n                </div>\n            </div>\n\n            <!-- recent 5 articles -->\n            <div class=\"col-md-9\">\n                <div class=\"row\">\n                    <div class=\"col-md-5\">\n                        <recent-article-item\n                            v-show=\"recentArticles.isShow\"\n                            wait-for=\"recent-articles-loaded\"\n                            v-repeat=\"article in recentArticles.data\">\n                        </recent-article-item>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <editor></editor>\n    </div>";
 
 /***/ },
 /* 28 */
@@ -559,7 +569,7 @@
 	module.exports = {
 	        methods: {
 	            onClick: function (e) {
-	                
+
 	            }
 	        }
 	    };
@@ -568,7 +578,7 @@
 /* 40 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"media\">\n        <div class=\"media-body\">\n            <h4 class=\"media-heading\">\n                <span v-text=\"article.title\"></span>\n                <span v-text=\"article.tag\"></span>\n                <span v-text=\"article.createAt | timeFormat\"></span>\n            </h4>\n            <span v-text=\"article.author\"></span>\n        </div>\n        <div class=\"media-right media-middle\">\n            <button\n                v-on=\"click: onClick\"\n                type=\"button\"\n                class=\"btn btn-default btn-xs\">\n                <span class=\"glyphicon glyphicon-option-horizontal\" aria-hidden=\"true\"></span>\n            </button>\n        </div>\n    </div>";
+	module.exports = "<div class=\"media\">\n        <div class=\"media-body\">\n            <h4 class=\"media-heading\">\n                <span v-text=\"article.title\"></span>\n                <span v-text=\"article.tag\"></span>\n                <span v-text=\"article.createAt | timeFormat\"></span>\n            </h4>\n            <span v-text=\"article.author\"></span>\n        </div>\n        <div class=\"media-right media-middle\">\n            <div class=\"dropdown\">\n                <button\n                    v-on=\"click: onClick\"\n                    type=\"button\"\n                    class=\"btn btn-default btn-xs dropdown-toggle\"\n                    data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"true\">\n                    <span class=\"glyphicon glyphicon-option-horizontal\" aria-hidden=\"true\"></span>\n                </button>\n                <ul class=\"dropdown-menu\">\n                    <li><a href=\"#\">Action</a></li>\n                    <li><a href=\"#\">Another action</a></li>\n                    <li><a href=\"#\">Something else here</a></li>\n                    <li><a href=\"#\">Separated link</a></li>\n                </ul>\n            </div>\n        </div>\n    </div>";
 
 /***/ }
 /******/ ]);
