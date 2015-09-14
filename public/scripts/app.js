@@ -368,6 +368,7 @@
 	                getting
 	                    .done(function (data) {
 	                        self.recentArticles.data = data;
+	                        // 触发recentArticlesLoaded事件后让dom进行渲染
 	                        self.$emit("recentArticlesLoaded");
 	                    })
 	                    .fail(function (error) {
@@ -384,7 +385,7 @@
 	            }
 	        },
 	        created: function () {
-	            // 在创建组建实例的时候，获取最近5篇文章的数据
+	            // 在创建组件实例的时候，获取最近5篇文章的数据
 	            this.getRecentArticles();
 	        },
 	        ready: function () {
