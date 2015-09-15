@@ -1,4 +1,5 @@
 *{
+	/*字体默认为14px*/
 	font-size: 14px;
 }
 
@@ -211,8 +212,18 @@ a:hover{
 	padding: 0;
 }
 
-.contents-articles-container{
-	margin-top: 30px;
+/*与navbar增加30px的距离*/
+.components-contents-articles{
+	margin-top: 10px;
+}
+
+.components-contents-articles-articleList{
+	margin-top: 28px;
+}
+
+/*将bootstrap自带的border-top弄掉*/
+.components-contents-articles-articleList td{
+	border-top-style: none !important;
 }
 
  /*

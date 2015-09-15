@@ -3,6 +3,7 @@ let router = require("koa-router")();
 let Article = require("../models/Article");
 let views = require("co-views");
 let parse = require("co-body");
+
 // path
 let viewsPath = global.path.views;
 // page
@@ -31,13 +32,16 @@ router
 				let sort = this.query.sort;
 				let limit = this.query.limit;
 				let offset = this.query.offset;
+				//  指定作者，这是可选的
+				let author = this.query.author;
 
 				let sign = sort.slice(0, 1); // get the sort's sign
 				let orderByWhat = sort.slice(1); // order by what
 
-				let sortingWay = sign === "+" ? "ASC" : "DESC";
+				let sortingWay = sign === "+" ? "ASC" : "DESC"; // 确定升序还是降序
 
 				let articles = yield Article.findAll({
+					where: author ? {author: author} : void 0,
 					order: [
 						[orderByWhat, sortingWay]
 					],
@@ -52,7 +56,6 @@ router
 				}
 
 				this.body = articles;
-
 			}break;
 			case "html": {
 				// 当请求html时
@@ -171,7 +174,7 @@ router
 		"/articles",
 		getToken,
 		function* (next) {
-			
+
 		}
 	);
 

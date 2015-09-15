@@ -20,7 +20,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title" id="new-article-modal-title">
-                        Create a new article
+                        写一篇新的博客
                     </h4>
                 </div>
                 <div class="modal-body">
