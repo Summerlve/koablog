@@ -231,9 +231,22 @@ a:hover{
 	font-size: 40%;
 }
 
-/*覆盖bootstrap的.label的设置*/
+/*全局覆盖bootstrap的.label的设置*/
 .label{
 	display: inline-block !important;
+}
+
+/*修改文章操作的modal*/
+.components-contents-articles-articleList #article-item-modal{
+	padding-top: 40px;
+	padding-bottom: 40px;
+}
+
+#article-item-modal .modal-dialog{
+}
+
+#article-item-modal .modal-footer{
+	border-top: 0;
 }
 
  /*

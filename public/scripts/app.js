@@ -481,9 +481,11 @@
 	        },
 	        methods: {
 	            createNewArticle: function (e) {
+	                // 关闭新建文章的模态框
 	                this.modal.modal("hide");
 	            }
 	        },
+	        // 生命周期
 	        created: function () {
 	            // hackthis
 	            var self = this;
@@ -510,7 +512,7 @@
 	                self.content = e.editor.getData();
 	            });
 
-	            // 将modal添加到当前的组建实例上，以便于访问
+	            // 将modal添加到当前的组建实例上，以便于访问。
 	            this.modal = $("#new-article-modal");
 
 	            // repaire ckeditor inside bootstrap modals
@@ -629,7 +631,7 @@
 /* 44 */
 /***/ function(module, exports) {
 
-	module.exports = "<tr>\n        <td>\n            <div class=\"media\">\n                <div class=\"media-body\">\n                    <h3 class=\"media-heading\">\n                        <span v-text=\"article.title\" class=\"h3\"></span>&nbsp&nbsp\n                        <span v-text=\"'#' + article.tag\" class=\"label label-default\"></span>\n                    </h3>\n                    <h4>\n                        <span class=\"small\">By</span>\n                        <span v-text=\"article.author\" class=\"h4\"></span>\n                        <span class=\"small\">at</span>\n                        <span v-text=\"article.createAt | timeFormat\" class=\"\"></span>\n                    </h4>\n                </div>\n                <div class=\"media-right media-middle\">\n                    <div class=\"btn-group btn-group-xs\" role=\"group\">\n                      <button type=\"button\" class=\"btn btn-default\">Left</button>\n                    </div>\n                </div>\n            </div>\n        </td>\n    </tr>";
+	module.exports = "<tr>\n        <td>\n            <div class=\"media\">\n                <div class=\"media-body\">\n                    <h3 class=\"media-heading\">\n                        <span v-text=\"article.title\" class=\"h3\"></span>&nbsp&nbsp\n                        <span v-text=\"'#' + article.tag\" class=\"label label-default\"></span>\n                    </h3>\n                    <h4>\n                        <span class=\"small\">By</span>\n                        <span v-text=\"article.author\" class=\"h4\"></span>\n                        <span class=\"small\">at</span>\n                        <span v-text=\"article.createAt | timeFormat\" class=\"\"></span>\n                    </h4>\n                </div>\n                <div class=\"media-right media-middle\">\n                    <button type=\"button\" class=\"btn btn-default btn-sm\" data-toggle=\"modal\" data-target=\"#article-item-modal\">\n                        <span class=\"glyphicon glyphicon-option-horizontal\" aria-hidden=\"true\"></span>\n                    </button>\n                    <div class=\"modal fade\" id=\"article-item-modal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"article-item-modal-title\">\n                        <div class=\"modal-dialog\" role=\"document\">\n                            <div class=\"modal-content\">\n                                <div class=\"modal-header\">\n                                    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n                                    <h4 class=\"modal-title\" id=\"article-item-modal-title\">选择操作</h4>\n                                </div>\n                                <div class=\"modal-footer\">\n                                    <!-- <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button> -->\n                                    <button type=\"button\" class=\"btn btn-danger\">删除</button>\n                                    <button type=\"button\" class=\"btn btn-primary\">修改</button>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </td>\n    </tr>";
 
 /***/ }
 /******/ ]);

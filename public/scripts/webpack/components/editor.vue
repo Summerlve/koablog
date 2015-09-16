@@ -66,9 +66,11 @@
         },
         methods: {
             createNewArticle: function (e) {
+                // 关闭新建文章的模态框
                 this.modal.modal("hide");
             }
         },
+        // 生命周期
         created: function () {
             // hackthis
             var self = this;
@@ -95,7 +97,7 @@
                 self.content = e.editor.getData();
             });
 
-            // 将modal添加到当前的组建实例上，以便于访问
+            // 将modal添加到当前的组建实例上，以便于访问。
             this.modal = $("#new-article-modal");
 
             // repaire ckeditor inside bootstrap modals
