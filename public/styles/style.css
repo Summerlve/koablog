@@ -226,6 +226,16 @@ a:hover{
 	border-top-style: none !important;
 }
 
+.components-contents-articles-articleList .label{
+	/*缩小label的尺寸*/
+	font-size: 40%;
+}
+
+/*覆盖bootstrap的.label的设置*/
+.label{
+	display: inline-block !important;
+}
+
  /*
   *	mobile's style
   */

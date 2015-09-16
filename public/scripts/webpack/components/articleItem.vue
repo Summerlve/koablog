@@ -3,18 +3,21 @@
         <td>
             <div class="media">
                 <div class="media-body">
-                    <p class="media-heading">
-                        <span v-text="article.title" class="h3"></span>
-                        <span v-text="'#' + article.tag" class="label label-primary small"></span>
-                    </p>
-                    By <span v-text="article.author" class="h4"></span> at <span v-text="article.createAt | timeFormat" class="small"></span>
+                    <h3 class="media-heading">
+                        <span v-text="article.title" class="h3"></span>&nbsp&nbsp
+                        <span v-text="'#' + article.tag" class="label label-default"></span>
+                    </h3>
+                    <h4>
+                        <span class="small">By</span>
+                        <span v-text="article.author" class="h4"></span>
+                        <span class="small">at</span>
+                        <span v-text="article.createAt | timeFormat" class=""></span>
+                    </h4>
                 </div>
                 <div class="media-right media-middle">
-                    <!-- <div class="btn-group btn-group-xs" role="group">
+                    <div class="btn-group btn-group-xs" role="group">
                       <button type="button" class="btn btn-default">Left</button>
-                      <button type="button" class="btn btn-default">Middle</button>
-                      <button type="button" class="btn btn-default">Right</button>
-                    </div> -->
+                    </div>
                 </div>
             </div>
         </td>

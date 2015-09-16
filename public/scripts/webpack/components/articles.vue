@@ -21,7 +21,7 @@
             <div class="col-md-2 col-sm-3 col-xs-4 text-right">
                 <button
                     id="new"
-                    class="btn btn-default btn-sm "
+                    class="btn btn-default btn-sm"
                     data-toggle="modal"
                     data-target="#new-article-modal"
                     type="button">
@@ -46,11 +46,11 @@
         <div class="row" v-show="isMine">
             <div class="col-md-12">
                 <nav>
-  <ul class="pager">
-    <li class="previous"><a href="#"><span aria-hidden="true">&larr;</span> Older</a></li>
-    <li class="next"><a href="#">Newer <span aria-hidden="true">&rarr;</span></a></li>
-  </ul>
-</nav>
+                    <ul class="pager">
+                        <li><a href="#">Prev</a></li>
+                        <li><a href="#">Next</a></li>
+                    </ul>
+                </nav>
             </div>
         </div>
         <editor></editor>
@@ -74,7 +74,7 @@
                 // fuckthis
                 var self = this;
 
-                // 隐藏页面按钮
+                // 隐藏分页按钮
                 this.isMine = false;
 
                 // 取前5篇文章
@@ -109,13 +109,13 @@
                 // fuckthis
                 var self = this;
 
-                // 显示页面按钮
+                // 显示分页按钮
                 this.isMine = true;
 
                 // 获取我的文章数据，需要分页的，按照时间降序排序排列
                 var sort = "-createAt";
                 var page = 1; // 默认为第一页
-                var limit = 8; // 每页x篇文章
+                var limit = 5; // 每页x篇文章
 
                 // 获取token中的author
                 var token = JSON.parse(window.localStorage.getItem("token"));

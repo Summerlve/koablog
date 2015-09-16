@@ -12,7 +12,10 @@
             </div>
             <div class="collapse navbar-collapse" id="navigation">
                 <ul class="nav navbar-nav">
-                    <li v-on="click: onClick" v-ref="links" v-repeat="item in classifications">
+                    <li
+                        v-on="click: onClick"
+                        v-ref="links"
+                        v-repeat="item in classifications">
                         <a v-attr="href: item.href" v-text="item.name"></a>
                     </li>
                 </ul>
@@ -44,7 +47,9 @@
 <script>
     module.exports = {
         data: function () {
-            var user =  JSON.parse(window.localStorage.getItem("token")).user;
+            // 从localStorage中取出token中的user信息
+            var user = JSON.parse(window.localStorage.getItem("token")).user;
+
             return {
                 classifications: [
                     // the index of 0 is the default.
