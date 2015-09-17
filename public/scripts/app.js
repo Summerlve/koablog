@@ -235,6 +235,7 @@
 	                user: user
 	            };
 	        },
+	        // 生命周期
 	        ready: function () {
 	            this.$.links[0].$el.click(); // 默认navigation中的第一个项选中。
 	        },
@@ -261,6 +262,9 @@
 	                        cur.setAttribute("class", "active");
 	                    }
 	                }
+
+	                // 在点击classification之后collapse自动收起
+	                $("#navigation").collapse("hide");
 	            },
 	            logOut: function (e) {
 	                var self = this;
@@ -294,7 +298,7 @@
 /* 19 */
 /***/ function(module, exports) {
 
-	module.exports = "<nav class=\"navbar navbar-default navbar-fixed-top\">\n        <div class=\"container\">\n            <div class=\"navbar-header\">\n                <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navigation\" aria-expanded=\"false\">\n                    <span class=\"sr-only\">Toggle navigation</span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                </button>\n                <a class=\"navbar-brand\" href=\"/articles\">Home</a>\n            </div>\n            <div class=\"collapse navbar-collapse\" id=\"navigation\">\n                <ul class=\"nav navbar-nav\">\n                    <li\n                        v-on=\"click: onClick\"\n                        v-ref=\"links\"\n                        v-repeat=\"item in classifications\">\n                        <a v-attr=\"href: item.href\" v-text=\"item.name\"></a>\n                    </li>\n                </ul>\n                <ul class=\"nav navbar-nav navbar-right\">\n                    <li class=\"dropdown\">\n                        <a\n                            class=\"dropdown-toggle\"\n                            data-toggle=\"dropdown\"\n                            role=\"button\"\n                            aria-haspopup=\"true\"\n                            aria-expanded=\"false\">\n                            <span v-text=\"user.pen_name\"></span>\n                            <span class=\"caret\"></span>\n                        </a>\n                        <ul class=\"dropdown-menu\">\n                            <li v-repeat=\"menu in dropdownMenu\">\n                                <a v-attr=\"href: menu.href\" v-text=\"menu.name\"></a>\n                            </li>\n                            <li role=\"separator\" class=\"divider\"></li>\n                            <li><a v-on=\"click: logOut\">Log out</a></li>\n                        </ul>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </nav>";
+	module.exports = "<nav class=\"navbar navbar-default navbar-fixed-top\">\n        <div class=\"container\">\n            <div class=\"navbar-header\">\n                <button\n                    type=\"button\"\n                    class=\"navbar-toggle collapsed\"\n                    data-toggle=\"collapse\"\n                    data-target=\"#navigation\"\n                    aria-expanded=\"false\">\n                    <span class=\"sr-only\">Toggle navigation</span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                    <span class=\"icon-bar\"></span>\n                </button>\n                <a class=\"navbar-brand\" href=\"/articles\">Home</a>\n            </div>\n            <div class=\"collapse navbar-collapse\" id=\"navigation\">\n                <ul class=\"nav navbar-nav\">\n                    <li\n                        v-on=\"click: onClick\"\n                        v-ref=\"links\"\n                        v-repeat=\"item in classifications\">\n                        <a v-attr=\"href: item.href\" v-text=\"item.name\"></a>\n                    </li>\n                </ul>\n                <ul class=\"nav navbar-nav navbar-right\">\n                    <li class=\"dropdown\">\n                        <a\n                            class=\"dropdown-toggle\"\n                            data-toggle=\"dropdown\"\n                            role=\"button\"\n                            aria-haspopup=\"true\"\n                            aria-expanded=\"false\">\n                            <span v-text=\"user.pen_name\"></span>\n                            <span class=\"caret\"></span>\n                        </a>\n                        <ul class=\"dropdown-menu\">\n                            <li v-repeat=\"menu in dropdownMenu\">\n                                <a v-attr=\"href: menu.href\" v-text=\"menu.name\"></a>\n                            </li>\n                            <li role=\"separator\" class=\"divider\"></li>\n                            <li><a v-on=\"click: logOut\">Log out</a></li>\n                        </ul>\n                    </li>\n                </ul>\n            </div>\n        </div>\n    </nav>";
 
 /***/ },
 /* 20 */
@@ -351,8 +355,28 @@
 	                    data: []
 	                },
 	                isMine: false,
-	                panelHeading: ""
+	                panelHeading: "",
+	                page: 1, // 我的文章默认为第一页
+	                limit: 6, // 我的文章每页有x篇文章
+	                // leftDisabled: true,
+	                // rightDisabled: false
 	            };
+	        },
+	        computed: function () {
+	            return {
+	                leftDisabled: {
+	                    cache: false,
+	                    get: function () {
+	                        return this.page - 1 < 0 ? true : false;
+	                    }
+	                },
+	                rightDisabled: {
+	                    cache: false,
+	                    get: function () {
+	                        return this.$data.articleList.length < this.$data.limit ? true : false;
+	                    }
+	                }
+	            }
 	        },
 	        // 组件实例方法
 	        methods: {
@@ -405,8 +429,8 @@
 
 	                // 获取我的文章数据，需要分页的，按照时间降序排序排列
 	                var sort = "-createAt";
-	                var page = 1; // 默认为第一页
-	                var limit = 6; // 每页x篇文章
+	                var page = this.page; // 获取文章的页
+	                var limit = this.limit; // 每页x篇文章
 
 	                // 获取token中的author
 	                var token = JSON.parse(window.localStorage.getItem("token"));
@@ -432,6 +456,26 @@
 	                    .fail(function (error) {
 	                        console.log(error);
 	                    });
+	            },
+	            pageLeft: function (e) {
+	                // 我的文章的上下翻页
+	                if (this.page === 1) {
+	                    this.$data.leftDisabled = true;
+	                } else {
+	                    this.$data.page --;
+	                    this.getMyArticles();
+	                }
+	            },
+	            pageRight: function (e) {
+	                var length = this.$data.articleList.data.length;
+	                var limit = this.limit;
+
+	                if (length < limit) {
+	                    this.$data.rightDisabled = true;
+	                } else {
+	                    this.$data.page ++;
+	                    this.getMyArticles();
+	                }
 	            }
 	        },
 	        // 生命周期
@@ -520,7 +564,7 @@
 	                self.content = e.editor.getData();
 	            });
 
-	            // 将modal添加到当前的组建实例上，以便于访问。
+	            // 将modal添加到当前的组件实例上，以便于访问。
 	            this.modal = $("#new-article-modal");
 
 	            // repaire ckeditor inside bootstrap modals
@@ -551,7 +595,7 @@
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container components-contents-articles-btns\">\n        <div class=\"row\">\n            <div class=\"col-md-10 col-sm-9 col-xs-8\">\n                <div class=\"btn-group btn-group-sm\" role=\"group\" aria-label=\"Vertical button group\">\n                    <button\n                        v-on=\"click: getRecentArticles\"\n                        id=\"getRecentArticles\"\n                        class=\"btn btn-default\"\n                        type=\"button\">\n                        最近5篇\n                    </button>\n                    <button\n                        v-on=\"click: getMyArticles\"\n                        type=\"button\"\n                        class=\"btn btn-default\">\n                        我的文章\n                    </button>\n                </div>\n            </div>\n            <div class=\"col-md-2 col-sm-3 col-xs-4 text-right\">\n                <button\n                    id=\"new\"\n                    class=\"btn btn-default btn-sm\"\n                    data-toggle=\"modal\"\n                    data-target=\"#new-article-modal\"\n                    type=\"button\">\n                    写博客\n                </button>\n            </div>\n        </div>\n        <!-- articleList -->\n        <div class=\"row components-contents-articles-articleList\">\n            <div class=\"col-md-12\">\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <div class=\"row\">\n                            <div class=\"col-md-10 col-sm-9 col-xs-8\">\n                                <span v-text=\"panelHeading\" class=\"h4\"></span>\n                            </div>\n                            <div\n                                v-show=\"isMine\"\n                                class=\"col-md-2 col-sm-3 col-xs-4 text-right\">\n                                <div class=\"btn-group btn-group-xs\" role=\"group\">\n                                    <button type=\"button\" class=\"btn btn-default\">\n                                        <span class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span>\n                                    </button>\n                                    <button type=\"button\" class=\"btn btn-default\">\n                                        <span class=\"glyphicon glyphicon-menu-right\" aria-hidden=\"true\"></span>\n                                    </button>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                    <table class=\"table table-hover table-condensed\">\n                        <tbody>\n                            <tr\n                                is-mine=\"{{isMine}}\"\n                                v-component=\"article-item\"\n                                wait-for=\"get-article-data\"\n                                v-repeat=\"article in articleList.data\">\n                            </tr>\n                        </tbody>\n                    </table>\n                </div>\n            </div>\n        </div>\n        <editor></editor>\n    </div>";
+	module.exports = "<div class=\"container components-contents-articles-btns\">\n        <div class=\"row\">\n            <div class=\"col-md-10 col-sm-9 col-xs-8\">\n                <div class=\"btn-group btn-group-sm\" role=\"group\" aria-label=\"Vertical button group\">\n                    <button\n                        v-on=\"click: getRecentArticles\"\n                        id=\"getRecentArticles\"\n                        class=\"btn btn-default\"\n                        type=\"button\">\n                        最近5篇\n                    </button>\n                    <button\n                        v-on=\"click: getMyArticles\"\n                        type=\"button\"\n                        class=\"btn btn-default\">\n                        我的文章\n                    </button>\n                </div>\n            </div>\n            <div class=\"col-md-2 col-sm-3 col-xs-4 text-right\">\n                <button\n                    id=\"new\"\n                    class=\"btn btn-default btn-sm\"\n                    data-toggle=\"modal\"\n                    data-target=\"#new-article-modal\"\n                    type=\"button\">\n                    写博客\n                </button>\n            </div>\n        </div>\n        <!-- articleList -->\n        <div class=\"row components-contents-articles-articleList\">\n            <div class=\"col-md-12\">\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <div class=\"row\">\n                            <div class=\"col-md-10 col-sm-9 col-xs-8\">\n                                <span v-text=\"panelHeading\" class=\"h4\"></span>\n                            </div>\n                            <div\n                                v-show=\"isMine\"\n                                class=\"col-md-2 col-sm-3 col-xs-4 text-right\">\n                                <div class=\"btn-group btn-group-xs\" role=\"group\">\n                                    <button\n                                        v-attr=\"disabled: leftDisabled\"\n                                        v-on=\"click: pageLeft\"\n                                        type=\"button\"\n                                        class=\"btn btn-default\">\n                                        <span class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span>\n                                    </button>\n                                    <button\n                                        v-attr=\"disabled: rightDisabled\"\n                                        v-on=\"click: pageRight\"\n                                        type=\"button\"\n                                        class=\"btn btn-default\">\n                                        <span class=\"glyphicon glyphicon-menu-right\" aria-hidden=\"true\"></span>\n                                    </button>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                    <table class=\"table table-hover table-condensed\">\n                        <tbody>\n                            <tr\n                                is-mine=\"{{isMine}}\"\n                                v-component=\"article-item\"\n                                wait-for=\"get-article-data\"\n                                v-repeat=\"article in articleList.data\">\n                            </tr>\n                        </tbody>\n                    </table>\n                </div>\n            </div>\n        </div>\n        <editor></editor>\n    </div>";
 
 /***/ },
 /* 28 */
@@ -640,7 +684,7 @@
 /* 44 */
 /***/ function(module, exports) {
 
-	module.exports = "<tr>\n        <td>\n            <div class=\"media\">\n                <div class=\"media-body\">\n                    <h3 class=\"media-heading\">\n                        <span v-text=\"article.title\" class=\"h3\"></span>&nbsp&nbsp\n                        <span v-text=\"'#' + article.tag\" class=\"label label-default\"></span>\n                    </h3>\n                    <h4>\n                        <span class=\"small\">By</span>\n                        <span v-text=\"article.author\" class=\"h4\"></span>\n                        <span class=\"small\">at</span>\n                        <span v-text=\"article.createAt | timeFormat\" class=\"\"></span>\n                    </h4>\n                </div>\n            </div>\n        </td>\n    </tr>";
+	module.exports = "<tr>\n        <td>\n            <div class=\"media\">\n                <div class=\"media-body\">\n                    <h3 class=\"media-heading\">\n                        <span v-text=\"article.title\" class=\"h3\"></span>&nbsp&nbsp\n                        <span v-text=\"'#' + article.tag\" class=\"label label-default\"></span>\n                    </h3>\n                    <h4>\n                        <span class=\"small\">By</span>\n                        <span v-text=\"article.author\" class=\"h4\"></span>\n                        <span class=\"small\">at</span>\n                        <span v-text=\"article.createAt | timeFormat\" class=\"\"></span>\n                        {{isMine}}\n                    </h4>\n                </div>\n            </div>\n        </td>\n    </tr>";
 
 /***/ }
 /******/ ]);

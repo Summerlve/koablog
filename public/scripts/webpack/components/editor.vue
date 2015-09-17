@@ -97,7 +97,7 @@
                 self.content = e.editor.getData();
             });
 
-            // 将modal添加到当前的组建实例上，以便于访问。
+            // 将modal添加到当前的组件实例上，以便于访问。
             this.modal = $("#new-article-modal");
 
             // repaire ckeditor inside bootstrap modals

@@ -2,7 +2,12 @@
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation" aria-expanded="false">
+                <button
+                    type="button"
+                    class="navbar-toggle collapsed"
+                    data-toggle="collapse"
+                    data-target="#navigation"
+                    aria-expanded="false">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -64,6 +69,7 @@
                 user: user
             };
         },
+        // 生命周期
         ready: function () {
             this.$.links[0].$el.click(); // 默认navigation中的第一个项选中。
         },
@@ -90,6 +96,9 @@
                         cur.setAttribute("class", "active");
                     }
                 }
+
+                // 在点击classification之后collapse自动收起
+                $("#navigation").collapse("hide");
             },
             logOut: function (e) {
                 var self = this;

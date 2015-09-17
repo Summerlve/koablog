@@ -12,6 +12,7 @@
                         <span v-text="article.author" class="h4"></span>
                         <span class="small">at</span>
                         <span v-text="article.createAt | timeFormat" class=""></span>
+                        {{isMine}}
                     </h4>
                 </div>
             </div>

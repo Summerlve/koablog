@@ -42,10 +42,18 @@
                                 v-show="isMine"
                                 class="col-md-2 col-sm-3 col-xs-4 text-right">
                                 <div class="btn-group btn-group-xs" role="group">
-                                    <button type="button" class="btn btn-default">
+                                    <button
+                                        v-attr="disabled: leftDisabled"
+                                        v-on="click: pageLeft"
+                                        type="button"
+                                        class="btn btn-default">
                                         <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
                                     </button>
-                                    <button type="button" class="btn btn-default">
+                                    <button
+                                        v-attr="disabled: rightDisabled"
+                                        v-on="click: pageRight"
+                                        type="button"
+                                        class="btn btn-default">
                                         <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
                                     </button>
                                 </div>
@@ -78,8 +86,28 @@
                     data: []
                 },
                 isMine: false,
-                panelHeading: ""
+                panelHeading: "",
+                page: 1, // 我的文章默认为第一页
+                limit: 6, // 我的文章每页有x篇文章
+                // leftDisabled: true,
+                // rightDisabled: false
             };
+        },
+        computed: function () {
+            return {
+                leftDisabled: {
+                    cache: false,
+                    get: function () {
+                        return this.page - 1 < 0 ? true : false;
+                    }
+                },
+                rightDisabled: {
+                    cache: false,
+                    get: function () {
+                        return this.$data.articleList.length < this.$data.limit ? true : false;
+                    }
+                }
+            }
         },
         // 组件实例方法
         methods: {
@@ -132,8 +160,8 @@
 
                 // 获取我的文章数据，需要分页的，按照时间降序排序排列
                 var sort = "-createAt";
-                var page = 1; // 默认为第一页
-                var limit = 6; // 每页x篇文章
+                var page = this.page; // 获取文章的页
+                var limit = this.limit; // 每页x篇文章
 
                 // 获取token中的author
                 var token = JSON.parse(window.localStorage.getItem("token"));
@@ -159,6 +187,26 @@
                     .fail(function (error) {
                         console.log(error);
                     });
+            },
+            pageLeft: function (e) {
+                // 我的文章的上下翻页
+                if (this.page === 1) {
+                    this.$data.leftDisabled = true;
+                } else {
+                    this.$data.page --;
+                    this.getMyArticles();
+                }
+            },
+            pageRight: function (e) {
+                var length = this.$data.articleList.data.length;
+                var limit = this.limit;
+
+                if (length < limit) {
+                    this.$data.rightDisabled = true;
+                } else {
+                    this.$data.page ++;
+                    this.getMyArticles();
+                }
             }
         },
         // 生命周期
