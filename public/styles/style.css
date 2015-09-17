@@ -105,7 +105,6 @@ a:hover{
 
 }
 
-
 .author-column{
 	/*给每一列添加margin-bootom*/
 	margin-bottom: 30px;
@@ -212,41 +211,24 @@ a:hover{
 	padding: 0;
 }
 
-/*与navbar增加30px的距离*/
-.components-contents-articles{
+/*与navbar有30px的距离*/
+.components-contents-articles-btns{
 	margin-top: 10px;
 }
 
+/*articleList与btns之间的距离*/
 .components-contents-articles-articleList{
-	margin-top: 28px;
+	margin-top: 32px;
 }
 
-/*将bootstrap自带的border-top弄掉*/
-.components-contents-articles-articleList td{
-	border-top-style: none !important;
-}
-
-.components-contents-articles-articleList .label{
-	/*缩小label的尺寸*/
-	font-size: 40%;
-}
-
-/*全局覆盖bootstrap的.label的设置*/
+/*全局覆盖bootstrap的.label的设置，bs官方提供的方法*/
 .label{
 	display: inline-block !important;
 }
 
-/*修改文章操作的modal*/
-.components-contents-articles-articleList #article-item-modal{
-	padding-top: 40px;
-	padding-bottom: 40px;
-}
-
-#article-item-modal .modal-dialog{
-}
-
-#article-item-modal .modal-footer{
-	border-top: 0;
+.components-contents-articles-articleList .label{
+	/*缩小label的尺寸*/
+	font-size: 40% !important;
 }
 
  /*

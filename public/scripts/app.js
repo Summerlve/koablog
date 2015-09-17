@@ -350,12 +350,15 @@
 	                articleList: {
 	                    data: []
 	                },
-	                isMine: false
+	                isMine: false,
+	                panelHeading: ""
 	            };
 	        },
 	        // 组件实例方法
 	        methods: {
 	            getRecentArticles: function (e) {
+	                // 获取此博客系统最近的5篇文章
+
 	                // fuckthis
 	                var self = this;
 
@@ -383,6 +386,7 @@
 	                getting
 	                    .done(function (data) {
 	                        self.articleList.data = data;
+	                        self.panelHeading = "最近5篇";
 	                        // 只需要这里触发就可以了，getMyArticles不需要触发的。
 	                        self.$emit("getArticleData");
 	                    })
@@ -391,6 +395,8 @@
 	                    });
 	            },
 	            getMyArticles: function (e) {
+	                // 获取我的文章
+
 	                // fuckthis
 	                var self = this;
 
@@ -400,7 +406,7 @@
 	                // 获取我的文章数据，需要分页的，按照时间降序排序排列
 	                var sort = "-createAt";
 	                var page = 1; // 默认为第一页
-	                var limit = 5; // 每页x篇文章
+	                var limit = 6; // 每页x篇文章
 
 	                // 获取token中的author
 	                var token = JSON.parse(window.localStorage.getItem("token"));
@@ -421,6 +427,7 @@
 	                getting
 	                    .done(function (data) {
 	                        self.articleList.data = data;
+	                        self.panelHeading = "我的文章";
 	                    })
 	                    .fail(function (error) {
 	                        console.log(error);
@@ -431,6 +438,7 @@
 	        created: function () {
 	            // 在创建组件实例的时候，获取最近5篇文章的数据
 	            this.getRecentArticles();
+	            this.panelHeading = "最近5篇"
 	        },
 	        ready: function () {
 
@@ -543,7 +551,7 @@
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container components-contents-articles\">\n        <div class=\"row\">\n            <div class=\"col-md-10 col-sm-9 col-xs-8\">\n                <div class=\"btn-group btn-group-sm\" role=\"group\" aria-label=\"Vertical button group\">\n                    <button\n                        v-on=\"click: getRecentArticles\"\n                        id=\"getRecentArticles\"\n                        class=\"btn btn-default\"\n                        type=\"button\">\n                        最近5篇\n                    </button>\n                    <button\n                        v-on=\"click: getMyArticles\"\n                        type=\"button\"\n                        class=\"btn btn-default\">\n                        我的文章\n                    </button>\n                </div>\n            </div>\n            <div class=\"col-md-2 col-sm-3 col-xs-4 text-right\">\n                <button\n                    id=\"new\"\n                    class=\"btn btn-default btn-sm\"\n                    data-toggle=\"modal\"\n                    data-target=\"#new-article-modal\"\n                    type=\"button\">\n                    写博客\n                </button>\n            </div>\n        </div>\n        <!-- articleList -->\n        <div class=\"row components-contents-articles-articleList\">\n            <div class=\"col-md-12\">\n                <table class=\"table table-hover table-condensed\">\n                    <tbody>\n                        <tr\n                            v-component=\"article-item\"\n                            wait-for=\"get-article-data\"\n                            v-repeat=\"article in articleList.data\">\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n        <div class=\"row\" v-show=\"isMine\">\n            <div class=\"col-md-12\">\n                <nav>\n                    <ul class=\"pager\">\n                        <li><a href=\"#\">Prev</a></li>\n                        <li><a href=\"#\">Next</a></li>\n                    </ul>\n                </nav>\n            </div>\n        </div>\n        <editor></editor>\n    </div>";
+	module.exports = "<div class=\"container components-contents-articles-btns\">\n        <div class=\"row\">\n            <div class=\"col-md-10 col-sm-9 col-xs-8\">\n                <div class=\"btn-group btn-group-sm\" role=\"group\" aria-label=\"Vertical button group\">\n                    <button\n                        v-on=\"click: getRecentArticles\"\n                        id=\"getRecentArticles\"\n                        class=\"btn btn-default\"\n                        type=\"button\">\n                        最近5篇\n                    </button>\n                    <button\n                        v-on=\"click: getMyArticles\"\n                        type=\"button\"\n                        class=\"btn btn-default\">\n                        我的文章\n                    </button>\n                </div>\n            </div>\n            <div class=\"col-md-2 col-sm-3 col-xs-4 text-right\">\n                <button\n                    id=\"new\"\n                    class=\"btn btn-default btn-sm\"\n                    data-toggle=\"modal\"\n                    data-target=\"#new-article-modal\"\n                    type=\"button\">\n                    写博客\n                </button>\n            </div>\n        </div>\n        <!-- articleList -->\n        <div class=\"row components-contents-articles-articleList\">\n            <div class=\"col-md-12\">\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <div class=\"row\">\n                            <div class=\"col-md-10 col-sm-9 col-xs-8\">\n                                <span v-text=\"panelHeading\" class=\"h4\"></span>\n                            </div>\n                            <div\n                                v-show=\"isMine\"\n                                class=\"col-md-2 col-sm-3 col-xs-4 text-right\">\n                                <div class=\"btn-group btn-group-xs\" role=\"group\">\n                                    <button type=\"button\" class=\"btn btn-default\">\n                                        <span class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span>\n                                    </button>\n                                    <button type=\"button\" class=\"btn btn-default\">\n                                        <span class=\"glyphicon glyphicon-menu-right\" aria-hidden=\"true\"></span>\n                                    </button>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                    <table class=\"table table-hover table-condensed\">\n                        <tbody>\n                            <tr\n                                is-mine=\"{{isMine}}\"\n                                v-component=\"article-item\"\n                                wait-for=\"get-article-data\"\n                                v-repeat=\"article in articleList.data\">\n                            </tr>\n                        </tbody>\n                    </table>\n                </div>\n            </div>\n        </div>\n        <editor></editor>\n    </div>";
 
 /***/ },
 /* 28 */
@@ -620,6 +628,7 @@
 /***/ function(module, exports) {
 
 	module.exports = {
+	        props: ["isMine"], // 判断是否是自己的文章
 	        methods: {
 	            onClick: function (e) {
 
@@ -631,7 +640,7 @@
 /* 44 */
 /***/ function(module, exports) {
 
-	module.exports = "<tr>\n        <td>\n            <div class=\"media\">\n                <div class=\"media-body\">\n                    <h3 class=\"media-heading\">\n                        <span v-text=\"article.title\" class=\"h3\"></span>&nbsp&nbsp\n                        <span v-text=\"'#' + article.tag\" class=\"label label-default\"></span>\n                    </h3>\n                    <h4>\n                        <span class=\"small\">By</span>\n                        <span v-text=\"article.author\" class=\"h4\"></span>\n                        <span class=\"small\">at</span>\n                        <span v-text=\"article.createAt | timeFormat\" class=\"\"></span>\n                    </h4>\n                </div>\n                <div class=\"media-right media-middle\">\n                    <button type=\"button\" class=\"btn btn-default btn-sm\" data-toggle=\"modal\" data-target=\"#article-item-modal\">\n                        <span class=\"glyphicon glyphicon-option-horizontal\" aria-hidden=\"true\"></span>\n                    </button>\n                    <div class=\"modal fade\" id=\"article-item-modal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"article-item-modal-title\">\n                        <div class=\"modal-dialog\" role=\"document\">\n                            <div class=\"modal-content\">\n                                <div class=\"modal-header\">\n                                    <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n                                    <h4 class=\"modal-title\" id=\"article-item-modal-title\">选择操作</h4>\n                                </div>\n                                <div class=\"modal-footer\">\n                                    <!-- <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button> -->\n                                    <button type=\"button\" class=\"btn btn-danger\">删除</button>\n                                    <button type=\"button\" class=\"btn btn-primary\">修改</button>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </td>\n    </tr>";
+	module.exports = "<tr>\n        <td>\n            <div class=\"media\">\n                <div class=\"media-body\">\n                    <h3 class=\"media-heading\">\n                        <span v-text=\"article.title\" class=\"h3\"></span>&nbsp&nbsp\n                        <span v-text=\"'#' + article.tag\" class=\"label label-default\"></span>\n                    </h3>\n                    <h4>\n                        <span class=\"small\">By</span>\n                        <span v-text=\"article.author\" class=\"h4\"></span>\n                        <span class=\"small\">at</span>\n                        <span v-text=\"article.createAt | timeFormat\" class=\"\"></span>\n                    </h4>\n                </div>\n            </div>\n        </td>\n    </tr>";
 
 /***/ }
 /******/ ]);

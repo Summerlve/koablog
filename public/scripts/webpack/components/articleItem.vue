@@ -14,26 +14,6 @@
                         <span v-text="article.createAt | timeFormat" class=""></span>
                     </h4>
                 </div>
-                <div class="media-right media-middle">
-                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#article-item-modal">
-                        <span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span>
-                    </button>
-                    <div class="modal fade" id="article-item-modal" tabindex="-1" role="dialog" aria-labelledby="article-item-modal-title">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title" id="article-item-modal-title">选择操作</h4>
-                                </div>
-                                <div class="modal-footer">
-                                    <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
-                                    <button type="button" class="btn btn-danger">删除</button>
-                                    <button type="button" class="btn btn-primary">修改</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </td>
     </tr>
@@ -41,6 +21,7 @@
 
 <script>
     module.exports = {
+        props: ["isMine"], // 判断是否是自己的文章
         methods: {
             onClick: function (e) {
 

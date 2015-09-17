@@ -1,5 +1,5 @@
 <template>
-    <div class="container components-contents-articles">
+    <div class="container components-contents-articles-btns">
         <div class="row">
             <div class="col-md-10 col-sm-9 col-xs-8">
                 <div class="btn-group btn-group-sm" role="group" aria-label="Vertical button group">
@@ -32,25 +32,37 @@
         <!-- articleList -->
         <div class="row components-contents-articles-articleList">
             <div class="col-md-12">
-                <table class="table table-hover table-condensed">
-                    <tbody>
-                        <tr
-                            v-component="article-item"
-                            wait-for="get-article-data"
-                            v-repeat="article in articleList.data">
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="row" v-show="isMine">
-            <div class="col-md-12">
-                <nav>
-                    <ul class="pager">
-                        <li><a href="#">Prev</a></li>
-                        <li><a href="#">Next</a></li>
-                    </ul>
-                </nav>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-10 col-sm-9 col-xs-8">
+                                <span v-text="panelHeading" class="h4"></span>
+                            </div>
+                            <div
+                                v-show="isMine"
+                                class="col-md-2 col-sm-3 col-xs-4 text-right">
+                                <div class="btn-group btn-group-xs" role="group">
+                                    <button type="button" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-hover table-condensed">
+                        <tbody>
+                            <tr
+                                is-mine="{{isMine}}"
+                                v-component="article-item"
+                                wait-for="get-article-data"
+                                v-repeat="article in articleList.data">
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <editor></editor>
@@ -65,12 +77,15 @@
                 articleList: {
                     data: []
                 },
-                isMine: false
+                isMine: false,
+                panelHeading: ""
             };
         },
         // 组件实例方法
         methods: {
             getRecentArticles: function (e) {
+                // 获取此博客系统最近的5篇文章
+
                 // fuckthis
                 var self = this;
 
@@ -98,6 +113,7 @@
                 getting
                     .done(function (data) {
                         self.articleList.data = data;
+                        self.panelHeading = "最近5篇";
                         // 只需要这里触发就可以了，getMyArticles不需要触发的。
                         self.$emit("getArticleData");
                     })
@@ -106,6 +122,8 @@
                     });
             },
             getMyArticles: function (e) {
+                // 获取我的文章
+
                 // fuckthis
                 var self = this;
 
@@ -115,7 +133,7 @@
                 // 获取我的文章数据，需要分页的，按照时间降序排序排列
                 var sort = "-createAt";
                 var page = 1; // 默认为第一页
-                var limit = 5; // 每页x篇文章
+                var limit = 6; // 每页x篇文章
 
                 // 获取token中的author
                 var token = JSON.parse(window.localStorage.getItem("token"));
@@ -136,6 +154,7 @@
                 getting
                     .done(function (data) {
                         self.articleList.data = data;
+                        self.panelHeading = "我的文章";
                     })
                     .fail(function (error) {
                         console.log(error);
@@ -146,6 +165,7 @@
         created: function () {
             // 在创建组件实例的时候，获取最近5篇文章的数据
             this.getRecentArticles();
+            this.panelHeading = "最近5篇"
         },
         ready: function () {
 
