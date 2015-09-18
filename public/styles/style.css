@@ -211,14 +211,14 @@ a:hover{
 	padding: 0;
 }
 
-/*与navbar有30px的距离*/
+/*nav的margin-bottom: 20px;加上这里的margin-top: 10px; 就产生了30px的距离*/
 .components-contents-articles-btns{
 	margin-top: 10px;
 }
 
 /*articleList与btns之间的距离*/
 .components-contents-articles-articleList{
-	margin-top: 32px;
+	margin-top: 30px;
 }
 
 /*全局覆盖bootstrap的.label的设置，bs官方提供的方法*/

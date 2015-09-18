@@ -264,7 +264,9 @@
 	                }
 
 	                // 在点击classification之后collapse自动收起
-	                $("#navigation").collapse("hide");
+	                setTimeout(function () {
+	                    $("#navigation").collapse("hide");
+	                }, 150);
 	            },
 	            logOut: function (e) {
 	                var self = this;
@@ -355,11 +357,16 @@
 	                    data: []
 	                },
 	                isMine: false,
-	                panelHeading: "",
-	                page: 1, // 我的文章默认为第一页
-	                limit: 6, // 我的文章每页有x篇文章
-	                // leftDisabled: true,
-	                // rightDisabled: false
+	                myArticles: {
+	                    page: 1, // 我的文章默认为第一页
+	                    limit: 6, // 我的文章每页有x篇文章
+	                    data: [],
+	                    panelHeading: "我的文章"
+	                },
+	                recentArticles: {
+	                    data: [],
+	                    panelHeading: "最近5篇"
+	                }
 	            };
 	        },
 	        computed: function () {
@@ -429,8 +436,8 @@
 
 	                // 获取我的文章数据，需要分页的，按照时间降序排序排列
 	                var sort = "-createAt";
-	                var page = this.page; // 获取文章的页
-	                var limit = this.limit; // 每页x篇文章
+	                var page = this.$data.myArticles.page; // 获取文章的页
+	                var limit = this.$data.myArticles.limit; // 每页x篇文章
 
 	                // 获取token中的author
 	                var token = JSON.parse(window.localStorage.getItem("token"));
@@ -450,7 +457,7 @@
 
 	                getting
 	                    .done(function (data) {
-	                        self.articleList.data = data;
+	                        self.$data.myArticles.data = data;
 	                        self.panelHeading = "我的文章";
 	                    })
 	                    .fail(function (error) {
@@ -595,7 +602,7 @@
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container components-contents-articles-btns\">\n        <div class=\"row\">\n            <div class=\"col-md-10 col-sm-9 col-xs-8\">\n                <div class=\"btn-group btn-group-sm\" role=\"group\" aria-label=\"Vertical button group\">\n                    <button\n                        v-on=\"click: getRecentArticles\"\n                        id=\"getRecentArticles\"\n                        class=\"btn btn-default\"\n                        type=\"button\">\n                        最近5篇\n                    </button>\n                    <button\n                        v-on=\"click: getMyArticles\"\n                        type=\"button\"\n                        class=\"btn btn-default\">\n                        我的文章\n                    </button>\n                </div>\n            </div>\n            <div class=\"col-md-2 col-sm-3 col-xs-4 text-right\">\n                <button\n                    id=\"new\"\n                    class=\"btn btn-default btn-sm\"\n                    data-toggle=\"modal\"\n                    data-target=\"#new-article-modal\"\n                    type=\"button\">\n                    写博客\n                </button>\n            </div>\n        </div>\n        <!-- articleList -->\n        <div class=\"row components-contents-articles-articleList\">\n            <div class=\"col-md-12\">\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <div class=\"row\">\n                            <div class=\"col-md-10 col-sm-9 col-xs-8\">\n                                <span v-text=\"panelHeading\" class=\"h4\"></span>\n                            </div>\n                            <div\n                                v-show=\"isMine\"\n                                class=\"col-md-2 col-sm-3 col-xs-4 text-right\">\n                                <div class=\"btn-group btn-group-xs\" role=\"group\">\n                                    <button\n                                        v-attr=\"disabled: leftDisabled\"\n                                        v-on=\"click: pageLeft\"\n                                        type=\"button\"\n                                        class=\"btn btn-default\">\n                                        <span class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span>\n                                    </button>\n                                    <button\n                                        v-attr=\"disabled: rightDisabled\"\n                                        v-on=\"click: pageRight\"\n                                        type=\"button\"\n                                        class=\"btn btn-default\">\n                                        <span class=\"glyphicon glyphicon-menu-right\" aria-hidden=\"true\"></span>\n                                    </button>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                    <table class=\"table table-hover table-condensed\">\n                        <tbody>\n                            <tr\n                                is-mine=\"{{isMine}}\"\n                                v-component=\"article-item\"\n                                wait-for=\"get-article-data\"\n                                v-repeat=\"article in articleList.data\">\n                            </tr>\n                        </tbody>\n                    </table>\n                </div>\n            </div>\n        </div>\n        <editor></editor>\n    </div>";
+	module.exports = "<div class=\"container components-contents-articles-btns\">\n        <div class=\"row\">\n            <div class=\"col-md-offset-10 col-md-2 col-sm-offset-9 col-sm-3 col-xs-12\">\n                <button\n                    id=\"new\"\n                    class=\"btn btn-default btn-block\"\n                    data-toggle=\"modal\"\n                    data-target=\"#new-article-modal\"\n                    type=\"button\">\n                    写博客\n                </button>\n            </div>\n        </div>\n        <!-- articles -->\n        <div class=\"row components-contents-articles-articleList\">\n            <!-- myArticles -->\n            <div class=\"col-md-8\">\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <div class=\"row\">\n                            <div class=\"col-md-10 col-sm-9 col-xs-8\">\n                                <span v-text=\"myArticles.panelHeading\" class=\"h5\"></span>\n                            </div>\n                            <div\n                                v-show=\"isMine\"\n                                class=\"col-md-2 col-sm-3 col-xs-4 text-right\">\n                                <div class=\"btn-group btn-group-xs\" role=\"group\">\n                                    <button\n                                        v-attr=\"disabled: leftDisabled\"\n                                        v-on=\"click: pageLeft\"\n                                        type=\"button\"\n                                        class=\"btn btn-default\">\n                                        <span class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span>\n                                    </button>\n                                    <button\n                                        v-attr=\"disabled: rightDisabled\"\n                                        v-on=\"click: pageRight\"\n                                        type=\"button\"\n                                        class=\"btn btn-default\">\n                                        <span class=\"glyphicon glyphicon-menu-right\" aria-hidden=\"true\"></span>\n                                    </button>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                    <table class=\"table table-hover table-condensed\">\n                        <tbody>\n                            <tr\n                                is-mine=\"{{isMine}}\"\n                                v-component=\"article-item\"\n                                wait-for=\"get-article-data\"\n                                v-repeat=\"article in articleList.data\">\n                            </tr>\n                        </tbody>\n                    </table>\n                </div>\n            </div>\n            <!-- myArticles end-->\n            <!-- recentArticles -->\n            <div class=\"col-md-4\">\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <div class=\"row\">\n                            <div class=\"col-md-10 col-sm-9 col-xs-8\">\n                                <span v-text=\"recentArticles.panelHeading\" class=\"h5\"></span>\n                            </div>\n                            <div\n                                v-show=\"isMine\"\n                                class=\"col-md-2 col-sm-3 col-xs-4 text-right\">\n                                <div class=\"btn-group btn-group-xs\" role=\"group\">\n                                    <button\n                                        v-attr=\"disabled: leftDisabled\"\n                                        v-on=\"click: pageLeft\"\n                                        type=\"button\"\n                                        class=\"btn btn-default\">\n                                        <span class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span>\n                                    </button>\n                                    <button\n                                        v-attr=\"disabled: rightDisabled\"\n                                        v-on=\"click: pageRight\"\n                                        type=\"button\"\n                                        class=\"btn btn-default\">\n                                        <span class=\"glyphicon glyphicon-menu-right\" aria-hidden=\"true\"></span>\n                                    </button>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                    <table class=\"table table-hover table-condensed\">\n                        <tbody>\n                            <tr\n                                is-mine=\"{{isMine}}\"\n                                v-component=\"article-item\"\n                                wait-for=\"get-article-data\"\n                                v-repeat=\"article in articleList.data\">\n                            </tr>\n                        </tbody>\n                    </table>\n                </div>\n                <!-- recentArticles end -->\n            </div>\n        </div>\n        <editor></editor>\n    </div>";
 
 /***/ },
 /* 28 */

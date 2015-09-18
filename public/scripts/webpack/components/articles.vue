@@ -1,27 +1,10 @@
 <template>
     <div class="container components-contents-articles-btns">
         <div class="row">
-            <div class="col-md-10 col-sm-9 col-xs-8">
-                <div class="btn-group btn-group-sm" role="group" aria-label="Vertical button group">
-                    <button
-                        v-on="click: getRecentArticles"
-                        id="getRecentArticles"
-                        class="btn btn-default"
-                        type="button">
-                        最近5篇
-                    </button>
-                    <button
-                        v-on="click: getMyArticles"
-                        type="button"
-                        class="btn btn-default">
-                        我的文章
-                    </button>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3 col-xs-4 text-right">
+            <div class="col-md-offset-10 col-md-2 col-sm-offset-9 col-sm-3 col-xs-12">
                 <button
                     id="new"
-                    class="btn btn-default btn-sm"
+                    class="btn btn-default btn-block"
                     data-toggle="modal"
                     data-target="#new-article-modal"
                     type="button">
@@ -29,14 +12,15 @@
                 </button>
             </div>
         </div>
-        <!-- articleList -->
+        <!-- articles -->
         <div class="row components-contents-articles-articleList">
-            <div class="col-md-12">
+            <!-- myArticles -->
+            <div class="col-md-8">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-md-10 col-sm-9 col-xs-8">
-                                <span v-text="panelHeading" class="h4"></span>
+                                <span v-text="myArticles.panelHeading" class="h5"></span>
                             </div>
                             <div
                                 v-show="isMine"
@@ -72,6 +56,50 @@
                     </table>
                 </div>
             </div>
+            <!-- myArticles end-->
+            <!-- recentArticles -->
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-10 col-sm-9 col-xs-8">
+                                <span v-text="recentArticles.panelHeading" class="h5"></span>
+                            </div>
+                            <div
+                                v-show="isMine"
+                                class="col-md-2 col-sm-3 col-xs-4 text-right">
+                                <div class="btn-group btn-group-xs" role="group">
+                                    <button
+                                        v-attr="disabled: leftDisabled"
+                                        v-on="click: pageLeft"
+                                        type="button"
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+                                    </button>
+                                    <button
+                                        v-attr="disabled: rightDisabled"
+                                        v-on="click: pageRight"
+                                        type="button"
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-hover table-condensed">
+                        <tbody>
+                            <tr
+                                is-mine="{{isMine}}"
+                                v-component="article-item"
+                                wait-for="get-article-data"
+                                v-repeat="article in articleList.data">
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- recentArticles end -->
+            </div>
         </div>
         <editor></editor>
     </div>
@@ -86,11 +114,16 @@
                     data: []
                 },
                 isMine: false,
-                panelHeading: "",
-                page: 1, // 我的文章默认为第一页
-                limit: 6, // 我的文章每页有x篇文章
-                // leftDisabled: true,
-                // rightDisabled: false
+                myArticles: {
+                    page: 1, // 我的文章默认为第一页
+                    limit: 6, // 我的文章每页有x篇文章
+                    data: [],
+                    panelHeading: "我的文章"
+                },
+                recentArticles: {
+                    data: [],
+                    panelHeading: "最近5篇"
+                }
             };
         },
         computed: function () {
@@ -160,8 +193,8 @@
 
                 // 获取我的文章数据，需要分页的，按照时间降序排序排列
                 var sort = "-createAt";
-                var page = this.page; // 获取文章的页
-                var limit = this.limit; // 每页x篇文章
+                var page = this.$data.myArticles.page; // 获取文章的页
+                var limit = this.$data.myArticles.limit; // 每页x篇文章
 
                 // 获取token中的author
                 var token = JSON.parse(window.localStorage.getItem("token"));
@@ -181,7 +214,7 @@
 
                 getting
                     .done(function (data) {
-                        self.articleList.data = data;
+                        self.$data.myArticles.data = data;
                         self.panelHeading = "我的文章";
                     })
                     .fail(function (error) {

@@ -98,7 +98,9 @@
                 }
 
                 // 在点击classification之后collapse自动收起
-                $("#navigation").collapse("hide");
+                setTimeout(function () {
+                    $("#navigation").collapse("hide");
+                }, 150);
             },
             logOut: function (e) {
                 var self = this;
