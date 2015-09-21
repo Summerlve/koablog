@@ -17,7 +17,7 @@
             });
         },
         ready: function (){
-                
+
         },
         components: {
             articles: require("./articles.vue"),

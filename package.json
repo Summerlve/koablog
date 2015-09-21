@@ -24,7 +24,6 @@
   },
   "devDependencies": {},
   "scripts": {
-    "pretest": "mysql.server start",
     "test": "supervisor --harmony app.js"
   },
   "keywords": [
