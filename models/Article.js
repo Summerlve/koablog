@@ -9,7 +9,7 @@ let Article = sequelize.define("koablog_view_article", {
 		type: Sequelize.INTEGER(11),
 		allowNull: false,
 		unique: true,
-		primarKey: true,
+		primaryKey: true,
 		field: "id"
 	},
 	title: {
