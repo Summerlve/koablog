@@ -2,7 +2,5 @@
 /test
 .DS_Store
 jsconfig.json
-/database_backup
 /.settings
 /node_modules
-/configs

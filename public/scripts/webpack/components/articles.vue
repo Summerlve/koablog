@@ -23,7 +23,6 @@
                                 <span v-text="myArticles.panelHeading" class="h5"></span>
                             </div>
                             <div
-                                v-show="isMine"
                                 class="col-md-2 col-sm-3 col-xs-4 text-right">
                                 <div class="btn-group btn-group-xs" role="group">
                                     <button
@@ -47,10 +46,9 @@
                     <table class="table table-hover table-condensed">
                         <tbody>
                             <tr
-                                is-mine="{{isMine}}"
                                 v-component="article-item"
-                                wait-for="get-article-data"
-                                v-repeat="article in articleList.data">
+                                wait-for="get-my-articles"
+                                v-repeat="article in myArticles.data">
                             </tr>
                         </tbody>
                     </table>
@@ -66,7 +64,6 @@
                                 <span v-text="recentArticles.panelHeading" class="h5"></span>
                             </div>
                             <div
-                                v-show="isMine"
                                 class="col-md-2 col-sm-3 col-xs-4 text-right">
                                 <div class="btn-group btn-group-xs" role="group">
                                     <button
@@ -90,10 +87,9 @@
                     <table class="table table-hover table-condensed">
                         <tbody>
                             <tr
-                                is-mine="{{isMine}}"
                                 v-component="article-item"
-                                wait-for="get-article-data"
-                                v-repeat="article in articleList.data">
+                                wait-for="get-recent-articles"
+                                v-repeat="article in recentArticles.data">
                             </tr>
                         </tbody>
                     </table>
@@ -110,10 +106,6 @@
         // 数据
         data: function () {
             return {
-                articleList: {
-                    data: []
-                },
-                isMine: false,
                 myArticles: {
                     page: 1, // 我的文章默认为第一页
                     limit: 6, // 我的文章每页有x篇文章
@@ -140,7 +132,7 @@
                         return this.$data.articleList.length < this.$data.limit ? true : false;
                     }
                 }
-            }
+            };
         },
         // 组件实例方法
         methods: {
@@ -173,10 +165,8 @@
 
                 getting
                     .done(function (data) {
-                        self.articleList.data = data;
-                        self.panelHeading = "最近5篇";
-                        // 只需要这里触发就可以了，getMyArticles不需要触发的。
-                        self.$emit("getArticleData");
+                        self.$data.recentArticles.data = data;
+                        self.$emit("get-recent-articles");
                     })
                     .fail(function (error) {
                         console.log(error);
@@ -187,9 +177,6 @@
 
                 // fuckthis
                 var self = this;
-
-                // 显示分页按钮
-                this.isMine = true;
 
                 // 获取我的文章数据，需要分页的，按照时间降序排序排列
                 var sort = "-createAt";
@@ -215,7 +202,7 @@
                 getting
                     .done(function (data) {
                         self.$data.myArticles.data = data;
-                        self.panelHeading = "我的文章";
+                        self.$emit("get-my-articles");
                     })
                     .fail(function (error) {
                         console.log(error);
@@ -246,7 +233,8 @@
         created: function () {
             // 在创建组件实例的时候，获取最近5篇文章的数据
             this.getRecentArticles();
-            this.panelHeading = "最近5篇"
+            // 在创建组建实例的时候，获取此作者最近的文章
+            this.getMyArticles();
         },
         ready: function () {
 
