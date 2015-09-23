@@ -26,15 +26,15 @@
                                 class="col-md-2 col-sm-3 col-xs-4 text-right">
                                 <div class="btn-group btn-group-xs" role="group">
                                     <button
-                                        v-attr="disabled: leftDisabled"
-                                        v-on="click: pageLeft"
+                                        v-attr="disabled: myArticles.left"
+                                        v-on="click: myArticlesPageLeft"
                                         type="button"
                                         class="btn btn-default">
                                         <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
                                     </button>
                                     <button
-                                        v-attr="disabled: rightDisabled"
-                                        v-on="click: pageRight"
+                                        v-attr="disabled: myArticles.right"
+                                        v-on="click: myArticlesPageRight"
                                         type="button"
                                         class="btn btn-default">
                                         <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
@@ -60,22 +60,22 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="row">
-                            <div class="col-md-10 col-sm-9 col-xs-8">
+                            <div class="col-md-8 col-sm-9 col-xs-8">
                                 <span v-text="recentArticles.panelHeading" class="h5"></span>
                             </div>
                             <div
-                                class="col-md-2 col-sm-3 col-xs-4 text-right">
+                                class="col-md-4 col-sm-3 col-xs-4 text-right">
                                 <div class="btn-group btn-group-xs" role="group">
                                     <button
-                                        v-attr="disabled: leftDisabled"
-                                        v-on="click: pageLeft"
+                                        v-attr="disabled: recentArticles.left"
+                                        v-on="click: recentArticlesPageLeft"
                                         type="button"
                                         class="btn btn-default">
                                         <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
                                     </button>
                                     <button
-                                        v-attr="disabled: rightDisabled"
-                                        v-on="click: pageRight"
+                                        v-attr="disabled: recentArticles.right"
+                                        v-on="click: recentArticlesPageRight"
                                         type="button"
                                         class="btn btn-default">
                                         <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
@@ -110,40 +110,65 @@
                     page: 1, // 我的文章默认为第一页
                     limit: 6, // 我的文章每页有x篇文章
                     data: [],
-                    panelHeading: "我的文章"
+                    panelHeading: "我的文章",
+                    left: "disabled",
+                    right: false
                 },
                 recentArticles: {
                     data: [],
-                    panelHeading: "最近5篇"
+                    panelHeading: "最近的文章",
+                    left: "disabled",
+                    right: false,
+                    page: 1
                 }
             };
         },
-        computed: function () {
-            return {
-                leftDisabled: {
-                    cache: false,
-                    get: function () {
-                        return this.page - 1 < 0 ? true : false;
+        computed: {
+            myArticlesPageLeft: {
+                cache: false,
+                get: function () {
+                    var currentPage = this.myArticles.page;
+                    if (currentPage === 1) {
+                        this.myArticles.left = "disabled";
                     }
-                },
-                rightDisabled: {
-                    cache: false,
-                    get: function () {
-                        return this.$data.articleList.length < this.$data.limit ? true : false;
-                    }
+
+                    
+
+                    return this.myArticles.page;
                 }
-            };
+            },
+            myArticlesPageRight: {
+                cache: false,
+                get: function () {
+                    return this.myArticles.page;
+                }
+            },
+            recentArticlesPageLeft: {
+                cache: false,
+                get: function () {
+                    return this.recentArticles.page;
+                }
+            },
+            recentArticlesPageRight: {
+                cache: false,
+                get: function () {
+                    return this.recentArticles.page;
+                }
+            }
         },
         // 组件实例方法
         methods: {
+            recentArticlesPageLeft: function () {
+                this.hehe = 2;
+            },
+            recentArticlesPageRight: function () {
+
+            },
             getRecentArticles: function (e) {
                 // 获取此博客系统最近的5篇文章
 
                 // fuckthis
                 var self = this;
-
-                // 隐藏分页按钮
-                this.isMine = false;
 
                 // 取前5篇文章
                 var limit = 5;
@@ -207,26 +232,6 @@
                     .fail(function (error) {
                         console.log(error);
                     });
-            },
-            pageLeft: function (e) {
-                // 我的文章的上下翻页
-                if (this.page === 1) {
-                    this.$data.leftDisabled = true;
-                } else {
-                    this.$data.page --;
-                    this.getMyArticles();
-                }
-            },
-            pageRight: function (e) {
-                var length = this.$data.articleList.data.length;
-                var limit = this.limit;
-
-                if (length < limit) {
-                    this.$data.rightDisabled = true;
-                } else {
-                    this.$data.page ++;
-                    this.getMyArticles();
-                }
             }
         },
         // 生命周期
