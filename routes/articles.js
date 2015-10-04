@@ -49,11 +49,7 @@ router
 					limit: limit
 				});
 
-				if (articles.length === 0) {
-					this.status = 404;
-					this.body = "没有更多的内容了";
-					return ;
-				}
+				// 即便是查询到的articles长度为0也需要返回
 
 				this.body = articles;
 			}break;

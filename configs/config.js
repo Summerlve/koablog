@@ -26,18 +26,17 @@ global.sequelize = sequelize;
 // create redis socket , and listening to the error event.
 let redis = require("redis");
 let host = "127.0.0.1";
-let redisClient = redis.createClient(6379, host, {});
+let port = 6379;
+let redisClient = redis.createClient(port, host, {});
 
 redisClient.on("error", (error) => {
 	console.log("Redis Error", error);
 });
 
 // 对redis的exist方法的promise封装
-// Node 0.12.7版本对于箭头函数的实现不对，因此还是需要hackthis
 redisClient.co_exists = function (key) {
-	let self = this;
     return new Promise((resolve, reject) => {
-        self.exists(key, (error, reply) => {
+        this.exists(key, (error, reply) => {
             if (error) reject(error);
             else resolve(reply);
         });

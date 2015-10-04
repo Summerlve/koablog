@@ -15,33 +15,10 @@
         <!-- articles -->
         <div class="row components-contents-articles-articleList">
             <!-- myArticles -->
-            <div class="col-md-8">
+            <div class="col-md-7">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-md-10 col-sm-9 col-xs-8">
-                                <span v-text="myArticles.panelHeading" class="h5"></span>
-                            </div>
-                            <div
-                                class="col-md-2 col-sm-3 col-xs-4 text-right">
-                                <div class="btn-group btn-group-xs" role="group">
-                                    <button
-                                        v-attr="disabled: myArticles.left"
-                                        v-on="click: myArticlesPageLeft"
-                                        type="button"
-                                        class="btn btn-default">
-                                        <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
-                                    </button>
-                                    <button
-                                        v-attr="disabled: myArticles.right"
-                                        v-on="click: myArticlesPageRight"
-                                        type="button"
-                                        class="btn btn-default">
-                                        <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                        <span v-text="myArticles.panelHeading" class="h5"></span>
                     </div>
                     <table class="table table-hover table-condensed">
                         <tbody>
@@ -52,37 +29,32 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="panel-footer text-right">
+                        <div class="btn-group btn-group-xs" role="group">
+                            <button
+                                v-attr="disabled: myArticles.left"
+                                v-on="click: pageDown"
+                                type="button"
+                                class="btn btn-default">
+                                <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+                            </button>
+                            <button
+                                v-attr="disabled: myArticles.right"
+                                v-on="click: pageUp"
+                                type="button"
+                                class="btn btn-default">
+                                <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- myArticles end-->
             <!-- recentArticles -->
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-md-8 col-sm-9 col-xs-8">
-                                <span v-text="recentArticles.panelHeading" class="h5"></span>
-                            </div>
-                            <div
-                                class="col-md-4 col-sm-3 col-xs-4 text-right">
-                                <div class="btn-group btn-group-xs" role="group">
-                                    <button
-                                        v-attr="disabled: recentArticles.left"
-                                        v-on="click: recentArticlesPageLeft"
-                                        type="button"
-                                        class="btn btn-default">
-                                        <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
-                                    </button>
-                                    <button
-                                        v-attr="disabled: recentArticles.right"
-                                        v-on="click: recentArticlesPageRight"
-                                        type="button"
-                                        class="btn btn-default">
-                                        <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                        <span v-text="recentArticles.panelHeading" class="h5"></span>
                     </div>
                     <table class="table table-hover table-condensed">
                         <tbody>
@@ -116,62 +88,20 @@
                 },
                 recentArticles: {
                     data: [],
-                    panelHeading: "最近的文章",
-                    left: "disabled",
-                    right: false,
-                    page: 1
+                    panelHeading: "最近的文章"
                 }
             };
         },
-        computed: {
-            myArticlesPageLeft: {
-                cache: false,
-                get: function () {
-                    var currentPage = this.myArticles.page;
-                    if (currentPage === 1) {
-                        this.myArticles.left = "disabled";
-                    }
-
-                    
-
-                    return this.myArticles.page;
-                }
-            },
-            myArticlesPageRight: {
-                cache: false,
-                get: function () {
-                    return this.myArticles.page;
-                }
-            },
-            recentArticlesPageLeft: {
-                cache: false,
-                get: function () {
-                    return this.recentArticles.page;
-                }
-            },
-            recentArticlesPageRight: {
-                cache: false,
-                get: function () {
-                    return this.recentArticles.page;
-                }
-            }
-        },
         // 组件实例方法
         methods: {
-            recentArticlesPageLeft: function () {
-                this.hehe = 2;
-            },
-            recentArticlesPageRight: function () {
-
-            },
             getRecentArticles: function (e) {
-                // 获取此博客系统最近的5篇文章
+                // 获取此博客系统最近的x篇文章
 
                 // fuckthis
                 var self = this;
 
-                // 取前5篇文章
-                var limit = 5;
+                // 取前x篇文章
+                var limit = 10;
 
                 // 按照创建时间的倒序
                 var sort = "-createAt";
@@ -196,6 +126,34 @@
                     .fail(function (error) {
                         console.log(error);
                     });
+            },
+            pageDown: function () {
+                var page = this.$data.myArticles.page;
+                if (page === 1) {
+                    this.myArticles.left = "disabled";
+                    return ;
+                }
+
+                if (page > 1) {
+                    this.myArticles.page --;
+                    this.myArticles.right = false;
+                    this.getMyArticles();
+                }
+
+            },
+            pageUp: function () {
+                var limit = this.myArticles.limit;
+                var length = this.myArticles.data.length;
+
+                if (length < limit) {
+                    this.myArticles.right = "disabled";
+                    return ;
+                }
+
+                this.myArticles.page ++;
+                this.myArticles.left = false;
+                this.getMyArticles();
+
             },
             getMyArticles: function (e) {
                 // 获取我的文章
@@ -236,13 +194,8 @@
         },
         // 生命周期
         created: function () {
-            // 在创建组件实例的时候，获取最近5篇文章的数据
-            this.getRecentArticles();
-            // 在创建组建实例的时候，获取此作者最近的文章
             this.getMyArticles();
-        },
-        ready: function () {
-
+            this.getRecentArticles();
         },
         // 组件
         components: {
