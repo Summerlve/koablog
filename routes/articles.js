@@ -18,6 +18,7 @@ let render = views(viewsPath, {
 // middlewares
 let getToken = require("../middlewares/getToken");
 let identity = require("../middlewares/identity");
+let getPermissions = require("../middlewares/getPermissions");
 
 // redirect '/' to the '/articles'
 router
@@ -162,11 +163,20 @@ router
 		"/articles",
 		getToken,
 		identity,
+		getPermissions,
 		function* (next) {
-			// get group_id from middleware identity.js
-			let group_id = this.group_id;
-			
+			// get permissions from middleware getPermissions.js
+			let permissions = this.permissions;
 
+			// permission_id=5 为增加文章
+			if (permissions.indexOf(5)) {
+				// 添加文章
+			}
+
+			this.body = {
+				statusCode: "200",
+				reasonPhrase: "add article succeed"
+			};
 		}
 	);
 

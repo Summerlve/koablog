@@ -66,6 +66,8 @@
         },
         methods: {
             createNewArticle: function (e) {
+                // fuck this
+                var self = this;
                 // 关闭新建文章的模态框
                 // this.modal.modal("hide");
 
@@ -81,7 +83,13 @@
                     method: "POST" // set http method
                 });
 
-
+                postting
+                    .done(function (data) {
+                        console.log(data);
+                    })
+                    .fail(function (error) {
+                        console.log(error);
+                    });
             }
         },
         // 生命周期
