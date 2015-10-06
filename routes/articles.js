@@ -3,7 +3,7 @@ let router = require("koa-router")();
 let Article = require("../models/Article");
 let views = require("co-views");
 let parse = require("co-body");
-
+let Permission = require("../models/Permission");
 // path
 let viewsPath = global.path.views;
 // page
@@ -17,6 +17,7 @@ let render = views(viewsPath, {
 
 // middlewares
 let getToken = require("../middlewares/getToken");
+let identity = require("../middlewares/identity");
 
 // redirect '/' to the '/articles'
 router
@@ -160,7 +161,11 @@ router
 	.post(
 		"/articles",
 		getToken,
+		identity,
 		function* (next) {
+			// get group_id from middleware identity.js
+			let group_id = this.group_id;
+			
 
 		}
 	);
@@ -169,8 +174,12 @@ router
 	.delete(
 		"/articles",
 		getToken,
+		identity,
 		function* (next) {
+			// get group_id from middleware identity.js
+			let group_id = this.group_id;
 
+			//get permissions
 		}
 	);
 

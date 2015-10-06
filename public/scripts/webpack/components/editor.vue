@@ -67,7 +67,21 @@
         methods: {
             createNewArticle: function (e) {
                 // 关闭新建文章的模态框
-                this.modal.modal("hide");
+                // this.modal.modal("hide");
+
+                // 取得存储的token，并且添加到http request的Authorization首部字段。
+                var token = JSON.parse(window.localStorage.getItem("token")).token;
+
+                var postting = $.ajax({
+                    url: "/articles",
+                    headers: {
+                        Authorization: "jwt " + token
+                    },
+                    dataType: "json", // set 'Accepts' header field
+                    method: "POST" // set http method
+                });
+
+
             }
         },
         // 生命周期

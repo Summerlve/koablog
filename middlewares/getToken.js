@@ -65,6 +65,7 @@ function* getToken (next) {
         return ;
     }
 
+    // 将token与tokenType添加到context中
     this.token = token;
     this.tokenType = tokenType;
 
