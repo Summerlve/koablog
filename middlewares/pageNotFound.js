@@ -1,3 +1,4 @@
+"use strict";
 // 全部的404处理都在这里
 module.exports = function* pageNotFound (next) {
 	yield next;

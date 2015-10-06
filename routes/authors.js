@@ -1,17 +1,18 @@
-var router = require("koa-router")();
-var views = require("co-views");
-var User = require("../models/User");
-var Article = require("../models/Article");
+"use strict";
+let router = require("koa-router")();
+let views = require("co-views");
+let User = require("../models/User");
+let Article = require("../models/Article");
 
 // path
-var viewsPath = global.path.views;
+let viewsPath = global.path.views;
 
 // page and row
-var limit = 4;
-var authorsPerRow = 2; // 一行有numPerRow个作者，因为bootstrap的栅格一行有12列，所以此处必须能把12整除
+let limit = 4;
+let authorsPerRow = 2; // 一行有numPerRow个作者，因为bootstrap的栅格一行有12列，所以此处必须能把12整除
 
 // render
-var render = views(viewsPath, {
+let render = views(viewsPath, {
 	map: {
 		html: "ejs"
 	}
@@ -21,9 +22,9 @@ var render = views(viewsPath, {
 router
 	.get("/authors", function* (next) {
 		// page默认为1
-		var current = parseInt(this.query.page || 1, 10);
+		let current = parseInt(this.query.page || 1, 10);
 
-		var authors = yield User.findAll({
+		let authors = yield User.findAll({
 			order: ["id"],
 			offset: (current - 1) * limit,
 			limit: limit
@@ -35,10 +36,10 @@ router
 			return ;
 		}
 
-		var count = yield User.count();
+		let count = yield User.count();
 
-		var previous = current - 1;
-		var next_ = count - limit * current > 0 ? current + 1 : 0;
+		let previous = current - 1;
+		let next_ = count - limit * current > 0 ? current + 1 : 0;
 
 		this.body = yield render("/frontend/authors/authors", {
 			title: "Authors",
@@ -56,14 +57,14 @@ router
 // one of the author
 router
 	.get("/authors/:pen_name", function* (next) {
-		var pen_name = this.params.pen_name;
+		let pen_name = this.params.pen_name;
 
-		var author = yield User.find({
+		let author = yield User.find({
 			where: {
 				pen_name: pen_name
 			}
 		});
-		
+
 		if (author === null) {
 			this.status = 404;
 			this.body = "author not found";
@@ -71,7 +72,7 @@ router
 		}
 
 		// get the newest 4 articles of this author
-		var articles = yield Article.findAll({
+		let articles = yield Article.findAll({
 			order: [
 				["id", "DESC"]
 			],

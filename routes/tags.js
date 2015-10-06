@@ -1,15 +1,16 @@
-var router = require("koa-router")();
-var Tag = require("../models/Tag");
-var views = require("co-views");
+"use strict";
+let router = require("koa-router")();
+let Tag = require("../models/Tag");
+let views = require("co-views");
 
 // path
-var viewsPath = global.path.views;
+let viewsPath = global.path.views;
 
 // row
-var tagsPerRow = 6; // 每行6个tag
+let tagsPerRow = 6; // 每行6个tag
 
 // render
-var render = views(viewsPath, {
+let render = views(viewsPath, {
 	map: {
 		html: "ejs"
 	}
@@ -17,10 +18,10 @@ var render = views(viewsPath, {
 
 router
 	.get("/tags", function* (next) {
-		var tags = yield Tag.findAll({
+		let tags = yield Tag.findAll({
 			order: ["id"]
 		});
-		
+
 		this.body = yield render("/frontend/tags/tags", {
 			tags: tags,
 			title: "Tags",
@@ -35,27 +36,27 @@ router
 		yield next;
 	})
 	.get("/tag/:name", function* (next) {
-		var tag = yield Tag.find({
+		let tag = yield Tag.find({
 			attributes: ["id"],
 			where: {
 				name: this.name
 			}
 		});
-		
+
 		if (tag === null) {
 			this.status = 404;
 			this.body = "tag not found"
 			return ;
 		}
-		
-		var tag_id = tag.id;
-		
-		var articles = yield Article.findAll({
+
+		let tag_id = tag.id;
+
+		let articles = yield Article.findAll({
 			where: {
 				tag_id: tag_id
 			}
 		});
-		
+
 		if (articles.length === 0) {
 			this.body = "this tag dont have any article"
 		}
@@ -63,5 +64,5 @@ router
 			this.body = articles;
 		}
 	});
-	
+
 module.exports = router.routes();

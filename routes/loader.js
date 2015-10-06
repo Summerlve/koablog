@@ -1,5 +1,6 @@
+"use strict";
 // load router
-var routers = [];
+let routers = [];
 routers.push(require("./admin"));
 routers.push(require("./articles"));
 routers.push(require("./authors"));

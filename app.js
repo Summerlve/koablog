@@ -1,5 +1,6 @@
+"use strict";
 // app init
-var app = require("koa")();
+let app = require("koa")();
 
 /* 	config:
  *	this is configuration file.
@@ -12,29 +13,26 @@ require("./configs/config");
 /*	middleware:
  *	the pageNotFound middleware is handle all of the 404 error for whole situation.
  */
-var pageNotFound = require("./middlewares/pageNotFound");
+let pageNotFound = require("./middlewares/pageNotFound");
 app.use(pageNotFound);
 
 // static files
-var serve = require("koa-static");
-var staticFilePath = global.path.static;
+let serve = require("koa-static");
+let staticFilePath = global.path.static;
 app.use(serve(staticFilePath));
 
 // session
-var session = require("koa-session");
+let session = require("koa-session");
 app.keys = ["koaBlog"];
 app.use(session(app));
 
 // routes loader
-var loader = require("./routes/loader");
+let loader = require("./routes/loader");
 loader(app);
 
 // gzip compress
-var compress = require("koa-compress");
+let compress = require("koa-compress");
 app.use(compress())
 
-var port = 8080;
+let port = 8080;
 app.listen(port);
-
-
-

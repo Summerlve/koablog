@@ -1,7 +1,8 @@
-var router = require("koa-router")();
-var parse = require("co-body");
-var User = require("../models/User");
-var identity = require("../middlewares/identity");
+"use strict";
+let router = require("koa-router")();
+let parse = require("co-body");
+let User = require("../models/User");
+let identity = require("../middlewares/identity");
 
 router
 	.get("/users", function* (next) {
@@ -9,7 +10,7 @@ router
 			this.redirect("/login");
 		}
 		else {
-			var users = yield User.findAll({
+			let users = yield User.findAll({
 				attributes: ["id", "username", "pen_name"]
 			});
 
@@ -22,8 +23,8 @@ router
 		"/users",
 		identity,
 		function* (next) {
-			var groupId = this.groupId;
-			var permission
+			let groupId = this.groupId;
+			let permission
 		});
 
 module.exports = router.routes();
