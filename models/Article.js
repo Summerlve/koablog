@@ -4,7 +4,7 @@ let sequelize = global.sequelize;
 let User = require("./User");
 let moment = require("moment");
 
-let Article = sequelize.define("koablog_view_article", {
+let ArticleView = sequelize.define("koablog_view_article", {
 	id: {
 		type: Sequelize.INTEGER(11),
 		allowNull: false,
@@ -51,4 +51,8 @@ let Article = sequelize.define("koablog_view_article", {
 	}
 });
 
-module.exports = Article;
+let Article = sequelize.define("koablog_article", {
+
+});
+
+module.exports.ArticleView = ArticleView;

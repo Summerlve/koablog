@@ -1,9 +1,10 @@
-var router = require("koa-router")();
-var views = require("co-views");
+"use strict";
+let router = require("koa-router")();
+let views = require("co-views");
 // path
-var viewsPath = global.path.views;
+let viewsPath = global.path.views;
 // render
-var render = views(viewsPath, {
+let render = views(viewsPath, {
 	map: {
 		html: "ejs"
 	}

@@ -2,7 +2,7 @@
 let router = require("koa-router")();
 let views = require("co-views");
 let User = require("../models/User");
-let Article = require("../models/Article");
+let ArticleView = require("../models/Article").ArticleView;
 
 // path
 let viewsPath = global.path.views;
@@ -71,8 +71,8 @@ router
 			return ;
 		}
 
-		// get the newest 4 articles of this author
-		let articles = yield Article.findAll({
+		// get the newest 4 ArticleViews of this author
+		let ArticleViews = yield ArticleView.findAll({
 			order: [
 				["id", "DESC"]
 			],
@@ -84,7 +84,7 @@ router
 
 		this.body = yield render("/frontend/authors/details", {
 			author: author,
-			articles: articles,
+			ArticleViews: ArticleViews,
 			title: author.pen_name
 		});
 	});

@@ -1,9 +1,10 @@
 "use strict";
 let router = require("koa-router")();
-let Article = require("../models/Article");
+let ArticleView = require("../models/Article").ArticleView;
 let views = require("co-views");
 let parse = require("co-body");
 let Permission = require("../models/Permission");
+
 // path
 let viewsPath = global.path.views;
 // page
@@ -42,7 +43,7 @@ router
 
 				let sortingWay = sign === "+" ? "ASC" : "DESC"; // 确定升序还是降序
 
-				let articles = yield Article.findAll({
+				let articles = yield ArticleView.findAll({
 					where: author ? {author: author} : void 0,
 					order: [
 						[orderByWhat, sortingWay]
@@ -60,7 +61,7 @@ router
 				// page默认为1
 				let current = parseInt(this.query.page || 1, 10);
 
-				let articles = yield Article.findAll({
+				let articles = yield ArticleView.findAll({
 					order: ["id"],
 					offset: (current - 1) * limit,
 					limit: limit
@@ -72,7 +73,7 @@ router
 					return ;
 				}
 
-				let count = yield Article.count();
+				let count = yield ArticleView.count();
 
 				let previous = current - 1;
 				let next_ = count - limit * current > 0 ? current + 1 : 0;
@@ -112,7 +113,7 @@ router
 	.get("/articles/:id", function* (next) {
 		let id = parseInt(this.id, 10);
 
-		let article = yield Article.find({
+		let article = yield ArticleView.find({
 			where: {
 				id: id
 			}
@@ -125,7 +126,7 @@ router
 		}
 
 		// 检测previous、next页面
-		let previous = yield Article.find({
+		let previous = yield ArticleView.find({
 			order: [
 				["id", "DESC"]
 			],
@@ -137,7 +138,7 @@ router
 			limit: 1
 		});
 
-		let next_ = yield Article.find({
+		let next_ = yield ArticleView.find({
 			order: ["id"],
 			where: {
 				id: {
@@ -166,11 +167,16 @@ router
 		getPermissions,
 		function* (next) {
 			// get permissions from middleware getPermissions.js
+			// get userId from muddleware identity.js
 			let permissions = this.permissions;
+			let userId = this.userId;
 
 			// permission_id=5 为增加文章
 			if (permissions.indexOf(5)) {
 				// 添加文章
+				var article = ArticleView.build({
+
+				});
 			}
 
 			this.body = {

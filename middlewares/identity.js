@@ -26,6 +26,7 @@ function* identity (next) {
         return ;
     }
 
+	// get user_id from token
 	let userId = decode.iss;
 
 	let user = yield User
@@ -36,8 +37,9 @@ function* identity (next) {
 								}
 							});
 
-	// 将groupId添加到context上
+	// 将groupId和userId添加到context上
 	this.groupId = user.group_id;
+	this.userId = userId;
 
 	yield next;
 }
