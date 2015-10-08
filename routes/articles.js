@@ -1,8 +1,10 @@
 "use strict";
 let router = require("koa-router")();
 let ArticleView = require("../models/Article").ArticleView;
+let Tag = require("../models/Tag");
 let views = require("co-views");
 let parse = require("co-body");
+let Permission = require("../models/Permission").Permission;
 
 // path
 let viewsPath = global.path.views;
@@ -18,7 +20,7 @@ let render = views(viewsPath, {
 // middlewares
 let getToken = require("../middlewares/getToken");
 let getIdentity = require("../middlewares/getIdentity");
-let getPermissions = require("../middlewares/getPermissions");
+let getOwnPermissions = require("../middlewares/getOwnPermissions");
 
 // redirect '/' to the '/articles'
 router
@@ -163,26 +165,44 @@ router
 		"/articles",
 		getToken,
 		getIdentity,
-		getPermissions,
+		getOwnPermissions,
 		function* (next) {
-			// get permissions from middleware getPermissions.js
+			// get permissions from middleware getOwnPermissions.js
 			// get userId from muddleware getIdentity.js
-			let permissions = this.permissions;
+			let allPermissions = global.allPermissions;
+			let ownPermissions = this.ownPermissions;
 			let userId = this.userId;
 
 			// judge the permission
-			if (permissions.has("addArticle")) {
+			if (ownPermissions.has(allPermissions.get("addArticle"))) {
+				let body = yield parse.form(this);
+				let title = body.title;
+				let content = body.content;
+				let tag = body.tag;
+
+				console.log(title, tag, content);
+
 				// create new artilce
 				let article = ArticleView.build({
 
 				});
 
+				// add new article
+
+
 				this.body = {
 					statusCode: "200",
-					reasonPhrase: "add article succeed"
+					reasonPhrase: "OK",
+					description: "add article succeed"
 				};
 			} else {
-				console.log("hahaha");
+				// need permission
+				this.status = 403;
+				this.body = {
+					statusCode: 403,
+					reasonPhrase: "Forbidden",
+					description: "need permission add article"
+				}
 			}
 		}
 	);

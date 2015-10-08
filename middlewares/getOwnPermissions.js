@@ -7,7 +7,7 @@
 
 let PermissionToGroup = require("../models/Permission").PermissionToGroup;
 
-function* getPermissions (next) {
+function* getOwnPermissions (next) {
     //get group_id from middleware identity
     let groupId = this.groupId;
     let permissions = yield PermissionToGroup.findAll({
@@ -16,15 +16,13 @@ function* getPermissions (next) {
         }
     });
 
-    this.permissions = new Map();
+    this.ownPermissions = new Set();
 
     permissions.forEach((value) => {
-        this.permissions.set(value.name, value.id);
+        this.ownPermissions.add(value.id);
     });
-
-    console.log(this.permissions);
 
     yield next;
 }
 
-module.exports = getPermissions;
+module.exports = getOwnPermissions;

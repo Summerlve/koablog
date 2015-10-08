@@ -77,8 +77,9 @@ router
 		else {
 			this.status = 401;
 			this.body = {
-				status_code: 401,
-				error_description: "username or password is not correct"
+				statusCode: 401,
+				reasonPhrase: "Unauthorized",
+				description: "username or password is not correct"
 			}
 		}
 	});

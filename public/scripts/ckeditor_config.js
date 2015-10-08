@@ -36,4 +36,7 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// 关闭resize、elementspath插件
 	config.removePlugins = "resize,elementspath";
+
+	// set the fullPage mode , store the full html page
+	config.fullPage = true;
 };

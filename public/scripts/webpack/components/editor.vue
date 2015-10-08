@@ -26,14 +26,14 @@
                 <div class="modal-body">
                     <input
                         type="text"
-                        v-model="newArticle.title"
+                        v-model="article.title"
                         maxlength="120"
                         class="new-article-title"
                         id="new-article-title"
                         placeholder="标题">
                     <input
                         type="text"
-                        v-model="newArticle.tag"
+                        v-model="article.tag"
                         maxlength="120"
                         class="new-article-tag"
                         id="new-article-tag"
@@ -57,7 +57,7 @@
         data: function () {
             return {
                 editor: null, // 用于保存编辑器实例
-                newArticle: {
+                article: {
                     title: "",
                     tag: "",
                     content: "" // 编辑器的内容，既是文章的内容
@@ -74,11 +74,13 @@
                 // 取得存储的token，并且添加到http request的Authorization首部字段。
                 var token = JSON.parse(window.localStorage.getItem("token")).token;
 
+                // 发送article的数据
                 var postting = $.ajax({
                     url: "/articles",
                     headers: {
                         Authorization: "jwt " + token
                     },
+                    data: self.article,
                     dataType: "json", // set 'Accepts' header field
                     method: "POST" // set http method
                 });
@@ -116,7 +118,7 @@
 
             // 在编辑器的内容改变时，自动更新this.content
             this.editor.on("change", function (e) {
-                self.content = e.editor.getData();
+                self.article.content = e.editor.getData();
             });
 
             // 将modal添加到当前的组件实例上，以便于访问。

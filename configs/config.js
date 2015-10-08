@@ -65,24 +65,24 @@ global.cert = "koaBlog";
  *	this is a map from id to name , get permissions's id by name.
  *  for more details , see the table 'koablog_permission'.
  */
-// let Permission = require("../models/Permission").Permission;
-// let permissions = new Map();
-//
-// Permission
-// 	.findAll()
-// 	.then(
-// 		(data) => {
-// 			data.forEach((value) => {
-// 				permissions.set(value.name, value.id);
-// 			});
-// 		},
-// 		(error) => {
-// 			console.error("get permissions error");
-// 		}
-// 	)
-// 	.then(
-// 		(value) => {
-// 			// add permissions to global.permissions
-// 			global.permissions = permissions;
-// 		}
-// 	);
+let Permission = require("../models/Permission").Permission;
+let allPermissions = new Map();
+
+Permission
+	.findAll()
+	.then(
+		(data) => {
+			data.forEach((value) => {
+				allPermissions.set(value.name, value.id);
+			});
+		},
+		(error) => {
+			console.error("get permissions error");
+		}
+	)
+	.then(
+		(value) => {
+			// add permissions to global.permissions
+			global.allPermissions = allPermissions;
+		}
+	);
