@@ -3,7 +3,6 @@ let router = require("koa-router")();
 let ArticleView = require("../models/Article").ArticleView;
 let views = require("co-views");
 let parse = require("co-body");
-let Permission = require("../models/Permission");
 
 // path
 let viewsPath = global.path.views;
@@ -18,7 +17,7 @@ let render = views(viewsPath, {
 
 // middlewares
 let getToken = require("../middlewares/getToken");
-let identity = require("../middlewares/identity");
+let getIdentity = require("../middlewares/getIdentity");
 let getPermissions = require("../middlewares/getPermissions");
 
 // redirect '/' to the '/articles'
@@ -163,26 +162,28 @@ router
 	.post(
 		"/articles",
 		getToken,
-		identity,
+		getIdentity,
 		getPermissions,
 		function* (next) {
 			// get permissions from middleware getPermissions.js
-			// get userId from muddleware identity.js
+			// get userId from muddleware getIdentity.js
 			let permissions = this.permissions;
 			let userId = this.userId;
 
-			// permission_id=5 为增加文章
-			if (permissions.indexOf(5)) {
-				// 添加文章
-				var article = ArticleView.build({
+			// judge the permission
+			if (permissions.has("addArticle")) {
+				// create new artilce
+				let article = ArticleView.build({
 
 				});
-			}
 
-			this.body = {
-				statusCode: "200",
-				reasonPhrase: "add article succeed"
-			};
+				this.body = {
+					statusCode: "200",
+					reasonPhrase: "add article succeed"
+				};
+			} else {
+				console.log("hahaha");
+			}
 		}
 	);
 
@@ -190,9 +191,9 @@ router
 	.delete(
 		"/articles",
 		getToken,
-		identity,
+		getIdentity,
 		function* (next) {
-			// get group_id from middleware identity.js
+			// get group_id from middleware getIdentity.js
 			let group_id = this.group_id;
 
 			//get permissions

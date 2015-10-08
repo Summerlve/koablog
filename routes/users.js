@@ -2,7 +2,7 @@
 let router = require("koa-router")();
 let parse = require("co-body");
 let User = require("../models/User");
-let identity = require("../middlewares/identity");
+let getIdentity = require("../middlewares/getIdentity");
 
 router
 	.get("/users", function* (next) {
@@ -21,7 +21,7 @@ router
 router
 	.post(
 		"/users",
-		identity,
+		getIdentity,
 		function* (next) {
 			let groupId = this.groupId;
 			let permission

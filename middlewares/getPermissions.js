@@ -1,6 +1,8 @@
 "use strict";
 /*
  * get permissions
+ *  this.permissions is a map from id to name , get permissions's id by name.
+ *  for more details , see the table 'koablog_permission'.
  */
 
 let PermissionToGroup = require("../models/Permission").PermissionToGroup;
@@ -14,11 +16,13 @@ function* getPermissions (next) {
         }
     });
 
-    this.permissions = [];
+    this.permissions = new Map();
 
     permissions.forEach((value) => {
-        this.permissions.push(value.permission_id);
+        this.permissions.set(value.name, value.id);
     });
+
+    console.log(this.permissions);
 
     yield next;
 }

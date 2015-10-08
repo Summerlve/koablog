@@ -2,7 +2,7 @@
 let Sequelize = require("sequelize");
 let sequelize = global.sequelize;
 
-let Permission = sequelize.define("koablog_group", {
+let Permission = sequelize.define("koablog_permission", {
 	id: {
 		type: Sequelize.INTEGER(11),
 		primaryKey: true,

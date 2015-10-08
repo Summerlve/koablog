@@ -9,7 +9,7 @@ let User = require("../models/User");
 let cert = global.cert;
 
 // identity
-function* identity (next) {
+function* getIdentity (next) {
 	// get token from getToken middleware
 	let token = this.token;
 
@@ -44,4 +44,4 @@ function* identity (next) {
 	yield next;
 }
 
-module.exports = identity;
+module.exports = getIdentity;
