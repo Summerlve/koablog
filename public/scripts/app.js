@@ -527,6 +527,9 @@
 	                // 取得存储的token，并且添加到http request的Authorization首部字段。
 	                var token = JSON.parse(window.localStorage.getItem("token")).token;
 
+	                // 取出文章内容
+	                this.article.content = this.editor.getData();
+
 	                // 发送article的数据
 	                var postting = $.ajax({
 	                    url: "/articles",
@@ -553,9 +556,7 @@
 	            var self = this;
 
 	            // 监听上传事件
-	            this.$on("upload", function () {
-	                console.log(this.content);
-	            });
+
 	        },
 	        ready: function () {
 	            // hackthis
@@ -564,14 +565,6 @@
 	            // 实例化编辑器，并且设置自定义的配置文件
 	            this.editor = CKEDITOR.replace("editor", {
 	                customConfig: "/scripts/ckeditor_config.js"
-	            });
-
-	            // 在初始化编辑器之后将this.content渲染到编辑器中
-	            // this.editor.setData(this.newArticle.content);
-
-	            // 在编辑器的内容改变时，自动更新this.content
-	            this.editor.on("change", function (e) {
-	                self.article.content = e.editor.getData();
 	            });
 
 	            // 将modal添加到当前的组件实例上，以便于访问。
