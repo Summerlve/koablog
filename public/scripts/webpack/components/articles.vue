@@ -1,24 +1,24 @@
 <template>
-    <div class="container components-contents-articles-btns">
+    <div class="container articles-btns">
         <div class="row">
-            <div class="col-md-offset-9 col-md-3 col-sm-offset-9 col-sm-3 col-xs-12">
+            <div class="col-md-3">
                 <button
                     id="new"
                     class="btn btn-default btn-block"
                     data-toggle="modal"
                     data-target="#new-article-modal"
                     type="button">
-                    写博客
+                    Create new article
                 </button>
             </div>
         </div>
         <!-- articles -->
-        <div class="row components-contents-articles-articleList">
+        <div class="row articles-articleList">
             <!-- myArticles -->
-            <div class="col-md-7">
+            <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <span v-text="myArticles.panelHeading" class="h5"></span>
+                        <span class="h4">我的文章</span>
                     </div>
                     <table class="table table-hover table-condensed">
                         <tbody>
@@ -49,25 +49,6 @@
                     </div>
                 </div>
             </div>
-            <!-- myArticles end-->
-            <!-- recentArticles -->
-            <div class="col-md-5">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <span v-text="recentArticles.panelHeading" class="h5"></span>
-                    </div>
-                    <table class="table table-hover table-condensed">
-                        <tbody>
-                            <tr
-                                v-component="article-item"
-                                wait-for="get-recent-articles"
-                                v-repeat="article in recentArticles.data">
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <!-- recentArticles end -->
-            </div>
         </div>
         <editor></editor>
     </div>
@@ -82,51 +63,13 @@
                     page: 1, // 我的文章默认为第一页
                     limit: 6, // 我的文章每页有x篇文章
                     data: [],
-                    panelHeading: "我的文章",
                     left: "disabled",
                     right: false
-                },
-                recentArticles: {
-                    data: [],
-                    panelHeading: "最近的文章"
                 }
             };
         },
         // 组件实例方法
         methods: {
-            getRecentArticles: function (e) {
-                // 获取此博客系统最近的x篇文章
-
-                // fuckthis
-                var self = this;
-
-                // 取前x篇文章
-                var limit = 10;
-
-                // 按照创建时间的倒序
-                var sort = "-createAt";
-
-                // get the recent 5 articles.
-                var getting = $.ajax({
-                    url: "/articles",
-                    data: {
-                        sort: sort,
-                        limit: limit,
-                        offset: 0
-                    },
-                    dataType: "json", // set 'Accepts' header field
-                    method: "GET" // set http method
-                });
-
-                getting
-                    .done(function (data) {
-                        self.$data.recentArticles.data = data;
-                        self.$emit("get-recent-articles");
-                    })
-                    .fail(function (error) {
-                        console.log(error);
-                    });
-            },
             pageDown: function () {
                 var page = this.$data.myArticles.page;
                 if (page === 1) {
@@ -195,7 +138,6 @@
         // 生命周期
         created: function () {
             this.getMyArticles();
-            this.getRecentArticles();
         },
         // 组件
         components: {

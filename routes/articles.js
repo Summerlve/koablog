@@ -21,6 +21,7 @@ let render = views(viewsPath, {
 let getToken = require("../middlewares/getToken");
 let getIdentity = require("../middlewares/getIdentity");
 let getOwnPermissions = require("../middlewares/getOwnPermissions");
+let getAllPermissions = require("../middlewares/getAllPermissions");
 
 // redirect '/' to the '/articles'
 router
@@ -166,11 +167,13 @@ router
 		getToken,
 		getIdentity,
 		getOwnPermissions,
+		getAllPermissions,
 		function* (next) {
+			// get allPermissions from middleware
+			let allPermissions = this.allPermissions;
 			// get permissions from middleware getOwnPermissions.js
-			// get userId from muddleware getIdentity.js
-			let allPermissions = global.allPermissions;
 			let ownPermissions = this.ownPermissions;
+			// get userId from muddleware getIdentity.js
 			let userId = this.userId;
 
 			// judge the permission
@@ -195,7 +198,8 @@ router
 					reasonPhrase: "OK",
 					description: "add article succeed"
 				};
-			} else {
+			}
+			else {
 				// need permission
 				this.status = 403;
 				this.body = {
@@ -212,11 +216,32 @@ router
 		"/articles",
 		getToken,
 		getIdentity,
+		getOwnPermissions,
+		getAllPermissions,
 		function* (next) {
-			// get group_id from middleware getIdentity.js
-			let group_id = this.group_id;
+			// 权限说明：root账户有所有的权限，因此能够删除任意的文章，而作者只能删除自己的文章
+			// get allPermissions from middleware
+			let allPermissions = this.allPermissions;
+			// get ownPermissions from middleware getOwnPermissions.js
+			let ownPermissions = this.ownPermissions;
+			// get userId and from muddleware getIdentity.js
+			let userId = this.userId;
 
-			//get permissions
+			if (ownPermissions.has(allPermissions.get("deleteArticle"))) {
+
+			}
+		}
+	);
+
+router
+	.put(
+		"/articles",
+		getToken,
+		getIdentity,
+		getOwnPermissions,
+		getAllPermissions,
+		function* (next) {
+
 		}
 	);
 

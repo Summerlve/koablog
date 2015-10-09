@@ -29,13 +29,12 @@ function* getIdentity (next) {
 	// get user_id from token
 	let userId = decode.iss;
 
-	let user = yield User
-							.find({
-								attributes: ["group_id"],
-								where: {
-									id: userId
-								}
-							});
+	let user = yield User.find({
+		attributes: ["group_id"],
+		where: {
+			id: userId
+		}
+	});
 
 	// 将groupId和userId添加到context上
 	this.groupId = user.group_id;

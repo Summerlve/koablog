@@ -38,5 +38,5 @@ CKEDITOR.editorConfig = function( config ) {
 	config.removePlugins = "resize,elementspath";
 
 	// set the fullPage mode , store the full html page
-	config.fullPage = true;
+	// config.fullPage = true;
 };

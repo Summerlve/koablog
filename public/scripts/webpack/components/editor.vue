@@ -20,7 +20,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title" id="new-article-modal-title">
-                        写一篇新的文章
+                        Create an article
                     </h4>
                 </div>
                 <div class="modal-body">
@@ -56,7 +56,6 @@
         modal: $("#new-article-modal"),
         data: function () {
             return {
-                editor: null, // 用于保存编辑器实例
                 article: {
                     title: "",
                     tag: "",
@@ -76,6 +75,15 @@
 
                 // 取出文章内容
                 this.article.content = this.editor.getData();
+
+                var title = this.article.title;
+                var tag = this.article.tag;
+                var content = this.article.content;
+
+                if (title === "" || tag === "" || content === "") {
+                    alert("title或者tag或者content不能为空");
+                    return ;
+                }
 
                 // 发送article的数据
                 var postting = $.ajax({
@@ -101,15 +109,13 @@
         created: function () {
             // hackthis
             var self = this;
-
-            // 监听上传事件
-
         },
         ready: function () {
             // hackthis
             var self = this;
 
             // 实例化编辑器，并且设置自定义的配置文件
+            // 将editor添加到当前的组件实例上，以便于访问
             this.editor = CKEDITOR.replace("editor", {
                 customConfig: "/scripts/ckeditor_config.js"
             });

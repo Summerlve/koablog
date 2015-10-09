@@ -60,29 +60,3 @@ global.path.views = path.join(root, "views");
  *
  */
 global.cert = "koaBlog";
-
-/* add permissions to global
- *	this is a map from id to name , get permissions's id by name.
- *  for more details , see the table 'koablog_permission'.
- */
-let Permission = require("../models/Permission").Permission;
-let allPermissions = new Map();
-
-Permission
-	.findAll()
-	.then(
-		(data) => {
-			data.forEach((value) => {
-				allPermissions.set(value.name, value.id);
-			});
-		},
-		(error) => {
-			console.error("get permissions error");
-		}
-	)
-	.then(
-		(value) => {
-			// add permissions to global.permissions
-			global.allPermissions = allPermissions;
-		}
-	);

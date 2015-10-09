@@ -14,8 +14,10 @@ function* getToken (next) {
     if (!authorization) {
         this.status = 401;
         this.body = {
-            status_code: 401,
-            error_description: "there is no token in the http request header field 'Authorization'"
+            statusCode: 401,
+            reasonPhrase: "Unauthorized",
+            description: "there is no token in the http request header field 'Authorization'",
+            errorCode: 1000
         }
         return ;
     }
@@ -31,8 +33,10 @@ function* getToken (next) {
     } catch (e) {
         this.status = 400;
         this.body = {
-            status_code: 400,
-            error_description: "wrong token"
+            statusCode: 400,
+            reasonPhrase: "Bad Request",
+            description: "wrong token",
+            errorCode: 1001
         }
 
         return ;
@@ -43,8 +47,10 @@ function* getToken (next) {
     if (expires <= Date.now()) {
         this.status = 400;
         this.body = {
-            status_code: 400,
-            error_description: "token out of date"
+            statusCode: 400,
+            reasonPhrase: "Bad Request",
+            description: "token out of date",
+            errorCode: 1002
         }
 
         return ;
@@ -58,8 +64,10 @@ function* getToken (next) {
     if (!isTokenExsit) {
         this.status = 400;
         this.body = {
-            status_code: 400,
-            error_description: "token do not exsit, please log in again"
+            statusCode: 400,
+            reasonPhrase: "Bad Request",
+            description: "token do not exsit, please log in again",
+            errorCode: 1003
         }
 
         return ;

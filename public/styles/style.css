@@ -212,12 +212,12 @@ a:hover{
 }
 
 /*nav的margin-bottom: 20px;加上这里的margin-top: 10px; 就产生了30px的距离*/
-.components-contents-articles-btns{
+.articles-btns{
 	margin-top: 10px;
 }
 
 /*articleList与btns之间的距离*/
-.components-contents-articles-articleList{
+.articles-articleList{
 	margin-top: 30px;
 }
 
@@ -226,7 +226,7 @@ a:hover{
 	display: inline-block !important;
 }
 
-.components-contents-articles-articleList .label{
+.articles-articleList .label{
 	/*缩小label的尺寸*/
 	font-size: 40% !important;
 }
