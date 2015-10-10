@@ -1,7 +1,7 @@
 <template>
     <div class="container articles-btns">
         <div class="row">
-            <div class="col-md-3 col-sm-4 col-xs-12">
+            <div class="col-md-offset-9 col-md-3 col-sm-offset-8 col-sm-4 col-xs-12">
                 <button
                     id="new"
                     class="btn btn-default btn-block"

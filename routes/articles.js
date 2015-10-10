@@ -64,7 +64,10 @@ router
 				let current = parseInt(this.query.page || 1, 10);
 
 				let articles = yield ArticleView.findAll({
-					order: ["id"],
+					attributes: ["id", "author", "title", "tag", "createAt"],
+					order: [
+						["createAt", "DESC"]
+					],
 					offset: (current - 1) * limit,
 					limit: limit
 				});
@@ -184,7 +187,7 @@ router
 				let tag = yield Tag
 									.findOrCreate({
 										where: {
-											name: tag
+											name: body.tag
 										}
 									});
 

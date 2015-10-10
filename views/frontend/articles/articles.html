@@ -20,24 +20,32 @@
             <!--end of classifications row-->
             <!--contents row-->
             <div class="contents-row row">
-                <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
+                <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
                     <% for (var i = 0; i < articles.length; i++) { %>
                     <div class="article-row row">
                         <div class="col-md-12">
                             <div class="media">
                                 <div class="media-body">
                                     <a href="/articles/<%= articles[i].id %>">
-                                        <p class="article-row-title"><%= articles[i].title %></p>
+                                        <span class="article-row-title"><%= articles[i].title %></span>
                                     </a>
-                                    <p class="article-row-author"><%= articles[i].author %></p>
-                                    <p class="article-row-brief"><%= articles[i].content %></p>
+                                    &nbsp<span>#<%= articles[i].tag %></span>
+                                    <%
+                                        var time = new Date(articles[i].createAt);
+                                        var timeString = [
+                                            time.getFullYear(),
+                                            time.getMonth() + 1,
+                                            time.getDate()
+                                        ].join(" / ");
+                                    %>
+                                    <p class="article-row-author">By <%= articles[i].author %> at <%= timeString %></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <% } %>
                 </div>
-                <div class="col-md-2 col-sm-1"></div>
+                <div class="col-md-3 col-sm-2"></div>
             </div>
             <!--end of contents row-->
             <!--page row-->
