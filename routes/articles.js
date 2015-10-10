@@ -179,32 +179,45 @@ router
 			// judge the permission
 			if (ownPermissions.has(allPermissions.get("addArticle"))) {
 				let body = yield parse.form(this);
-				let title = body.title;
-				let content = body.content;
-				let tag = body.tag;
-
-				console.log(title, tag, content);
 
 				// create tag if no exist
-				yield Tag
-						.findOrCreate({
-							where: {
-								name: tag
-							}
-						});
+				let tag = yield Tag
+									.findOrCreate({
+										where: {
+											name: tag
+										}
+									});
+
+				tag = tag[0];
+
+				let tagId = tag.id;
 
 				// create artilce
-				yield Article
-						.build({
-							
-						})
-						.save();
+				try {
+					yield Article
+							.build({
+								title: body.title,
+								tag_id: tagId,
+								content: body.content,
+								user_id: userId
+							})
+							.save();
 
-				this.body = {
-					statusCode: "200",
-					reasonPhrase: "OK",
-					description: "add article succeed"
-				};
+					this.body = {
+						statusCode: "200",
+						reasonPhrase: "OK",
+						description: "add article succeed"
+					};
+				}
+				catch (error) {
+					this.status = 500;
+					this.body = {
+						statusCode: "500",
+						reasonPhrase: "Internal Server Error",
+						description: "add article fialed",
+						errorCode: 1004
+					}
+				}
 			}
 			else {
 				// need permission

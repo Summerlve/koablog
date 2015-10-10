@@ -27,21 +27,13 @@ app.keys = ["koaBlog"];
 app.use(session(app));
 
 // routes loader
-let about = require("./routes/about");
-let articles = require("./routes/articles");
-let authorization = require("./routes/authentication");
-let authors = require("./routes/authors");
-let panel = require("./routes/panel");
-let tags = require("./routes/tags");
-let users = require("./routes/users");
-
-app.use(about);
-app.use(articles);
-app.use(authorization);
-app.use(authors);
-app.use(panel);
-app.use(tags);
-app.use(users);
+app.use(require("./routes/about"));
+app.use(require("./routes/articles"));
+app.use(require("./routes/authentication"));
+app.use(require("./routes/authors"));
+app.use(require("./routes/panel"));
+app.use(require("./routes/tags"));
+app.use(require("./routes/users"));
 
 // gzip compress
 let compress = require("koa-compress");

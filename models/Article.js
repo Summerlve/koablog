@@ -90,7 +90,6 @@ let Article = sequelize.define("koablog_article", {
 	},
 	createAt: {
 		type: Sequelize.DATE,
-		allowNull: false,
 		field: "createAt",
 	}
 });
