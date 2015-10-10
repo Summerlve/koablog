@@ -2,6 +2,7 @@
 let Sequelize = require("sequelize");
 let sequelize = global.sequelize;
 let User = require("./User");
+let Tag = require("./Tag");
 let moment = require("moment");
 
 let ArticleView = sequelize.define("koablog_view_article", {
@@ -15,7 +16,6 @@ let ArticleView = sequelize.define("koablog_view_article", {
 	title: {
 		type: Sequelize.STRING(40),
 		allowNull: false,
-		unique: false,
 		field: "title"
 	},
 	author: {
@@ -52,7 +52,48 @@ let ArticleView = sequelize.define("koablog_view_article", {
 });
 
 let Article = sequelize.define("koablog_article", {
-
+	id: {
+		type: Sequelize.INTEGER(11),
+		allowNull: false,
+		unique: true,
+		primaryKey: true,
+		autoIncrement: true,
+		field: "id"
+	},
+	title: {
+		type: Sequelize.STRING(40),
+		allowNull: false,
+		field: "title"
+	},
+	user_id: {
+		type: Sequelize.INTEGER(11),
+		allowNull: false,
+		field: "user_id",
+		references: {
+			model: User,
+			key: "id"
+		}
+	},
+	content: {
+		type: Sequelize.TEXT,
+		allowNull: false,
+		field: "content"
+	},
+	tag_id: {
+		type: Sequelize.INTEGER(11),
+		allowNull: false,
+		field: "tag_id",
+		references: {
+			model: Tag,
+			key: "id"
+		}
+	},
+	createAt: {
+		type: Sequelize.DATE,
+		allowNull: false,
+		field: "createAt",
+	}
 });
 
 module.exports.ArticleView = ArticleView;
+module.exports.Article = Article;

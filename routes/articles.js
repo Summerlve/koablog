@@ -1,10 +1,10 @@
 "use strict";
 let router = require("koa-router")();
 let ArticleView = require("../models/Article").ArticleView;
+let Article = require("../models/Article").Article;
 let Tag = require("../models/Tag");
 let views = require("co-views");
 let parse = require("co-body");
-let Permission = require("../models/Permission").Permission;
 
 // path
 let viewsPath = global.path.views;
@@ -185,13 +185,20 @@ router
 
 				console.log(title, tag, content);
 
-				// create new artilce
-				let article = ArticleView.build({
+				// create tag if no exist
+				yield Tag
+						.findOrCreate({
+							where: {
+								name: tag
+							}
+						});
 
-				});
-
-				// add new article
-
+				// create artilce
+				yield Article
+						.build({
+							
+						})
+						.save();
 
 				this.body = {
 					statusCode: "200",
@@ -211,6 +218,7 @@ router
 		}
 	);
 
+// delete an article
 router
 	.delete(
 		"/articles",
@@ -233,6 +241,7 @@ router
 		}
 	);
 
+// change an article
 router
 	.put(
 		"/articles",

@@ -8,6 +8,7 @@ let User = sequelize.define("koablog_user", {
 		allowNull: false,
 		unique: true,
 		primaryKey: true,
+		autoIncrement: true,
 		field: "id"
 	},
 	username: {

@@ -1,7 +1,7 @@
 <template>
     <div class="container articles-btns">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-4 col-xs-12">
                 <button
                     id="new"
                     class="btn btn-default btn-block"
@@ -18,9 +18,9 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <span class="h4">我的文章</span>
+                        <span class="h5">我的文章</span>
                     </div>
-                    <table class="table table-hover table-condensed">
+                    <table class="table table-hover">
                         <tbody>
                             <tr
                                 v-component="article-item"

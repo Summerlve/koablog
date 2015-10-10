@@ -8,6 +8,7 @@ let Tag = sequelize.define("koablog_tag", {
 		allowNull: false,
 		unique: true,
 		primaryKey: true,
+		autoIncrement: true,
 		field: "id"
 	},
 	name: {
