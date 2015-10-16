@@ -255,8 +255,20 @@ router
 
 // delete an article
 router
+	.param("id", function* (id, next) {
+		if (isNaN(parseInt(id, 10))) {
+			// id不是数字的情况，就404。
+			this.status = 404;
+			this.body = "article not found";
+			return ;
+		}
+		else {
+			this.id = id;
+		}
+		yield next;
+	})
 	.delete(
-		"/articles",
+		"/articles/:id",
 		getToken,
 		getIdentity,
 		getOwnPermissions,
@@ -270,16 +282,50 @@ router
 			// get userId and from muddleware getIdentity.js
 			let userId = this.userId;
 
-			if (ownPermissions.has(allPermissions.get("deleteArticle"))) {
+			// get article's id
+			let id = this.id;
 
+			//
+			let isOwn = yield Article.find({
+				where: {
+					id: id,
+					user_id: userId
+				}
+			});
+
+			isOwn = isOwn.length === 1 ? true : false;
+
+			if (ownPermissions.has(allPermissions.get("deleteArticle")) || isOwn) {
+				yield Article.destroy({
+					where: {
+						id: id
+					}
+				});
+
+				this.status = 200;
+				this.body = {
+
+				};
 			}
 		}
 	);
 
 // change an article
 router
+	.param("id", function* (id, next) {
+		if (isNaN(parseInt(id, 10))) {
+			// id不是数字的情况，就404。
+			this.status = 404;
+			this.body = "article not found";
+			return ;
+		}
+		else {
+			this.id = id;
+		}
+		yield next;
+	})
 	.put(
-		"/articles",
+		"/articles/:id",
 		getToken,
 		getIdentity,
 		getOwnPermissions,

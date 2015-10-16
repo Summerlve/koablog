@@ -113,7 +113,8 @@
             this.$on("get-artcile-by-id", function (data) {
                 self.article.title = data.title;
                 self.article.tag = data.tag;
-
+                self.editor.setData(data.content);
+                self.modal.modal("show");
             });
         },
         ready: function () {
