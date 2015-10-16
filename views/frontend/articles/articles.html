@@ -20,16 +20,18 @@
             <!--end of classifications row-->
             <!--contents row-->
             <div class="contents-row row">
-                <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+                <div class="col-md-4 col-md-offset-4 col-sm-8 col-sm-offset-2">
                     <% for (var i = 0; i < articles.length; i++) { %>
                     <div class="article-row row">
                         <div class="col-md-12">
                             <div class="media">
                                 <div class="media-body">
-                                    <a href="/articles/<%= articles[i].id %>">
-                                        <span class="article-row-title"><%= articles[i].title %></span>
-                                    </a>
-                                    &nbsp<span>#<%= articles[i].tag %></span>
+                                    <h4 class="medis-heading">
+                                        <a href="/articles/<%= articles[i].id %>">
+                                            <span class="article-row-title"><%= articles[i].title %></span>
+                                        </a>
+                                        &nbsp<span>#<%= articles[i].tag %></span>
+                                    </h4>
                                     <%
                                         var time = new Date(articles[i].createAt);
                                         var timeString = [
@@ -45,7 +47,7 @@
                     </div>
                     <% } %>
                 </div>
-                <div class="col-md-3 col-sm-2"></div>
+                <div class="col-md-4 col-sm-2"></div>
             </div>
             <!--end of contents row-->
             <!--page row-->

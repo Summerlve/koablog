@@ -26,12 +26,22 @@
                             <div class="media">
                                 <div class="media-body">
                                     <div class="article-details-header page-header">
-                                        <h1 class="article-details-title"><%= article.title %></h1>
+                                        <h3 class="article-details-title">
+                                            <%= article.title %>
+                                            &nbsp
+                                            #<%= article.tag %>
+                                        </h3>
                                     </div>
-                                    <h3 class="article-details-author"><%= article.author %>
-                                        <span class="article-details-tag label label-default"><%= article.tag %></span>
-                                    </h3>
-                                    <p class="article-details-content"><%- article.content %></p>
+                                    <%
+                                        var time = new Date(article.createAt);
+                                        var timeString = [
+                                            time.getFullYear(),
+                                            time.getMonth() + 1,
+                                            time.getDate()
+                                        ].join(" / ");
+                                    %>
+                                    <h4 class="article-details-author">By <%= article.author %> at <%= timeString %></h4>
+                                    <article class="article-details-content"><%- article.content %></article>
                                 </div>
                             </div>
                         </div>
@@ -41,7 +51,7 @@
             </div>
             <!--end of contents row-->
             <!--page row-->
-            <div class="page-row row">
+            <!-- <div class="page-row row">
                 <div class="col-md-8 col-md-offset-2">
                 	<nav>
                 		<ul class="pager">
@@ -59,7 +69,7 @@
                 	</nav>
                 </div>
                 <div class="col-md-2"></div>
-            </div>
+            </div> -->
             <!--end of page row-->
         </div>
         <!--end of container-fluid-->

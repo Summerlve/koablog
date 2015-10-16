@@ -138,6 +138,9 @@
         // 生命周期
         created: function () {
             this.getMyArticles();
+            this.$on("get-artcile-by-id", function (data) {
+                this.$broadcast("get-artcile-by-id", data);
+            });
         },
         // 组件
         components: {

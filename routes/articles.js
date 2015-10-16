@@ -116,51 +116,69 @@ router
 		yield next;
 	})
 	.get("/articles/:id", function* (next) {
-		let id = parseInt(this.id, 10);
+		switch (this.accepts("json", "html")) {
+			case "html": {
+				let id = parseInt(this.id, 10);
+				let article = yield ArticleView.find({
+					where: {
+						id: id
+					}
+				});
 
-		let article = yield ArticleView.find({
-			where: {
-				id: id
+				if (article === null) {
+					this.status = 404;
+					this.body = "article not found";
+					return ;
+				}
+
+				// 检测previous、next页面
+				let previous = yield ArticleView.find({
+					order: [
+						["id", "DESC"]
+					],
+					where: {
+						id: {
+							$lt: id
+						}
+					},
+					limit: 1
+				});
+
+				let next_ = yield ArticleView.find({
+					order: ["id"],
+					where: {
+						id: {
+							$gt: id
+						}
+					},
+					limit: 1
+				});
+
+				this.body = yield render("/frontend/articles/details", {
+					article: article,
+					title: article.title,
+					page: {
+						previous: previous === null ? 0 : previous.id,
+						next: next_ === null ? 0 : next_.id
+					}
+				});
+			}break;
+			case "json": {
+				let id = parseInt(this.id, 10);
+
+				let article = yield ArticleView.find({
+					where: {
+						id: id
+					}
+				});
+
+				this.body = article;
+			}break;
+			default: {
+				// 只允许json和html。
+				this.throw(406, "json and html only");
 			}
-		});
-
-		if (article === null) {
-			this.status = 404;
-			this.body = "article not found";
-			return ;
 		}
-
-		// 检测previous、next页面
-		let previous = yield ArticleView.find({
-			order: [
-				["id", "DESC"]
-			],
-			where: {
-				id: {
-					$lt: id
-				}
-			},
-			limit: 1
-		});
-
-		let next_ = yield ArticleView.find({
-			order: ["id"],
-			where: {
-				id: {
-					$gt: id
-				}
-			},
-			limit: 1
-		});
-
-		this.body = yield render("/frontend/articles/details", {
-			article: article,
-			title: article.title,
-			page: {
-				previous: previous === null ? 0 : previous.id,
-				next: next_ === null ? 0 : next_.id
-			}
-		});
 	});
 
 // add new article
@@ -213,6 +231,7 @@ router
 					};
 				}
 				catch (error) {
+					console.log(error);
 					this.status = 500;
 					this.body = {
 						statusCode: "500",

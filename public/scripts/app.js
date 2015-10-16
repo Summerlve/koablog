@@ -433,6 +433,9 @@
 	        // 生命周期
 	        created: function () {
 	            this.getMyArticles();
+	            this.$on("get-artcile-by-id", function (data) {
+	                this.$broadcast("get-artcile-by-id", data);
+	            });
 	        },
 	        // 组件
 	        components: {
@@ -523,6 +526,12 @@
 	        created: function () {
 	            // hackthis
 	            var self = this;
+
+	            this.$on("get-artcile-by-id", function (data) {
+	                self.article.title = data.title;
+	                self.article.tag = data.tag;
+
+	            });
 	        },
 	        ready: function () {
 	            // hackthis
@@ -574,10 +583,23 @@
 /***/ function(module, exports) {
 
 	module.exports = {
-
 	        methods: {
-	            onClick: function (e) {
+	            update: function (id) {
+	                var self = this;
 
+	                var getting = $.ajax({
+	                    url: "/articles/" + id,
+	                    dataType: "json", // set 'Accepts' header field
+	                    method: "GET" // set http method
+	                });
+
+	                getting
+	                    .done(function (data) {
+	                        self.$dispatch("get-artcile-by-id", data);
+	                    })
+	                    .fail(function (error) {
+	                        console.log(error);
+	                    });
 	            }
 	        }
 	    };
@@ -586,7 +608,7 @@
 /* 30 */
 /***/ function(module, exports) {
 
-	module.exports = "<tr>\n        <td>\n            <div class=\"media\">\n                <div class=\"media-body\">\n                    <h3 class=\"media-heading\">\n                        <span v-text=\"article.title\" class=\"h4\"></span>\n                        <span>#{{article.tag}}</span>\n                    </h3>\n                    <span class=\"small\">By</span>\n                    <span v-text=\"article.author\" class=\"h4\"></span>\n                    <span class=\"small\">at</span>\n                    <span v-text=\"article.createAt | timeFormat\" class=\"\"></span>\n                </div>\n            </div>\n        </td>\n    </tr>";
+	module.exports = "<tr>\n        <td>\n            <div class=\"row\">\n                <div class=\"col-md-8\">\n                    <div class=\"media\">\n                        <div class=\"media-body\">\n                            <h3 class=\"media-heading\">\n                                <span v-text=\"article.title\" class=\"h4\"></span>\n                                <span>#{{article.tag}}</span>\n                            </h3>\n                            <span class=\"small\">By</span>\n                            <span v-text=\"article.author\" class=\"h4\"></span>\n                            <span class=\"small\">at</span>\n                            <span v-text=\"article.createAt | timeFormat\" class=\"\"></span>\n                        </div>\n                    </div>\n                </div>\n                <div class=\"clearfix visible-md-block\"></div>\n                <div class=\"col-md-4\">\n                    <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"...\">\n                      <button v-on=\"click: update(article.id)\"type=\"button\" class=\"btn btn-default\">修改</button>\n                    </div>\n                </div>\n            </div>\n        </td>\n    </tr>";
 
 /***/ },
 /* 31 */

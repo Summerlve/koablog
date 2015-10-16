@@ -109,6 +109,12 @@
         created: function () {
             // hackthis
             var self = this;
+
+            this.$on("get-artcile-by-id", function (data) {
+                self.article.title = data.title;
+                self.article.tag = data.tag;
+
+            });
         },
         ready: function () {
             // hackthis
