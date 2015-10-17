@@ -3,11 +3,6 @@
 	font-size: 14px;
 }
 
-img{
-	width: 250px;
-	height: 250px;
-}
-
 /* 将<a>变成紫色 */
 a{
 	color: #940094;
@@ -16,6 +11,12 @@ a{
 a:hover{
 	text-decoration: none;
 	color: #450045;
+}
+
+/*头像的大小*/
+.avator{
+	width: 250px;
+	height: 250px;
 }
 
 /* 将navbar里面的<a>强制变成紫色 */

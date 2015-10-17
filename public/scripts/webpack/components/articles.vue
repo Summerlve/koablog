@@ -4,20 +4,16 @@
             <div class="col-md-3">
                 <div class="row">
                     <div class="col-md-12">
-                        <img src="/images/1-2.jpg" alt="avator" class="img-rounded">
+                        <img src="/images/1-2.jpg" alt="avator" class="img-rounded avator">
                     </div>
                 </div>
                 <br>
                 <div class="row">
                     <div class="col-md-12">
-                        <h4>
-                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                            {{user.pen_name}}
-                        </h4>
-                        <h4>
-                            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
-                            {{user.username}}
-                        </h4>
+                        <span class="h3">{{user.pen_name}}  13Articles</span>
+                        <br>
+                        <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                        <a href="mailto:{{user.username}}">{{user.username}}</a>
                     </div>
                 </div>
             </div>

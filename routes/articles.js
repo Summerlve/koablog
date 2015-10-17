@@ -331,7 +331,7 @@ router
 		getOwnPermissions,
 		getAllPermissions,
 		function* (next) {
-
+			
 		}
 	);
 
