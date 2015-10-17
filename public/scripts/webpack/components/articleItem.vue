@@ -65,7 +65,7 @@
 
                 getting
                     .done(function (data) {
-                        alter("删除成功");
+                        alert("删除成功");
                     })
                     .fail(function (error) {
                         console.log(error);

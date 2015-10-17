@@ -30,14 +30,25 @@
 				return ;
 			}
 
-			var token = JSON.parse(window.localStorage.getItem("token"));
-			var expires = token.exp;
+			// check the token is expirse
+			var token = JSON.parse(window.localStorage.getItem("token")).token;
 
-			if (expires <= Date.now()) {
-				this.currentView = "authentication";
-			} else {
-				this.currentView = "panel"
-			}
+			var verify = $.ajax({
+				url: "/authentication",
+				dataType: "json",
+				method: "PUT",
+				headers: {
+					Authorization: "jwt " + token
+				}
+			});
+
+			verify
+				.done(function (data) {
+					self.currentView = "panel";
+				})
+				.fail(function (error) {
+					self.currentView = "authentication";
+				});
 		},
 		components: {
 			authentication: require("./authentication.vue"),

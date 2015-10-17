@@ -27,13 +27,6 @@ let render = views(viewsPath, {
 let getToken = require("../middlewares/getToken");
 
 router
-	.get("/panel", function* (next) {
-		this.body = yield render("/backend/panel", {
-			title: "Panel"
-		});
-	});
-
-router
 	.post("/authentication", function* (next) {
 		let body = yield parse.form(this);
 
@@ -99,6 +92,18 @@ router
 			this.body = {
 				status_code: 200,
 				description: "log out succeed"
+			};
+		}
+	);
+
+router
+	.put(
+		"/authentication",
+		getToken,
+		function* (next) {
+			this.status = 200;
+			this.body = {
+
 			};
 		}
 	);

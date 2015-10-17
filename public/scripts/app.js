@@ -104,14 +104,25 @@
 					return ;
 				}
 
-				var token = JSON.parse(window.localStorage.getItem("token"));
-				var expires = token.exp;
+				// check the token is expirse
+				var token = JSON.parse(window.localStorage.getItem("token")).token;
 
-				if (expires <= Date.now()) {
-					this.currentView = "authentication";
-				} else {
-					this.currentView = "panel"
-				}
+				var verify = $.ajax({
+					url: "/authentication",
+					dataType: "json",
+					method: "PUT",
+					headers: {
+						Authorization: "jwt " + token
+					}
+				});
+
+				verify
+					.done(function (data) {
+						self.currentView = "panel";
+					})
+					.fail(function (error) {
+						self.currentView = "authentication";
+					});
 			},
 			components: {
 				authentication: __webpack_require__(13),
@@ -619,7 +630,7 @@
 
 	                getting
 	                    .done(function (data) {
-	                        alter("删除成功");
+	                        alert("删除成功");
 	                    })
 	                    .fail(function (error) {
 	                        console.log(error);
@@ -638,7 +649,7 @@
 /* 31 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container articles-btns\">\n        <div class=\"row\">\n            <div class=\"col-md-offset-9 col-md-3 col-sm-offset-8 col-sm-4 col-xs-12\">\n                <button\n                    id=\"new\"\n                    class=\"btn btn-default btn-block\"\n                    data-toggle=\"modal\"\n                    data-target=\"#new-article-modal\"\n                    type=\"button\">\n                    Create new article\n                </button>\n            </div>\n        </div>\n        <!-- articles -->\n        <div class=\"row articles-articleList\">\n            <!-- myArticles -->\n            <div class=\"col-md-12\">\n                <div class=\"panel panel-default\">\n                    <div class=\"panel-heading\">\n                        <span class=\"h5\">我的文章</span>\n                    </div>\n                    <table class=\"table table-hover\">\n                        <tbody>\n                            <tr\n                                v-component=\"article-item\"\n                                wait-for=\"get-my-articles\"\n                                v-repeat=\"article in myArticles.data\">\n                            </tr>\n                        </tbody>\n                    </table>\n                    <div class=\"panel-footer text-right\">\n                        <div class=\"btn-group btn-group-xs\" role=\"group\">\n                            <button\n                                v-attr=\"disabled: myArticles.left\"\n                                v-on=\"click: pageDown\"\n                                type=\"button\"\n                                class=\"btn btn-default\">\n                                <span class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span>\n                            </button>\n                            <button\n                                v-attr=\"disabled: myArticles.right\"\n                                v-on=\"click: pageUp\"\n                                type=\"button\"\n                                class=\"btn btn-default\">\n                                <span class=\"glyphicon glyphicon-menu-right\" aria-hidden=\"true\"></span>\n                            </button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n        <editor></editor>\n    </div>";
+	module.exports = "<div class=\"container articles-btns\">\n        <div class=\"row\">\n            <div class=\"col-md-4\">\n                <div class=\"row\">\n                    <div class=\"col-md-12\">\n                        <img src=\"/images/1-1.jpg\" alt=\"...\" class=\"img-thumbnail\">\n                    </div>\n                </div>\n                <div class=\"row\">\n                    <div class=\"col-md-12\">\n                        <span>Summer</span>\n                    </div>\n                </div>\n            </div>\n            <div class=\"col-md-8\">\n                <div class=\"row\">\n                    <div class=\"col-md-offset-9 col-md-3 col-sm-offset-8 col-sm-4 col-xs-12\">\n                        <button\n                            id=\"new\"\n                            class=\"btn btn-default btn-block\"\n                            data-toggle=\"modal\"\n                            data-target=\"#new-article-modal\"\n                            type=\"button\">\n                            Create new article\n                        </button>\n                    </div>\n                </div>\n\n                <!-- articles -->\n                <div class=\"row articles-articleList\">\n                    <!-- myArticles -->\n                    <div class=\"col-md-12\">\n                        <div class=\"panel panel-default\">\n                            <div class=\"panel-heading\">\n                                <span class=\"h5\">我的文章</span>\n                            </div>\n                            <table class=\"table table-hover\">\n                                <tbody>\n                                    <tr\n                                        v-component=\"article-item\"\n                                        wait-for=\"get-my-articles\"\n                                        v-repeat=\"article in myArticles.data\">\n                                    </tr>\n                                </tbody>\n                            </table>\n                            <div class=\"panel-footer text-right\">\n                                <div class=\"btn-group btn-group-xs\" role=\"group\">\n                                    <button\n                                        v-attr=\"disabled: myArticles.left\"\n                                        v-on=\"click: pageDown\"\n                                        type=\"button\"\n                                        class=\"btn btn-default\">\n                                        <span class=\"glyphicon glyphicon-menu-left\" aria-hidden=\"true\"></span>\n                                    </button>\n                                    <button\n                                        v-attr=\"disabled: myArticles.right\"\n                                        v-on=\"click: pageUp\"\n                                        type=\"button\"\n                                        class=\"btn btn-default\">\n                                        <span class=\"glyphicon glyphicon-menu-right\" aria-hidden=\"true\"></span>\n                                    </button>\n                                </div>\n                            </div>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n\n        <!-- editor -->\n        <editor></editor>\n        <!-- editor end -->\n    </div>";
 
 /***/ },
 /* 32 */

@@ -1,56 +1,76 @@
 <template>
     <div class="container articles-btns">
         <div class="row">
-            <div class="col-md-offset-9 col-md-3 col-sm-offset-8 col-sm-4 col-xs-12">
-                <button
-                    id="new"
-                    class="btn btn-default btn-block"
-                    data-toggle="modal"
-                    data-target="#new-article-modal"
-                    type="button">
-                    Create new article
-                </button>
-            </div>
-        </div>
-        <!-- articles -->
-        <div class="row articles-articleList">
-            <!-- myArticles -->
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <span class="h5">我的文章</span>
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-12">
+                        <img src="/images/1-1.jpg" alt="..." class="img-thumbnail">
                     </div>
-                    <table class="table table-hover">
-                        <tbody>
-                            <tr
-                                v-component="article-item"
-                                wait-for="get-my-articles"
-                                v-repeat="article in myArticles.data">
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="panel-footer text-right">
-                        <div class="btn-group btn-group-xs" role="group">
-                            <button
-                                v-attr="disabled: myArticles.left"
-                                v-on="click: pageDown"
-                                type="button"
-                                class="btn btn-default">
-                                <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
-                            </button>
-                            <button
-                                v-attr="disabled: myArticles.right"
-                                v-on="click: pageUp"
-                                type="button"
-                                class="btn btn-default">
-                                <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
-                            </button>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <span>Summer</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-offset-9 col-md-3 col-sm-offset-8 col-sm-4 col-xs-12">
+                        <button
+                            id="new"
+                            class="btn btn-default btn-block"
+                            data-toggle="modal"
+                            data-target="#new-article-modal"
+                            type="button">
+                            Create new article
+                        </button>
+                    </div>
+                </div>
+
+                <!-- articles -->
+                <div class="row articles-articleList">
+                    <!-- myArticles -->
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <span class="h5">我的文章</span>
+                            </div>
+                            <table class="table table-hover">
+                                <tbody>
+                                    <tr
+                                        v-component="article-item"
+                                        wait-for="get-my-articles"
+                                        v-repeat="article in myArticles.data">
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="panel-footer text-right">
+                                <div class="btn-group btn-group-xs" role="group">
+                                    <button
+                                        v-attr="disabled: myArticles.left"
+                                        v-on="click: pageDown"
+                                        type="button"
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-menu-left" aria-hidden="true"></span>
+                                    </button>
+                                    <button
+                                        v-attr="disabled: myArticles.right"
+                                        v-on="click: pageUp"
+                                        type="button"
+                                        class="btn btn-default">
+                                        <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- editor -->
         <editor></editor>
+        <!-- editor end -->
     </div>
 </template>
 
