@@ -1,19 +1,27 @@
 <template>
-    <div class="container articles-btns">
+    <div class="container container-component">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="row">
                     <div class="col-md-12">
-                        <img src="/images/1-1.jpg" alt="..." class="img-thumbnail">
+                        <img src="/images/1-2.jpg" alt="avator" class="img-rounded">
                     </div>
                 </div>
+                <br>
                 <div class="row">
                     <div class="col-md-12">
-                        <span>Summer</span>
+                        <h4>
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                            {{user.pen_name}}
+                        </h4>
+                        <h4>
+                            <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>
+                            {{user.username}}
+                        </h4>
                     </div>
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-9">
                 <div class="row">
                     <div class="col-md-offset-9 col-md-3 col-sm-offset-8 col-sm-4 col-xs-12">
                         <button
@@ -26,7 +34,6 @@
                         </button>
                     </div>
                 </div>
-
                 <!-- articles -->
                 <div class="row articles-articleList">
                     <!-- myArticles -->
@@ -78,6 +85,8 @@
     module.exports = {
         // 数据
         data: function () {
+            var user = JSON.parse(window.localStorage.getItem("token")).user;
+
             return {
                 myArticles: {
                     page: 1, // 我的文章默认为第一页
@@ -85,7 +94,8 @@
                     data: [],
                     left: "disabled",
                     right: false
-                }
+                },
+                user: user
             };
         },
         // 组件实例方法

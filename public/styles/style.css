@@ -3,6 +3,11 @@
 	font-size: 14px;
 }
 
+img{
+	width: 250px;
+	height: 250px;
+}
+
 /* 将<a>变成紫色 */
 a{
 	color: #940094;
@@ -212,7 +217,7 @@ a:hover{
 }
 
 /*nav的margin-bottom: 20px;加上这里的margin-top: 10px; 就产生了30px的距离*/
-.articles-btns{
+.container-component{
 	margin-top: 10px;
 }
 
