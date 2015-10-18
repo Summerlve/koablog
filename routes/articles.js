@@ -198,7 +198,16 @@ router
 			let userId = this.userId;
 
 			// judge the permission
-			if (ownPermissions.has(allPermissions.get("addArticle"))) {
+			if (!ownPermissions.has(allPermissions.get("addArticle"))) {
+				// need permission
+				this.status = 403;
+				this.body = {
+					statusCode: 403,
+					reasonPhrase: "Forbidden",
+					description: "need permission add article"
+				}
+			}
+			else {
 				let body = yield parse.form(this);
 
 				// create tag if no exist
@@ -239,15 +248,6 @@ router
 						description: "add article fialed",
 						errorCode: 1004
 					}
-				}
-			}
-			else {
-				// need permission
-				this.status = 403;
-				this.body = {
-					statusCode: 403,
-					reasonPhrase: "Forbidden",
-					description: "need permission add article"
 				}
 			}
 		}
@@ -331,7 +331,7 @@ router
 		getOwnPermissions,
 		getAllPermissions,
 		function* (next) {
-			
+
 		}
 	);
 
