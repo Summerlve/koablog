@@ -22,6 +22,7 @@ let getToken = require("../middlewares/getToken");
 let getIdentity = require("../middlewares/getIdentity");
 let getOwnPermissions = require("../middlewares/getOwnPermissions");
 let getAllPermissions = require("../middlewares/getAllPermissions");
+let needPermissions = require("../middlewares/needPermissions");
 
 // redirect '/' to the '/articles'
 router
@@ -271,8 +272,17 @@ router
 		"/articles/:id",
 		getToken,
 		getIdentity,
-		getOwnPermissions,
-		getAllPermissions,
+		needPermissions.bind(null, [
+			{
+				name: "deleteSelfArticle",
+				error: {
+					statusCode: 401,
+					body: {
+						errorCode: "1009"
+					}
+				}
+			}
+		]),
 		function* (next) {
 			// 权限说明：root账户有所有的权限，因此能够删除任意的文章，而作者只能删除自己的文章
 			// get allPermissions from middleware
