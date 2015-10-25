@@ -44,7 +44,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button v-on="click: createNewArticle" type="button" class="btn btn-primary">Save</button>
+                    <button v-on="click: saveButtonClick" type="button" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
@@ -60,10 +60,19 @@
                     title: "",
                     tag: "",
                     content: "" // 编辑器的内容，既是文章的内容
-                }
+                },
+                status: "new"
             };
         },
         methods: {
+            saveButtonClick: function (e) {
+                if (this.status === "new") {
+                    this.createNewArticle(e);
+                }
+                else if (this.status === "update") {
+                    this.updateArticle(e);
+                }
+            },
             createNewArticle: function (e) {
                 // fuck this
                 var self = this;
@@ -105,6 +114,28 @@
                     });
             }
         },
+        updateArticle: function (e) {
+            self.article.title = data.title;
+            self.article.tag = data.tag;
+
+            var putting = $.ajax({
+                url: "/articles",
+                headers: {
+                    Authorization: "jwt " + token
+                },
+                data: self.article,
+                dataType: "json", // set 'Accepts' header field
+                method: "PUT" // set http method
+            });
+
+            putting
+                .done(function (data) {
+                    console.log(data);
+                })
+                .fail(function (error) {
+                    console.log(error);
+                });
+        },
         // 生命周期
         created: function () {
             // hackthis
@@ -115,6 +146,7 @@
                 self.article.tag = data.tag;
                 self.editor.setData(data.content);
                 self.modal.modal("show");
+                self.status = "update";
             });
         },
         ready: function () {

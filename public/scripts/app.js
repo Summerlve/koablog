@@ -491,10 +491,19 @@
 	                    title: "",
 	                    tag: "",
 	                    content: "" // 编辑器的内容，既是文章的内容
-	                }
+	                },
+	                status: "new"
 	            };
 	        },
 	        methods: {
+	            saveButtonClick: function (e) {
+	                if (this.status === "new") {
+	                    this.createNewArticle(e);
+	                }
+	                else if (this.status === "update") {
+	                    this.updateArticle(e);
+	                }
+	            },
 	            createNewArticle: function (e) {
 	                // fuck this
 	                var self = this;
@@ -536,6 +545,28 @@
 	                    });
 	            }
 	        },
+	        updateArticle: function (e) {
+	            self.article.title = data.title;
+	            self.article.tag = data.tag;
+
+	            var putting = $.ajax({
+	                url: "/articles",
+	                headers: {
+	                    Authorization: "jwt " + token
+	                },
+	                data: self.article,
+	                dataType: "json", // set 'Accepts' header field
+	                method: "PUT" // set http method
+	            });
+
+	            putting
+	                .done(function (data) {
+	                    console.log(data);
+	                })
+	                .fail(function (error) {
+	                    console.log(error);
+	                });
+	        },
 	        // 生命周期
 	        created: function () {
 	            // hackthis
@@ -546,6 +577,7 @@
 	                self.article.tag = data.tag;
 	                self.editor.setData(data.content);
 	                self.modal.modal("show");
+	                self.status = "update";
 	            });
 	        },
 	        ready: function () {
@@ -583,7 +615,7 @@
 /* 27 */
 /***/ function(module, exports) {
 
-	module.exports = "<div\n        class=\"modal fade\"\n        id=\"new-article-modal\"\n        tabindex=\"-1\"\n        role=\"dialog\"\n        aria-labelledby=\"new-article-modal-title\"\n        aria-describedby=\"create new article\">\n        <div\n            class=\"modal-dialog modal-lg\"\n            role=\"document\"\n            aria-hidden=\"true\">\n            <div class=\"modal-content\">\n                <div class=\"modal-header\">\n                    <button\n                        type=\"button\"\n                        class=\"close\"\n                        data-dismiss=\"modal\"\n                        aria-label=\"Close\">\n                        <span aria-hidden=\"true\">&times;</span>\n                    </button>\n                    <h4 class=\"modal-title\" id=\"new-article-modal-title\">\n                        Create an article\n                    </h4>\n                </div>\n                <div class=\"modal-body\">\n                    <input\n                        type=\"text\"\n                        v-model=\"article.title\"\n                        maxlength=\"120\"\n                        class=\"new-article-title\"\n                        id=\"new-article-title\"\n                        placeholder=\"标题\">\n                    <input\n                        type=\"text\"\n                        v-model=\"article.tag\"\n                        maxlength=\"120\"\n                        class=\"new-article-tag\"\n                        id=\"new-article-tag\"\n                        placeholder=\"添加相关标签\">\n                    <!-- editor begin -->\n                    <textarea name=\"editor\" id=\"editor\"></textarea>\n                    <!-- editor end -->\n                </div>\n                <div class=\"modal-footer\">\n                    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n                    <button v-on=\"click: createNewArticle\" type=\"button\" class=\"btn btn-primary\">Save</button>\n                </div>\n            </div>\n        </div>\n    </div>";
+	module.exports = "<div\n        class=\"modal fade\"\n        id=\"new-article-modal\"\n        tabindex=\"-1\"\n        role=\"dialog\"\n        aria-labelledby=\"new-article-modal-title\"\n        aria-describedby=\"create new article\">\n        <div\n            class=\"modal-dialog modal-lg\"\n            role=\"document\"\n            aria-hidden=\"true\">\n            <div class=\"modal-content\">\n                <div class=\"modal-header\">\n                    <button\n                        type=\"button\"\n                        class=\"close\"\n                        data-dismiss=\"modal\"\n                        aria-label=\"Close\">\n                        <span aria-hidden=\"true\">&times;</span>\n                    </button>\n                    <h4 class=\"modal-title\" id=\"new-article-modal-title\">\n                        Create an article\n                    </h4>\n                </div>\n                <div class=\"modal-body\">\n                    <input\n                        type=\"text\"\n                        v-model=\"article.title\"\n                        maxlength=\"120\"\n                        class=\"new-article-title\"\n                        id=\"new-article-title\"\n                        placeholder=\"标题\">\n                    <input\n                        type=\"text\"\n                        v-model=\"article.tag\"\n                        maxlength=\"120\"\n                        class=\"new-article-tag\"\n                        id=\"new-article-tag\"\n                        placeholder=\"添加相关标签\">\n                    <!-- editor begin -->\n                    <textarea name=\"editor\" id=\"editor\"></textarea>\n                    <!-- editor end -->\n                </div>\n                <div class=\"modal-footer\">\n                    <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n                    <button v-on=\"click: saveButtonClick\" type=\"button\" class=\"btn btn-primary\">Save</button>\n                </div>\n            </div>\n        </div>\n    </div>";
 
 /***/ },
 /* 28 */
