@@ -112,14 +112,14 @@ router
 			return ;
 		}
 		else {
-			this.id = id;
+			this.id = parseInt(id, 10);
 		}
 		yield next;
 	})
 	.get("/articles/:id", function* (next) {
 		switch (this.accepts("json", "html")) {
 			case "html": {
-				let id = parseInt(this.id, 10);
+				let id = this.id;
 				let article = yield ArticleView.find({
 					where: {
 						id: id
@@ -165,7 +165,7 @@ router
 				});
 			}break;
 			case "json": {
-				let id = parseInt(this.id, 10);
+				let id = this.id;
 
 				let article = yield ArticleView.find({
 					where: {
@@ -190,74 +190,60 @@ router
 		getIdentity,
 		permissionsFilter([
 			{
-				name: "addArticle",
-				error: {
-					statusCode: ,
-					body: {
-
-					}
-				}
+				permission: "addArticle",
+		        httpResponse: {
+		            statusCode: 403,
+		            httpBody: {
+		                statusCode: 403,
+		                reasonPhrase: "Forbidden",
+		                description: "need permission to add an article",
+		                errorCode: 1009
+		            }
+		        }
 			}
-		])
+		]),
 		function* (next) {
-			// get allPermissions from middleware
-			let allPermissions = this.allPermissions;
-			// get permissions from middleware getOwnPermissions.js
-			let ownPermissions = this.ownPermissions;
-			// get userId from muddleware getIdentity.js
+			// get userId from getIdentity.js
 			let userId = this.userId;
+			let body = yield parse.form(this);
 
-			// judge the permission
-			if (!ownPermissions.has(allPermissions.get("addArticle"))) {
-				// need permission
-				this.status = 403;
+			// create tag if no exist
+			let tag = yield Tag
+								.findOrCreate({
+									where: {
+										name: body.tag
+									}
+								});
+
+			tag = tag[0];
+
+			let tagId = tag.id;
+
+			// create artilce
+			try {
+				yield Article
+						.build({
+							title: body.title,
+							tag_id: tagId,
+							content: body.content,
+							user_id: userId
+						})
+						.save();
+
 				this.body = {
-					statusCode: 403,
-					reasonPhrase: "Forbidden",
-					description: "need permission add article"
-				}
+					statusCode: 200,
+					reasonPhrase: "OK",
+					description: "add article succeed"
+				};
 			}
-			else {
-				let body = yield parse.form(this);
-
-				// create tag if no exist
-				let tag = yield Tag
-									.findOrCreate({
-										where: {
-											name: body.tag
-										}
-									});
-
-				tag = tag[0];
-
-				let tagId = tag.id;
-
-				// create artilce
-				try {
-					yield Article
-							.build({
-								title: body.title,
-								tag_id: tagId,
-								content: body.content,
-								user_id: userId
-							})
-							.save();
-
-					this.body = {
-						statusCode: "200",
-						reasonPhrase: "OK",
-						description: "add article succeed"
-					};
-				}
-				catch (error) {
-					console.log(error);
-					this.status = 500;
-					this.body = {
-						statusCode: "500",
-						reasonPhrase: "Internal Server Error",
-						description: "add article fialed",
-						errorCode: 1004
-					}
+			catch (error) {
+				console.log(error);
+				this.status = 500;
+				this.body = {
+					statusCode: 500,
+					reasonPhrase: "Internal Server Error",
+					description: "add article fialed",
+					errorCode: 1004
 				}
 			}
 		}
@@ -270,10 +256,11 @@ router
 			// id不是数字的情况，就404。
 			this.status = 404;
 			this.body = "article not found";
+
 			return ;
 		}
 		else {
-			this.id = id;
+			this.id = parseInt(id, 10);
 		}
 		yield next;
 	})
@@ -283,20 +270,26 @@ router
 		getIdentity,
 		permissionsFilter([
 			{
-				name: "deleteSelfArticle",
-				response: {
+				permission: "deleteSelfArticle",
+				httpResponse: {
 					statusCode: 401,
-					body: {
-						errorCode: "1009"
+					httpBody: {
+						statusCode: 500,
+						reasonPhrase: "Internal Server Error",
+						description: "add article fialed",
+						errorCode: 1009
 					}
 				}
 			},
 			{
-				name: "deletetArticle",
-				error: {
+				permission: "deletetArticle",
+				httpResponse: {
 					statusCode: 401,
-					body: {
-						errorCode: "1009"
+					httpBody: {
+						statusCode: 500,
+						reasonPhrase: "Internal Server Error",
+						description: "add article fialed",
+						errorCode: 1009
 					}
 				}
 			}
@@ -324,10 +317,11 @@ router
 			// id不是数字的情况，就404。
 			this.status = 404;
 			this.body = "article not found";
+
 			return ;
 		}
 		else {
-			this.id = id;
+			this.id = parseInt(id, 10);
 		}
 		yield next;
 	})
@@ -335,9 +329,44 @@ router
 		"/articles/:id",
 		getToken,
 		getIdentity,
-		getOwnPermissions,
-		getAllPermissions,
+		permissionsFilter([
+			{
+				permission: "updateArticle",
+				httpResponse: {
+					statusCode: 401,
+					httpBody: {
+						statusCode: 500,
+						reasonPhrase: "Internal Server Error",
+						description: "update article fialed",
+						errorCode: 1009
+					}
+				}
+			}
+		]),
 		function* (next) {
+			let id = this.id;
+
+			let article = yield Article.find({
+				where: {
+					id: id
+				}
+			});
+
+			if (article.length === 0) {
+				this.status = 404;
+				this.body = {
+
+				}
+
+				return ;
+			}
+
+			// update the article
+			let body = yield parse.form(this);
+
+			article.title = body.title;
+			// article.
+
 
 		}
 	);

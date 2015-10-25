@@ -11,6 +11,7 @@ function* getOwnPermissions (next) {
     //get group_id from middleware identity
     let groupId = this.groupId;
     let permissions = yield PermissionToGroup.findAll({
+        attributes: ["permission_id"],
         where: {
             group_id: groupId
         }

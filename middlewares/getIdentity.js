@@ -1,7 +1,8 @@
 "use strict";
 /* 识别group的中间件
- * 将获取的group_id添加到context上
+ * 将获取的group_id与user_id添加到context上
  * this.groupId
+ * this.userId
  */
 let MD5 = require("md5");
 let jwt = require("jsonwebtoken");

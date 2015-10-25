@@ -4,6 +4,34 @@ let Permission = require("../models/Permission").Permission;
 let Article = require("../models/Article").Article;
 let PermissionToGroup = require("../models/Permission").PermissionToGroup;
 
+// needs is a array like follows:
+//[
+//     {
+//         permission: "deleteSelfArticle",
+//         httpResponse: {
+//             statusCode: 401,
+//             httpBody: {
+//                 statusCode: 500,
+//                 reasonPhrase: "Internal Server Error",
+//                 description: "add article fialed",
+//                 errorCode: 1009
+//             }
+//         }
+//     },
+//     {
+//         permission: "deletetArticle",
+//         httpResponse: {
+//             statusCode: 401,
+//             httpBody: {
+//                 statusCode: 500,
+//                 reasonPhrase: "Internal Server Error",
+//                 description: "add article fialed",
+//                 errorCode: 1009
+//             }
+//         }
+//     }
+// ]
+
 function permissionsFilter (needs) {
     return function* permissionsFilter (next) {
         // get all permissions
@@ -13,11 +41,11 @@ function permissionsFilter (needs) {
 
         pers.forEach(value => allPermissions.set(value.name, value.id));
 
-
         // get own permissions
         let groupId = this.groupId;
 
         let own = yield PermissionToGroup.findAll({
+            attributes: ["permission_id"],
             where: {
                 group_id: groupId
             }
@@ -25,42 +53,29 @@ function permissionsFilter (needs) {
 
         let ownPermissions = new Set();
 
-        own.forEach(value => ownPermissions.add(value.id));
+        own.forEach(value => ownPermissions.add(value.permission_id));
 
         if (!(needs instanceof Array)) {
             console.error("needs must be array");
             this.status = 500;
+
             return ;
         }
 
-        // needs is a array.
-        // like follows:
-        // [
-        //     {
-        //         name:"permission name",
-        //         error: {
-        //             statusCode: 401,
-        //             body: {
-        //                 errorCode: "1004"
-        //             }
-        //     },
-        //     {
-        //         name:"permission name",
-        //         error: {
-        //             statusCode: "1004"
-        //         }
-        //     }
-        //
-        // ]
-
         for (let i = 0; i < needs.length; i++) {
-            let value = needs[i];
-            if (!ownPermissions.has(allPermissions.get(value.name))) {
-                this.status = value.error.statusCode;
-                this.body = value.error.body;
+            let item = needs[i];
+            console.dir(allPermissions);
+            console.dir(ownPermissions);
+            if (!ownPermissions.has(allPermissions.get(item.permission))) {
+                console.log(11123123);
+                this.status = item.httpResponse.statusCode;
+                this.body = item.httpResponse.httpBody;
+
+                return ;
             }
 
-            if (value.name = "deleteSelfArticle") {
+            // 检查是否删除的是自己的文章，作者拥有删除自己文章的权限。
+            if (item.permission === "deleteSelfArticle") {
                 // get userId and from muddleware getIdentity.js
     			let userId = this.userId;
 
@@ -77,8 +92,10 @@ function permissionsFilter (needs) {
     			isOwn = isOwn.length === 1 ? true : false;
 
                 if (!isOwn) {
-                    this.status = value.error.statusCode;
-                    this.body = value.error.body;
+                    this.status = item.httpResponse.statusCode;
+                    this.body = item.httpResponse.httpBody;
+
+                    return ;
                 }
             }
         }
