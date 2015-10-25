@@ -364,7 +364,9 @@ router
 			// update the article
 			let body = yield parse.form(this);
 
-			article.title = body.title;
+			for (let key in body) {
+				console.log(key);
+			}
 			// article.
 
 
