@@ -22,7 +22,7 @@ let getToken = require("../middlewares/getToken");
 let getIdentity = require("../middlewares/getIdentity");
 let getOwnPermissions = require("../middlewares/getOwnPermissions");
 let getAllPermissions = require("../middlewares/getAllPermissions");
-let needPermissions = require("../middlewares/needPermissions");
+let permissionsFilter = require("../middlewares/permissionsFilter");
 
 // redirect '/' to the '/articles'
 router
@@ -188,8 +188,17 @@ router
 		"/articles",
 		getToken,
 		getIdentity,
-		getOwnPermissions,
-		getAllPermissions,
+		permissionsFilter([
+			{
+				name: "addArticle",
+				error: {
+					statusCode: ,
+					body: {
+
+					}
+				}
+			}
+		])
 		function* (next) {
 			// get allPermissions from middleware
 			let allPermissions = this.allPermissions;
@@ -272,9 +281,18 @@ router
 		"/articles/:id",
 		getToken,
 		getIdentity,
-		needPermissions.bind(null, [
+		permissionsFilter([
 			{
 				name: "deleteSelfArticle",
+				response: {
+					statusCode: 401,
+					body: {
+						errorCode: "1009"
+					}
+				}
+			},
+			{
+				name: "deletetArticle",
 				error: {
 					statusCode: 401,
 					body: {
@@ -284,39 +302,18 @@ router
 			}
 		]),
 		function* (next) {
-			// 权限说明：root账户有所有的权限，因此能够删除任意的文章，而作者只能删除自己的文章
-			// get allPermissions from middleware
-			let allPermissions = this.allPermissions;
-			// get ownPermissions from middleware getOwnPermissions.js
-			let ownPermissions = this.ownPermissions;
-			// get userId and from muddleware getIdentity.js
-			let userId = this.userId;
-
-			// get article's id
 			let id = this.id;
 
-			//
-			let isOwn = yield Article.find({
+			yield Article.destroy({
 				where: {
-					id: id,
-					user_id: userId
+					id: id
 				}
 			});
 
-			isOwn = isOwn.length === 1 ? true : false;
+			this.status = 200;
+			this.body = {
 
-			if (ownPermissions.has(allPermissions.get("deleteArticle")) || isOwn) {
-				yield Article.destroy({
-					where: {
-						id: id
-					}
-				});
-
-				this.status = 200;
-				this.body = {
-
-				};
-			}
+			};
 		}
 	);
 
