@@ -57,6 +57,7 @@
         data: function () {
             return {
                 article: {
+                    id: -1,
                     title: "",
                     tag: "",
                     content: "" // 编辑器的内容，既是文章的内容
@@ -112,29 +113,32 @@
                     .fail(function (error) {
                         console.log(error);
                     });
-            }
-        },
-        updateArticle: function (e) {
-            self.article.title = data.title;
-            self.article.tag = data.tag;
+            },
+            updateArticle: function (e) {
+                var self = this;
+                var token = JSON.parse(window.localStorage.getItem("token")).token;
 
-            var putting = $.ajax({
-                url: "/articles",
-                headers: {
-                    Authorization: "jwt " + token
-                },
-                data: self.article,
-                dataType: "json", // set 'Accepts' header field
-                method: "PUT" // set http method
-            });
+                this.article.content = this.editor.getData();
+                var id = this.article.id;
 
-            putting
-                .done(function (data) {
-                    console.log(data);
-                })
-                .fail(function (error) {
-                    console.log(error);
+                var putting = $.ajax({
+                    url: "/articles/" + id,
+                    headers: {
+                        Authorization: "jwt " + token
+                    },
+                    data: self.article,
+                    dataType: "json", // set 'Accepts' header field
+                    method: "PUT" // set http method
                 });
+
+                putting
+                    .done(function (data) {
+                        console.log(data);
+                    })
+                    .fail(function (error) {
+                        console.log(error);
+                    });
+            }
         },
         // 生命周期
         created: function () {
@@ -144,6 +148,7 @@
             this.$on("get-artcile-by-id", function (data) {
                 self.article.title = data.title;
                 self.article.tag = data.tag;
+                self.article.id = data.id;
                 self.editor.setData(data.content);
                 self.modal.modal("show");
                 self.status = "update";

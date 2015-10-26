@@ -55,12 +55,15 @@ function permissionsFilter (needs) {
 
         own.forEach(value => ownPermissions.add(value.permission_id));
 
+        // needs must be array.
         if (!(needs instanceof Array)) {
             console.error("needs must be array");
             this.status = 500;
 
             return ;
         }
+        // judge whether user have permission.
+        let hasPermission = false;
 
         for (let i = 0; i < needs.length; i++) {
             let item = needs[i];
@@ -74,8 +77,8 @@ function permissionsFilter (needs) {
                 return ;
             }
 
-            // 检查是否删除的是自己的文章，作者拥有删除自己文章的权限。
-            if (item.permission === "deleteSelfArticle") {
+            // 检查是否删除的是自己的文章，作者拥有删除自己文章和修改自己文章的权限。
+            if (item.permission.toLowerCase.indexOf("self")) {
                 // get userId and from muddleware getIdentity.js
     			let userId = this.userId;
 
