@@ -329,32 +329,12 @@ router
 		"/articles/:id",
 		getToken,
 		getIdentity,
-		permissionsFilter([
-			{
-				permission: "updateArticle",
-				httpResponse: {
-					statusCode: 401,
-					httpBody: {
-						statusCode: 401,
-						reasonPhrase: "Unauthorized",
-						description: "update article fialed",
-						errorCode: 1009
-					}
-				}
-			},
-			{
-				permission: "updateSelfArticle",
-				httpResponse: {
-					statusCode: 401,
-					httpBody: {
-						statusCode: 401,
-						reasonPhrase: "Unauthorized",
-						description: "update self article fialed",
-						errorCode: 1009
-					}
-				}
-			}
-		]),
+		permissionsFilter({
+			or: [
+				"updateArticle",
+				"updateSelfArticle"
+			]
+		}),
 		function* (next) {
 			let id = this.id;
 

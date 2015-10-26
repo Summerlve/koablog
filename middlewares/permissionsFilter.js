@@ -1,38 +1,37 @@
 "use strict";
 // 将权限拦截器写在外部的中间件中
+// 在needs中的填写很多的权限无外乎两种关系，and 和 or，当然也可以嵌套
+
 let Permission = require("../models/Permission").Permission;
 let Article = require("../models/Article").Article;
 let PermissionToGroup = require("../models/Permission").PermissionToGroup;
 
-// needs is a array like follows:
-//[
-//     {
-//         permission: "deleteSelfArticle",
-//         httpResponse: {
-//             statusCode: 401,
-//             httpBody: {
-//                 statusCode: 500,
-//                 reasonPhrase: "Internal Server Error",
-//                 description: "add article fialed",
-//                 errorCode: 1009
-//             }
-//         }
-//     },
-//     {
-//         permission: "deletetArticle",
-//         httpResponse: {
-//             statusCode: 401,
-//             httpBody: {
-//                 statusCode: 500,
-//                 reasonPhrase: "Internal Server Error",
-//                 description: "add article fialed",
-//                 errorCode: 1009
-//             }
-//         }
-//     }
-// ]
+function passHandler (value, pair) {
+    if (value instanceof Object) {
+        for (let key in Obj) {
+            if (key === "and") {
+                Obj[key]
+                    .reduce(function (pre, cur) {
+                        return passHandler(pre, pair) && passHandler(cur, pair);
+                    });
+            }
+
+            if (key === "or") {
+                Obj[key]
+                    .reduce(function (pre, cur) {
+                        return passHandler(pre, pair) || passHandler(cur, pair);
+                    });
+            }
+
+        }
+    }
+    else if (typeof value === "string"){
+        return pair.get(value);
+    }
+}
 
 function permissionsFilter (needs) {
+    // 返回一个Generator函数
     return function* permissionsFilter (next) {
         // get all permissions
         let allPermissions = new Map();
@@ -55,26 +54,21 @@ function permissionsFilter (needs) {
 
         own.forEach(value => ownPermissions.add(value.permission_id));
 
-        // needs must be array.
-        if (!(needs instanceof Array)) {
-            console.error("needs must be array");
-            this.status = 500;
-
-            return ;
-        }
+        // 存放permission 与 false/true，表示用户是否拥有这个permission
+        let pair = new Map();
         // judge whether user have permission.
-        let hasPermission = false;
+        let canPass = false;
 
+        // 检查用户拥有的permission
         for (let i = 0; i < needs.length; i++) {
             let item = needs[i];
             console.dir(allPermissions);
             console.dir(ownPermissions);
             if (!ownPermissions.has(allPermissions.get(item.permission))) {
-                console.log(11123123);
-                this.status = item.httpResponse.statusCode;
-                this.body = item.httpResponse.httpBody;
-
-                return ;
+                pair.set(item.permission, false);
+            }
+            else {
+                pair.set(item.permission, true);
             }
 
             // 检查是否删除的是自己的文章，作者拥有删除自己文章和修改自己文章的权限。
@@ -95,13 +89,25 @@ function permissionsFilter (needs) {
     			isOwn = isOwn.length === 1 ? true : false;
 
                 if (!isOwn) {
-                    this.status = item.httpResponse.statusCode;
-                    this.body = item.httpResponse.httpBody;
-
-                    return ;
+                    pair.set(item.permission, false);
+                }
+                else {
+                    pair.set(item.permission, true);
                 }
             }
         }
+
+        // needs must be object.
+        if (!(needs instanceof Object)) {
+            console.error("needs must be Object");
+            this.status = 500;
+
+            return ;
+        }
+
+        // 解析needs的关系嵌套。
+        // 如果是and与or的关系，则为数组
+        // 如果是具体的权限就是对象了
 
         yield next;
     };
