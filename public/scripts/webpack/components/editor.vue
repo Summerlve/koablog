@@ -56,8 +56,8 @@
         modal: $("#new-article-modal"),
         data: function () {
             return {
+                id: -1,
                 article: {
-                    id: -1,
                     title: "",
                     tag: "",
                     content: "" // 编辑器的内容，既是文章的内容
@@ -119,7 +119,7 @@
                 var token = JSON.parse(window.localStorage.getItem("token")).token;
 
                 this.article.content = this.editor.getData();
-                var id = this.article.id;
+                var id = this.id;
 
                 var putting = $.ajax({
                     url: "/articles/" + id,
@@ -148,7 +148,7 @@
             this.$on("get-artcile-by-id", function (data) {
                 self.article.title = data.title;
                 self.article.tag = data.tag;
-                self.article.id = data.id;
+                self.id = data.id;
                 self.editor.setData(data.content);
                 self.modal.modal("show");
                 self.status = "update";

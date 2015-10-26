@@ -6,23 +6,44 @@ let Permission = require("../models/Permission").Permission;
 let Article = require("../models/Article").Article;
 let PermissionToGroup = require("../models/Permission").PermissionToGroup;
 
-function passHandler (value, pair) {
+function getPermissionString (o) {
+    let permissions = [];
+
+    let inner = function inner () {
+        if (value instanceof Object) {
+            for (let key in value) {
+                if (key === "and") {
+                    value[key].forEach(value => inner(value));
+                }
+
+                if (key === "or") {
+                    value[key].forEach(value => inner(value));
+                }
+            }
+        }
+        else if (typeof value === "string"){
+            permissions.push(value);
+        }
+    };
+
+    inner();
+    return permissions;
+}
+
+function passHandler (value) {
     if (value instanceof Object) {
-        for (let key in Obj) {
+        for (let key in value) {
             if (key === "and") {
-                Obj[key]
-                    .reduce(function (pre, cur) {
-                        return passHandler(pre, pair) && passHandler(cur, pair);
-                    });
+                return value[key].reduce(function (pre, cur) {
+                    return passHandler(pre) && passHandler(cur);
+                });
             }
 
             if (key === "or") {
-                Obj[key]
-                    .reduce(function (pre, cur) {
-                        return passHandler(pre, pair) || passHandler(cur, pair);
-                    });
+                return value[key].reduce(function (pre, cur) {
+                    return passHandler(pre) || passHandler(cur);
+                });
             }
-
         }
     }
     else if (typeof value === "string"){
@@ -33,14 +54,28 @@ function passHandler (value, pair) {
 function permissionsFilter (needs) {
     // 返回一个Generator函数
     return function* permissionsFilter (next) {
-        // get all permissions
+        // needs must be object.
+        if (!(needs instanceof Object)) {
+            console.error("needs must be Object");
+            this.status = 500;
+
+            return ;
+        }
+
+
+        /*
+            get all permissions
+        */
         let allPermissions = new Map();
 
         let pers = yield Permission.findAll();
 
         pers.forEach(value => allPermissions.set(value.name, value.id));
 
-        // get own permissions
+
+        /*
+            get own permissions
+        */
         let groupId = this.groupId;
 
         let own = yield PermissionToGroup.findAll({
@@ -54,16 +89,21 @@ function permissionsFilter (needs) {
 
         own.forEach(value => ownPermissions.add(value.permission_id));
 
-        // 存放permission 与 false/true，表示用户是否拥有这个permission
-        let pair = new Map();
-        // judge whether user have permission.
-        let canPass = false;
+        console.dir(allPermissions);
+        console.dir(ownPermissions);
 
-        // 检查用户拥有的permission
+
+        /*
+            filter
+        */
+        // 存放permission 与 false/true，表示用户是否拥有这个permission
+        let perPair = new Map();
+
+        let
+
         for (let i = 0; i < needs.length; i++) {
             let item = needs[i];
-            console.dir(allPermissions);
-            console.dir(ownPermissions);
+
             if (!ownPermissions.has(allPermissions.get(item.permission))) {
                 pair.set(item.permission, false);
             }
@@ -97,17 +137,18 @@ function permissionsFilter (needs) {
             }
         }
 
-        // needs must be object.
-        if (!(needs instanceof Object)) {
-            console.error("needs must be Object");
-            this.status = 500;
-
-            return ;
-        }
-
         // 解析needs的关系嵌套。
         // 如果是and与or的关系，则为数组
         // 如果是具体的权限就是对象了
+        // judge whether user have permission.
+
+        console.log("pair:");
+        console.dir(pair);
+        
+        let canPass = passHandler(perPair);
+
+        console.log("canPass", canPass);
+
 
         yield next;
     };
