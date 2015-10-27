@@ -660,7 +660,7 @@
 	                var token = JSON.parse(window.localStorage.getItem("token")).token;
 
 	                var getting = $.ajax({
-	                    url: "/articles/" + id,
+	                    url: "/articles/" + 26,
 	                    dataType: "json", // set 'Accepts' header field
 	                    method: "DELETE", // set http method
 	                    headers: {

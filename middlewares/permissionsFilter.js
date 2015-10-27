@@ -106,10 +106,10 @@ function permissionsFilter (needs) {
         let pair = new Map();
 
         // 将needs中的权限的name字符串全部取出来
-        let strings = getStrings(needs);
+        let allPermissioStrings = getStrings(needs);
 
-        for (let i = 0; i < strings.length; i++) {
-            let item = strings[i];
+        for (let i = 0; i < allPermissioStrings.length; i++) {
+            let item = allPermissioStrings[i];
 
             if (!ownPermissions.has(allPermissions.get(item))) {
                 pair.set(item, false);
@@ -118,7 +118,7 @@ function permissionsFilter (needs) {
                 pair.set(item, true);
             }
 
-            // 如果该文章是属于该作者的，才能拥有deleteSelfArticle、updateSelfArticle权限
+            // 检查该文章是否属于作者
             if (item.toLowerCase().indexOf("self") !== -1) {
                 // get userId and from muddleware getIdentity.js
     			let userId = this.userId;
@@ -126,24 +126,22 @@ function permissionsFilter (needs) {
     			// get article's id
     			let id = this.id;
 
-    			let instance = yield Article.find({
+    			let artilce = yield Article.find({
     				where: {
     					id: id,
     					user_id: userId
     				}
     			});
 
-                if (!instance) {
+                if (!artilce) {
                     pair.set(item, false);
                 }
                 else {
                     pair.set(item, true);
-                    this.article = instance; // 将这个记录挂到context上面
+                    this.article = artilce; // 将这个记录挂到context上面
                 }
             }
         }
-
-        console.log(pair);
 
         let isPass = passHandler(needs, pair);
 
