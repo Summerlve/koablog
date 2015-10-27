@@ -30,14 +30,13 @@ router
 	.post("/authentication", function* (next) {
 		let body = yield parse.form(this);
 
-		let user = yield User
-							.find({
-								attributes: ["id", "username", "avatar", "pen_name"],
-								where: {
-									username: body.username,
-									password: MD5(body.password)
-								}
-							});
+		let user = yield User.find({
+			attributes: ["id", "username", "avatar", "pen_name"],
+			where: {
+				username: body.username,
+				password: MD5(body.password)
+			}
+		});
 
 		if (user !== null) {
 			// set the http header field

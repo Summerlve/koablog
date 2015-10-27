@@ -199,12 +199,11 @@ router
 			let body = yield parse.form(this);
 
 			// create tag if no exist
-			let tag = yield Tag
-								.findOrCreate({
-									where: {
-										name: body.tag
-									}
-								});
+			let tag = yield Tag.findOrCreate({
+				where: {
+					name: body.tag
+				}
+			});
 
 			tag = tag[0];
 
@@ -317,22 +316,21 @@ router
 			let body = yield parse.form(this);
 
 			try {
-				if (article.tag !== body.tag); {
-					var tag = yield Tag.find({
-						where: {
-							name: tag
-						}
-					});
-
-					yield tag.update({
+				let tag = yield Tag.findOrCreate({
+					where: {
 						name: body.tag
-					});
-				}
-				
+					}
+				});
+
+				tag = tag[0];
+
+				let tagId = tag.id;
+
 				// update the article
 				yield article.update({
 					title: body.title,
-					content: body.content
+					content: body.content,
+					tag_id: tagId
 				});
 
 				this.body = {
