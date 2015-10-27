@@ -276,7 +276,9 @@ router
 
 			this.status = 200;
 			this.body = {
-
+				statusCode: 200,
+				reasonPhrase: "OK",
+				description: "delete article succeed"
 			};
 		}
 	);
@@ -315,6 +317,18 @@ router
 			let body = yield parse.form(this);
 
 			try {
+				if (article.tag !== body.tag); {
+					var tag = yield Tag.find({
+						where: {
+							name: tag
+						}
+					});
+
+					yield tag.update({
+						name: body.tag
+					});
+				}
+				
 				// update the article
 				yield article.update({
 					title: body.title,
@@ -332,7 +346,7 @@ router
 				this.body = {
 					statusCode: 500,
 					reasonPhrase: "Internal Server Error",
-					description: "add article fialed",
+					description: "update article fialed",
 					errorCode: 1004
 				}
 			}
