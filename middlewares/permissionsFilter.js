@@ -7,8 +7,8 @@ let Article = require("../models/Article").Article;
 let PermissionToGroup = require("../models/Permission").PermissionToGroup;
 
 // 从传入的权限描述对象中取出所有的权限名字
-function getPermissionsString (value) {
-    let permissions = [];
+function getStrings (value) {
+    let strings = [];
 
     let inner = function inner (value) {
         if (value instanceof Object) {
@@ -23,12 +23,12 @@ function getPermissionsString (value) {
             }
         }
         else if (typeof value === "string"){
-            permissions.push(value);
+            strings.push(value);
         }
     };
 
     inner(value);
-    return permissions;
+    return strings;
 }
 
 // 递归判断用户是否能够通过filter
@@ -53,29 +53,19 @@ function passHandler (value, pair) {
     }
 }
 
-function permissionsFilter (needs) {
-    // 返回一个Generator函数
-    return function* permissionsFilter (next) {
-        // needs must be object.
-        if (!(needs instanceof Object)) {
-            console.error("needs must be Object");
-            this.status = 500;
-
-            return ;
-        }
-
-
-        /*
-            get all permissions
-        */
+function getAllPermissions (context) {
+    return function* () {
         let allPermissions = new Map();
+
         let pers = yield Permission.findAll();
         pers.forEach(value => allPermissions.set(value.name, value.id));
 
+        this.allPermissions = allPermissions;
+    }.bind(context)();
+}
 
-        /*
-            get own permissions
-        */
+function getOwnPermissions (context) {
+    return function* () {
         let groupId = this.groupId;
 
         let own = yield PermissionToGroup.findAll({
@@ -88,17 +78,38 @@ function permissionsFilter (needs) {
         let ownPermissions = new Set();
         own.forEach(value => ownPermissions.add(value.permission_id));
 
+        this.ownPermissions = ownPermissions;
+    }.bind(context)();
+}
 
-        /*
-            filter
-        */
+function permissionsFilter (needs) {
+    // 返回一个Generator函数
+    return function* permissionsFilter (next) {
+        // needs must be object.
+        if (!(needs instanceof Object)) {
+            console.error("needs must be Object");
+            this.status = 500;
+
+            return ;
+        }
+
+        // get all permissions
+        yield* getAllPermissions(this);
+        let allPermissions = this.allPermissions;
+
+        // get own permissions
+        yield* getOwnPermissions(this);
+        let ownPermissions = this.ownPermissions;
+
+        // filter
         // 存放permission 与 false/true，表示用户是否拥有这个permission
         let pair = new Map();
 
-        let permissions = getPermissionsString(needs);
+        // 将needs中的权限的name字符串全部取出来
+        let strings = getStrings(needs);
 
-        for (let i = 0; i < permissions.length; i++) {
-            let item = permissions[i];
+        for (let i = 0; i < strings.length; i++) {
+            let item = strings[i];
 
             if (!ownPermissions.has(allPermissions.get(item))) {
                 pair.set(item, false);
@@ -107,7 +118,7 @@ function permissionsFilter (needs) {
                 pair.set(item, true);
             }
 
-            // 检查是否删除的是自己的文章，作者拥有删除自己文章和修改自己文章的权限。
+            // 如果该文章是属于该作者的，才能拥有deleteSelfArticle、updateSelfArticle权限
             if (item.toLowerCase().indexOf("self") !== -1) {
                 // get userId and from muddleware getIdentity.js
     			let userId = this.userId;
@@ -115,36 +126,34 @@ function permissionsFilter (needs) {
     			// get article's id
     			let id = this.id;
 
-    			let isOwn = yield Article.find({
+    			let instance = yield Article.find({
     				where: {
     					id: id,
     					user_id: userId
     				}
     			});
 
-                if (!isOwn) {
+                if (!instance) {
                     pair.set(item, false);
                 }
                 else {
                     pair.set(item, true);
+                    this.article = instance; // 将这个记录挂到context上面
                 }
             }
         }
 
-
-        /*
-            解析needs的关系嵌套。
-            如果是and与or的关系，则为数组
-            如果是具体的权限就是对象了
-            judge whether user have permission.
-        */
+        console.log(pair);
 
         let isPass = passHandler(needs, pair);
 
         if (!isPass) {
             this.status = 401;
             this.body = {
-
+                statusCode: 401,
+                reasonPhrase: "Unauthorized",
+                description: "insufficient permission",
+                errorCode: 1000
             };
 
             return ;

@@ -20,7 +20,7 @@ function* getOwnPermissions (next) {
     this.ownPermissions = new Set();
 
     permissions.forEach((value) => {
-        this.ownPermissions.add(value.id);
+        this.ownPermissions.add(value.permission_id);
     });
 
     yield next;

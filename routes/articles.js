@@ -188,20 +188,11 @@ router
 		"/articles",
 		getToken,
 		getIdentity,
-		permissionsFilter([
-			{
-				permission: "addArticle",
-		        httpResponse: {
-		            statusCode: 403,
-		            httpBody: {
-		                statusCode: 403,
-		                reasonPhrase: "Forbidden",
-		                description: "need permission to add an article",
-		                errorCode: 1009
-		            }
-		        }
-			}
-		]),
+		permissionsFilter({
+			and: [
+				"addArticle"
+			]
+		}),
 		function* (next) {
 			// get userId from getIdentity.js
 			let userId = this.userId;
@@ -268,32 +259,12 @@ router
 		"/articles/:id",
 		getToken,
 		getIdentity,
-		permissionsFilter([
-			{
-				permission: "deleteSelfArticle",
-				httpResponse: {
-					statusCode: 401,
-					httpBody: {
-						statusCode: 500,
-						reasonPhrase: "Internal Server Error",
-						description: "add article fialed",
-						errorCode: 1009
-					}
-				}
-			},
-			{
-				permission: "deletetArticle",
-				httpResponse: {
-					statusCode: 401,
-					httpBody: {
-						statusCode: 500,
-						reasonPhrase: "Internal Server Error",
-						description: "add article fialed",
-						errorCode: 1009
-					}
-				}
-			}
-		]),
+		permissionsFilter({
+			or: [
+				"deletetArticle",
+				"deleteSelfArticle"
+			]
+		}),
 		function* (next) {
 			let id = this.id;
 
@@ -338,30 +309,33 @@ router
 		function* (next) {
 			let id = this.id;
 
-			let article = yield Article.find({
-				where: {
-					id: id
-				}
-			});
+			let article = this.article;
 
-			if (article.length === 0) {
-				this.status = 404;
-				this.body = {
-
-				}
-
-				return ;
-			}
-
-			// update the article
+			// get the article
 			let body = yield parse.form(this);
 
-			for (let key in body) {
-				console.log(key);
+			try {
+				// update the article
+				yield article.update({
+					title: body.title,
+					content: body.content
+				});
+
+				this.body = {
+					statusCode: 200,
+					reasonPhrase: "OK",
+					description: "update article succeed"
+				};
 			}
-			// article.
-
-
+			catch (error) {
+				this.status = 500;
+				this.body = {
+					statusCode: 500,
+					reasonPhrase: "Internal Server Error",
+					description: "add article fialed",
+					errorCode: 1004
+				}
+			}
 		}
 	);
 
