@@ -6,10 +6,11 @@ let Permission = require("../models/Permission").Permission;
 let Article = require("../models/Article").Article;
 let PermissionToGroup = require("../models/Permission").PermissionToGroup;
 
-function getPermissionString (o) {
+// 从传入的权限描述对象中取出所有的权限名字
+function getPermissionsString (value) {
     let permissions = [];
 
-    let inner = function inner () {
+    let inner = function inner (value) {
         if (value instanceof Object) {
             for (let key in value) {
                 if (key === "and") {
@@ -26,22 +27,23 @@ function getPermissionString (o) {
         }
     };
 
-    inner();
+    inner(value);
     return permissions;
 }
 
-function passHandler (value) {
+// 递归判断用户是否能够通过filter
+function passHandler (value, pair) {
     if (value instanceof Object) {
         for (let key in value) {
             if (key === "and") {
                 return value[key].reduce(function (pre, cur) {
-                    return passHandler(pre) && passHandler(cur);
+                    return passHandler(pre, pair) && passHandler(cur, pair);
                 });
             }
 
             if (key === "or") {
                 return value[key].reduce(function (pre, cur) {
-                    return passHandler(pre) || passHandler(cur);
+                    return passHandler(pre, pair) || passHandler(cur, pair);
                 });
             }
         }
@@ -67,9 +69,7 @@ function permissionsFilter (needs) {
             get all permissions
         */
         let allPermissions = new Map();
-
         let pers = yield Permission.findAll();
-
         pers.forEach(value => allPermissions.set(value.name, value.id));
 
 
@@ -86,33 +86,29 @@ function permissionsFilter (needs) {
         });
 
         let ownPermissions = new Set();
-
         own.forEach(value => ownPermissions.add(value.permission_id));
-
-        console.dir(allPermissions);
-        console.dir(ownPermissions);
 
 
         /*
             filter
         */
         // 存放permission 与 false/true，表示用户是否拥有这个permission
-        let perPair = new Map();
+        let pair = new Map();
 
-        let
+        let permissions = getPermissionsString(needs);
 
-        for (let i = 0; i < needs.length; i++) {
-            let item = needs[i];
+        for (let i = 0; i < permissions.length; i++) {
+            let item = permissions[i];
 
-            if (!ownPermissions.has(allPermissions.get(item.permission))) {
-                pair.set(item.permission, false);
+            if (!ownPermissions.has(allPermissions.get(item))) {
+                pair.set(item, false);
             }
             else {
-                pair.set(item.permission, true);
+                pair.set(item, true);
             }
 
             // 检查是否删除的是自己的文章，作者拥有删除自己文章和修改自己文章的权限。
-            if (item.permission.toLowerCase.indexOf("self")) {
+            if (item.toLowerCase().indexOf("self") !== -1) {
                 // get userId and from muddleware getIdentity.js
     			let userId = this.userId;
 
@@ -126,29 +122,33 @@ function permissionsFilter (needs) {
     				}
     			});
 
-    			isOwn = isOwn.length === 1 ? true : false;
-
                 if (!isOwn) {
-                    pair.set(item.permission, false);
+                    pair.set(item, false);
                 }
                 else {
-                    pair.set(item.permission, true);
+                    pair.set(item, true);
                 }
             }
         }
 
-        // 解析needs的关系嵌套。
-        // 如果是and与or的关系，则为数组
-        // 如果是具体的权限就是对象了
-        // judge whether user have permission.
 
-        console.log("pair:");
-        console.dir(pair);
-        
-        let canPass = passHandler(perPair);
+        /*
+            解析needs的关系嵌套。
+            如果是and与or的关系，则为数组
+            如果是具体的权限就是对象了
+            judge whether user have permission.
+        */
 
-        console.log("canPass", canPass);
+        let isPass = passHandler(needs, pair);
 
+        if (!isPass) {
+            this.status = 401;
+            this.body = {
+
+            };
+
+            return ;
+        }
 
         yield next;
     };

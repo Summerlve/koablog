@@ -18,7 +18,7 @@ function* getToken (next) {
             reasonPhrase: "Unauthorized",
             description: "there is no token in the http request header field 'Authorization'",
             errorCode: 1000
-        }
+        };
         return ;
     }
 
@@ -37,7 +37,7 @@ function* getToken (next) {
             reasonPhrase: "Bad Request",
             description: "wrong token",
             errorCode: 1001
-        }
+        };
 
         return ;
     }
@@ -51,7 +51,7 @@ function* getToken (next) {
             reasonPhrase: "Bad Request",
             description: "token out of date",
             errorCode: 1002
-        }
+        };
 
         return ;
     }
@@ -68,7 +68,7 @@ function* getToken (next) {
             reasonPhrase: "Bad Request",
             description: "token do not exsit, please log in again",
             errorCode: 1003
-        }
+        };
 
         return ;
     }
