@@ -123,22 +123,31 @@ function permissionsFilter (needs) {
                 // get userId and from muddleware getIdentity.js
     			let userId = this.userId;
 
-    			// get article's id
+    			// get article's id from routes param handler
     			let id = this.id;
 
-    			let artilce = yield Article.find({
+    			let article = yield Article.find({
     				where: {
-    					id: id,
-    					user_id: userId
+    					id: id
     				}
     			});
 
-                if (!artilce) {
+                if (article === null) {
+                    this.status = 404;
+                    this.body = {
+                        statusCode: 404,
+                        reasonPhrase: "Not Found",
+                    }
+
+                    return ;
+                }
+
+                if (article.user_id !== userId) {
                     pair.set(item, false);
                 }
                 else {
                     pair.set(item, true);
-                    this.article = artilce; // 将这个记录挂到context上面
+                    this.article = article; // 将这个记录挂到context上面
                 }
             }
         }
