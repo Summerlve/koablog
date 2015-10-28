@@ -30,10 +30,9 @@ app.use(session(app));
 app.use(require("./routes/about"));
 app.use(require("./routes/articles/articles"));
 app.use(require("./routes/authentication"));
-app.use(require("./routes/authors"));
 app.use(require("./routes/panel"));
 app.use(require("./routes/tags"));
-app.use(require("./routes/users"));
+app.use(require("./routes/users/users"));
 
 // gzip compress
 let compress = require("koa-compress");

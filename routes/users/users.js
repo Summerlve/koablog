@@ -1,8 +1,8 @@
 "use strict";
 let router = require("koa-router")();
 let views = require("co-views");
-let User = require("../models/User");
-let ArticleView = require("../models/Article").ArticleView;
+let User = require("../../models/User");
+let ArticleView = require("../../models/Article").ArticleView;
 
 // path
 let viewsPath = global.path.views;

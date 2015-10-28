@@ -6,6 +6,86 @@ let Permission = require("../models/Permission").Permission;
 let Article = require("../models/Article").Article;
 let PermissionToGroup = require("../models/Permission").PermissionToGroup;
 
+function permissionsFilter (needs) {
+    // 返回一个Generator函数
+    return function* permissionsFilter (next) {
+        // needs must be object.
+        if (!(needs instanceof Object)) {
+            console.error("needs must be Object");
+            this.status = 500;
+
+            return ;
+        }
+
+        // get all permissions
+        yield* getAllPermissions(this);
+        let allPermissions = this.allPermissions;
+
+        // get own permissions
+        yield* getOwnPermissions(this);
+        let ownPermissions = this.ownPermissions;
+
+        // filter
+        // 将needs中的权限字符串全部取出来
+        let allPermissioStrings = getStrings(needs);
+
+        // 存放permission 与 false/true，表示用户是否拥有这个permission
+        let pair = new Map();
+
+        // 判断用户是否拥有单个的权限，如果是文章的操作要检查文章是否属于作者
+        for (let i = 0; i < allPermissioStrings.length; i++) {
+            let item = allPermissioStrings[i];
+
+            if (!ownPermissions.has(allPermissions.get(item))) {
+                pair.set(item, false);
+            }
+            else {
+                pair.set(item, true);
+            }
+
+            // 检查该文章是否属于作者
+            if (item === "deleteSelfArticle" || item === "updateSelfArticle") {
+                // get userId and from muddleware getIdentity.js
+    			let userId = this.userId;
+
+    			// get article's id from routes param handler
+    			let id = this.id;
+
+    			let article = yield Article.find({
+    				where: {
+    					id: id,
+                        user_id: userId
+    				}
+    			});
+
+                if (article === null) {
+                    pair.set(item, false);
+                }
+                else {
+                    pair.set(item, true);
+                }
+            }
+        }
+
+        // 根据提供的needs（需要的权限关系）来判断用户能否通过filter
+        let isPass = passHandler(needs, pair);
+
+        if (!isPass) {
+            this.status = 401;
+            this.body = {
+                statusCode: 401,
+                reasonPhrase: "Unauthorized",
+                description: "insufficient permission",
+                errorCode: 1000
+            };
+
+            return ;
+        }
+
+        yield next;
+    };
+}
+
 // 从传入的权限描述对象中取出所有的权限名字
 function getStrings (value) {
     let strings = [];
@@ -90,86 +170,6 @@ function getOwnPermissions (context) {
 
         this.ownPermissions = ownPermissions;
     }.bind(context)();
-}
-
-function permissionsFilter (needs) {
-    // 返回一个Generator函数
-    return function* permissionsFilter (next) {
-        // needs must be object.
-        if (!(needs instanceof Object)) {
-            console.error("needs must be Object");
-            this.status = 500;
-
-            return ;
-        }
-
-        // get all permissions
-        yield* getAllPermissions(this);
-        let allPermissions = this.allPermissions;
-
-        // get own permissions
-        yield* getOwnPermissions(this);
-        let ownPermissions = this.ownPermissions;
-
-        // filter
-        // 将needs中的权限字符串全部取出来
-        let allPermissioStrings = getStrings(needs);
-
-        // 存放permission 与 false/true，表示用户是否拥有这个permission
-        let pair = new Map();
-
-        // 判断用户是否拥有单个的权限，如果是文章的操作要检查文章是否属于作者
-        for (let i = 0; i < allPermissioStrings.length; i++) {
-            let item = allPermissioStrings[i];
-
-            if (!ownPermissions.has(allPermissions.get(item))) {
-                pair.set(item, false);
-            }
-            else {
-                pair.set(item, true);
-            }
-
-            // 检查该文章是否属于作者
-            if (item === "deleteSelfArticle" || item === "updateSelfArticle") {
-                // get userId and from muddleware getIdentity.js
-    			let userId = this.userId;
-
-    			// get article's id from routes param handler
-    			let id = this.id;
-
-    			let article = yield Article.find({
-    				where: {
-    					id: id,
-                        user_id: userId
-    				}
-    			});
-
-                if (article === null) {
-                    pair.set(item, false);
-                }
-                else {
-                    pair.set(item, true);
-                }
-            }
-        }
-
-        // 根据提供的needs（需要的权限关系）来判断用户能否通过filter
-        let isPass = passHandler(needs, pair);
-
-        if (!isPass) {
-            this.status = 401;
-            this.body = {
-                statusCode: 401,
-                reasonPhrase: "Unauthorized",
-                description: "insufficient permission",
-                errorCode: 1000
-            };
-
-            return ;
-        }
-
-        yield next;
-    };
 }
 
 module.exports = permissionsFilter;
