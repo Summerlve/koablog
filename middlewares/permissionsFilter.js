@@ -126,21 +126,8 @@ function permissionsFilter (needs) {
     			// get article's id from routes param handler
     			let id = this.id;
 
-    			let article = yield Article.find({
-    				where: {
-    					id: id
-    				}
-    			});
-
-                if (article === null) {
-                    this.status = 404;
-                    this.body = {
-                        statusCode: 404,
-                        reasonPhrase: "Not Found",
-                    }
-
-                    return ;
-                }
+                // get resource from resourceCheck
+    			let article = this.resource;
 
                 if (article.user_id !== userId) {
                     pair.set(item, false);

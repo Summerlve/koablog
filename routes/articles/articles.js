@@ -23,7 +23,7 @@ let getIdentity = require("../../middlewares/getIdentity");
 let permissionsFilter = require("../../middlewares/permissionsFilter");
 
 // middlewares
-let resourceFilter = require("./middlewares/resourceFilter");
+let resourceCheck = require("./middlewares/resourceCheck");
 
 // redirect '/' to the '/articles'
 router
@@ -105,83 +105,65 @@ router
 
 // one of the articles
 router
-	.param("id", function* (id, next) {
-		if (isNaN(parseInt(id, 10))) {
-			// id不是数字的情况，就404。
-			this.status = 404;
-			this.body = "article not found";
-			return ;
-		}
-		else {
-			this.id = parseInt(id, 10);
-		}
-		yield next;
-	})
-	.get("/articles/:id", function* (next) {
-		switch (this.accepts("json", "html")) {
-			case "html": {
-				let id = this.id;
-				let article = yield ArticleView.find({
-					where: {
-						id: id
-					}
-				});
+	.get(
+		"/articles/:id",
+		resourceCheck,
+		function* (next) {
+			switch (this.accepts("json", "html")) {
+				case "html": {
+					let id = this.id;
+					let article = this.resource;
 
-				if (article === null) {
-					this.status = 404;
-					this.body = "article not found";
-					return ;
+					// 检测previous、next页面
+					let previous = yield ArticleView.find({
+						order: [
+							["id", "DESC"]
+						],
+						where: {
+							id: {
+								$lt: id
+							}
+						},
+						limit: 1
+					});
+
+					let next_ = yield ArticleView.find({
+						order: ["id"],
+						where: {
+							id: {
+								$gt: id
+							}
+						},
+						limit: 1
+					});
+
+					this.body = yield render("/frontend/articles/details", {
+						article: article,
+						title: article.title,
+						page: {
+							previous: previous === null ? 0 : previous.id,
+							next: next_ === null ? 0 : next_.id
+						}
+					});
+				}break;
+				case "json": {
+					let id = this.id;
+
+					let article = yield ArticleView.find({
+						where: {
+							id: id
+						}
+					});
+
+					this.body = article;
+				}break;
+				default: {
+					// 只允许json和html。
+					this.throw(406, "json and html only");
 				}
-
-				// 检测previous、next页面
-				let previous = yield ArticleView.find({
-					order: [
-						["id", "DESC"]
-					],
-					where: {
-						id: {
-							$lt: id
-						}
-					},
-					limit: 1
-				});
-
-				let next_ = yield ArticleView.find({
-					order: ["id"],
-					where: {
-						id: {
-							$gt: id
-						}
-					},
-					limit: 1
-				});
-
-				this.body = yield render("/frontend/articles/details", {
-					article: article,
-					title: article.title,
-					page: {
-						previous: previous === null ? 0 : previous.id,
-						next: next_ === null ? 0 : next_.id
-					}
-				});
-			}break;
-			case "json": {
-				let id = this.id;
-
-				let article = yield ArticleView.find({
-					where: {
-						id: id
-					}
-				});
-
-				this.body = article;
-			}break;
-			default: {
-				// 只允许json和html。
-				this.throw(406, "json and html only");
 			}
 		}
-	});
+	);
 
 // add new article
 router
@@ -242,21 +224,9 @@ router
 
 // delete an article
 router
-	.param("id", function* (id, next) {
-		if (isNaN(parseInt(id, 10))) {
-			// id不是数字的情况，就404。
-			this.status = 404;
-			this.body = "article not found";
-
-			return ;
-		}
-		else {
-			this.id = parseInt(id, 10);
-		}
-		yield next;
-	})
 	.delete(
 		"/articles/:id",
+		resourceCheck,
 		getToken,
 		getIdentity,
 		permissionsFilter({
@@ -285,21 +255,9 @@ router
 
 // change an article
 router
-	.param("id", function* (id, next) {
-		if (isNaN(parseInt(id, 10))) {
-			// id不是数字的情况，就404。
-			this.status = 404;
-			this.body = "article not found";
-
-			return ;
-		}
-		else {
-			this.id = parseInt(id, 10);
-		}
-		yield next;
-	})
 	.put(
 		"/articles/:id",
+		resourceCheck,
 		getToken,
 		getIdentity,
 		permissionsFilter({
@@ -311,7 +269,7 @@ router
 		function* (next) {
 			let id = this.id;
 
-			let article = this.article;
+			let article = this.resource;
 
 			// get the article
 			let body = yield parse.form(this);
