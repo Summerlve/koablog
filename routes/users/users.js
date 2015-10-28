@@ -3,6 +3,7 @@ let router = require("koa-router")();
 let views = require("co-views");
 let User = require("../../models/User");
 let ArticleView = require("../../models/Article").ArticleView;
+let parse = require("co-body");
 
 // path
 let viewsPath = global.path.views;
@@ -17,6 +18,14 @@ let render = views(viewsPath, {
 		html: "ejs"
 	}
 });
+
+// middlewares
+let getToken = require("../../middlewares/getToken");
+let getIdentity = require("../../middlewares/getIdentity");
+let permissionsFilter = require("../../middlewares/permissionsFilter");
+
+// middlewares
+let resourceCheck = require("./middlewares/resourceCheck");
 
 // page of authors
 router
@@ -56,37 +65,84 @@ router
 
 // one of the author
 router
-	.get("/authors/:pen_name", function* (next) {
-		let pen_name = this.params.pen_name;
+	.get(
+		"/authors/:pen_name",
+		resourceCheck,
+		function* (next) {
+			// from resourceCheck
+			let author = this.resource;
+			let pen_name = this.pen_name;
 
-		let author = yield User.find({
-			where: {
-				pen_name: pen_name
-			}
-		});
+			// get the newest 4 articles of this author
+			let articles = yield ArticleView.findAll({
+				order: [
+					["id", "DESC"]
+				],
+				where: {
+					author: pen_name
+				},
+				limit: 4
+			});
 
-		if (author === null) {
-			this.status = 404;
-			this.body = "author not found";
-			return ;
+			this.body = yield render("/frontend/authors/details", {
+				author: author,
+				articles: articles,
+				title: author.pen_name
+			});
 		}
+	);
 
-		// get the newest 4 ArticleViews of this author
-		let ArticleViews = yield ArticleView.findAll({
-			order: [
-				["id", "DESC"]
-			],
-			where: {
-				author: pen_name
-			},
-			limit: 4
-		});
+router
+	.post(
+		"/authors",
+		getToken,
+		getIdentity,
+		permissionsFilter({
+			and: [
+				"addUser"
+			]
+		}),
+		function* (next) {
+			let body = yield parse.form(this);
 
-		this.body = yield render("/frontend/authors/details", {
-			author: author,
-			ArticleViews: ArticleViews,
-			title: author.pen_name
-		});
-	});
+			try {
+
+			}
+			catch (error) {
+
+			}
+		}
+	);
+
+router
+	.delete(
+		"/authors",
+		resourceCheck,
+		getToken,
+		getIdentity,
+		permissionsFilter({
+			and: [
+				"deleteUser"
+			]
+		}),
+		function* (next) {
+
+		}
+	);
+
+router
+	.put(
+		"/authors",
+		getToken,
+		getIdentity,
+		permissionsFilter({
+			and: [
+				"updateUser"
+			]
+		}),
+		function* (next) {
+
+		}
+	);
 
 module.exports = router.routes();

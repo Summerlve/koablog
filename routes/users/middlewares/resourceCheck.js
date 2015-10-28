@@ -1,20 +1,20 @@
 "use strict";
 // 检查请求的资源是否存在
 
-let ArticleView = require("../../../models/Article").ArticleView;
+let User = require("../../../models/User");
 
 function* filter (next) {
     // 从路由那边获取参数
-    let id = this.params.id;
+    let pen_name = this.params.pen_name;
 
-    let article = yield ArticleView.find({
+    let author = yield User.find({
         where: {
-            id: id
+            pen_name: pen_name
         }
     });
 
     // 资源不存在和id不是数字都404
-    if (article === null || isNaN(parseInt(id, 10))) {
+    if (author === null) {
         switch (this.accepts("json", "html")) {
             case "html": {
                 this.status = 404;
@@ -38,8 +38,8 @@ function* filter (next) {
     }
 
     // 将article的id和此条记录添加到context上面
-    this.id = parseInt(id, 10);
-    this.resource = article;
+    this.pen_name = pen_name;
+    this.resource = author;
 
     yield next;
 }

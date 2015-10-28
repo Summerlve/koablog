@@ -122,7 +122,7 @@ function passHandler (value, pair) {
                     });
                 }
                 else if (value[key].length === 1) {
-                    return passHandler(value[key][0]);
+                    return passHandler(value[key][0], pair);
                 }
             }
 
