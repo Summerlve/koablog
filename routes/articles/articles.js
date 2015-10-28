@@ -173,7 +173,8 @@ router
 		getIdentity,
 		permissionsFilter({
 			and: [
-				"addArticle"
+				"addArticle",
+				"addTag"
 			]
 		}),
 		function* (next) {
@@ -210,7 +211,6 @@ router
 				};
 			}
 			catch (error) {
-				console.log(error);
 				this.status = 500;
 				this.body = {
 					statusCode: 500,
@@ -261,15 +261,24 @@ router
 		getToken,
 		getIdentity,
 		permissionsFilter({
-			or: [
-				"updateArticle",
-				"updateSelfArticle"
+			and: [
+				"addTag",
+				{
+					or: [
+						"updateArticle",
+						"updateSelfArticle"
+					]
+				}
 			]
 		}),
 		function* (next) {
 			let id = this.id;
 
-			let article = this.resource;
+			let article = yield Article.find({
+				where: {
+					id: id
+				}
+			});
 
 			// get the article
 			let body = yield parse.form(this);

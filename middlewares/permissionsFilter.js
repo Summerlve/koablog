@@ -31,20 +31,30 @@ function getStrings (value) {
     return strings;
 }
 
-// 递归判断用户是否能够通过filter
+// 根据提供的needs（需要的权限关系）来判断用户能否通过filter
 function passHandler (value, pair) {
     if (value instanceof Object) {
         for (let key in value) {
             if (key === "and") {
-                return value[key].reduce(function (pre, cur) {
-                    return passHandler(pre, pair) && passHandler(cur, pair);
-                });
+                if (value[key].length >= 2) {
+                    return value[key].reduce(function (pre, cur) {
+                        return passHandler(pre, pair) && passHandler(cur, pair);
+                    });
+                }
+                else if (value[key].length === 1) {
+                    return passHandler(value[key][0]);
+                }
             }
 
             if (key === "or") {
-                return value[key].reduce(function (pre, cur) {
-                    return passHandler(pre, pair) || passHandler(cur, pair);
-                });
+                if (value[key].length >= 2) {
+                    return value[key].reduce(function (pre, cur) {
+                        return passHandler(pre, pair) || passHandler(cur, pair);
+                    });
+                }
+                else if (value[key].length === 1) {
+                    return passHandler(value[key][0], pair);
+                }
             }
         }
     }
@@ -102,12 +112,13 @@ function permissionsFilter (needs) {
         let ownPermissions = this.ownPermissions;
 
         // filter
+        // 将needs中的权限字符串全部取出来
+        let allPermissioStrings = getStrings(needs);
+
         // 存放permission 与 false/true，表示用户是否拥有这个permission
         let pair = new Map();
 
-        // 将needs中的权限的name字符串全部取出来
-        let allPermissioStrings = getStrings(needs);
-
+        // 判断用户是否拥有单个的权限，如果是文章的操作要检查文章是否属于作者
         for (let i = 0; i < allPermissioStrings.length; i++) {
             let item = allPermissioStrings[i];
 
@@ -119,26 +130,30 @@ function permissionsFilter (needs) {
             }
 
             // 检查该文章是否属于作者
-            if (item.toLowerCase().indexOf("self") !== -1) {
+            if (item === "deleteSelfArticle" || item === "updateSelfArticle") {
                 // get userId and from muddleware getIdentity.js
     			let userId = this.userId;
 
     			// get article's id from routes param handler
     			let id = this.id;
 
-                // get resource from resourceCheck
-    			let article = this.resource;
+    			let article = yield Article.find({
+    				where: {
+    					id: id,
+                        user_id: userId
+    				}
+    			});
 
-                if (article.user_id !== userId) {
+                if (article === null) {
                     pair.set(item, false);
                 }
                 else {
                     pair.set(item, true);
-                    this.article = article; // 将这个记录挂到context上面
                 }
             }
         }
 
+        // 根据提供的needs（需要的权限关系）来判断用户能否通过filter
         let isPass = passHandler(needs, pair);
 
         if (!isPass) {

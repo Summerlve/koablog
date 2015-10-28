@@ -7,40 +7,14 @@ function* filter (next) {
     // 从路由那边获取参数
     let id = this.params.id;
 
-    if (isNaN(parseInt(id, 10))) {
-
-        // id不是数字的情况，就404。
-        switch (this.accepts("json", "html")) {
-            case "html": {
-                this.status = 404;
-                this.body = "Not Found";
-
-                return ;
-            }break;
-            case "json": {
-                this.status = 404;
-                this.body = {
-                    statusCode: 404,
-                    reasonPhrase: "Not Found",
-                };
-
-                return ;
-            }break;
-            default: {
-                this.throw(406, "json and html only");
-            }
-        }
-    }
-
-
-    // 资源不存在也返回404
     let article = yield ArticleView.find({
         where: {
             id: id
         }
     });
 
-    if (article === null) {
+    // 资源不存在和id不是数字都404
+    if (article === null || isNaN(parseInt(id, 10))) {
         switch (this.accepts("json", "html")) {
             case "html": {
                 this.status = 404;
@@ -63,6 +37,7 @@ function* filter (next) {
         }
     }
 
+    // 将article的id和此条记录添加到context上面
     this.id = parseInt(id, 10);
     this.resource = article;
 
