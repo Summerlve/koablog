@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <!--include head-->
+        <%- include("../general/head.html", undefined) %>
+        <!--end of include head-->
+    </head>
+    <body style="padding-top: 70px;">
+        <component is="{{currentView}}" v-ref="currentView"></component>
+        <!--import javascripts-->
+        <script src="/scripts/lib/jquery-2.1.4.min.js"></script>
+        <script src="/scripts/lib/bootstrap.min.js"></script>
+        <script src="/scripts/lib/vue.js"></script>
+        <script src="/scripts/lib/director.min.js"></script>
+        <script src="/scripts/lib/pace.min.js"></script>
+        <script src="/scripts/lib/ckeditor/ckeditor.js"></script>
+        <script src="/scripts/app.js"></script>
+		<!--end of import javascripts-->
+    </body>
+</html>
