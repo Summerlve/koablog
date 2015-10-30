@@ -159,7 +159,7 @@
 					e.preventDefault();
 
 					var loggingIn = $.ajax({
-						url: "/authentication",
+						url: "/authentications",
 						data: this.$data.user,
 						dataType: "json",
 						method: "POST"

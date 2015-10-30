@@ -28,7 +28,7 @@ let render = views(viewsPath, {
 let getToken = require("../../middlewares/getToken");
 
 router
-	.post("/authentication", function* (next) {
+	.post("/authentications", function* (next) {
 		let body = yield parse.form(this);
 
 		let user = yield User.find({
@@ -82,7 +82,7 @@ router
 // 当前端和后端都将token删除之后则注销成功。
 router
 	.delete(
-		"/authentication",
+		"/authentications",
 		getToken,
 		function* (next) {
 			// 从上一个中间件中获取token。
@@ -99,7 +99,7 @@ router
 
 router
 	.put(
-		"/authentication",
+		"/authentications",
 		getToken,
 		function* (next) {
 			this.status = 200;
