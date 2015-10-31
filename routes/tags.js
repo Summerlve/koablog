@@ -1,16 +1,16 @@
 "use strict";
-let router = require("koa-router")();
-let Tag = require("../models/Tag");
-let views = require("co-views");
+const router = require("koa-router")();
+const Tag = require("../models/Tag");
+const views = require("co-views");
 
 // path
-let viewsPath = global.path.views;
+const viewsPath = global.path.views;
 
 // row
-let tagsPerRow = 6; // 每行6个tag
+const tagsPerRow = 6; // 每行6个tag
 
 // render
-let render = views(viewsPath, {
+const render = views(viewsPath, {
 	map: {
 		html: "ejs"
 	}
@@ -27,6 +27,7 @@ router
 			title: "Tags",
 			tagsPerRow: tagsPerRow
 		});
+		return ;
 	});
 
 router

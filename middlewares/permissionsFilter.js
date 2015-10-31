@@ -53,7 +53,6 @@ function permissionsFilter (needs) {
 
     			if (isNaN(id)) {
     				this.status = 404;
-
     				return ;
     			}
 
@@ -65,7 +64,6 @@ function permissionsFilter (needs) {
 
                 if (article === null) {
                     this.status = 404;
-
     				return;
                 }
 
@@ -89,7 +87,6 @@ function permissionsFilter (needs) {
                 description: "insufficient permission",
                 errorCode: 1000
             };
-
             return ;
         }
 

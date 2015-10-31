@@ -63,14 +63,14 @@ router
 // one of the author
 router
 	.get(
-		"/authors/:name",
+		"/authors/:id",
 		function* (next) {
-			let name = this.params.name;
+			let id = this.params.id;
 
 		    let author = yield User.find({
-				attributes: ["pen_name", "introduce", "avatar"],
+				attributes: ["id", "pen_name", "introduce", "avatar"],
 		        where: {
-		            pen_name: name
+		            id: id
 		        }
 		    });
 
@@ -78,6 +78,8 @@ router
 				this.status = 404;
 				return ;
 			}
+
+			let penName = author.pen_name;
 
 			switch (this.accepts("json", "html")) {
 				case "json": {
@@ -90,7 +92,7 @@ router
 							["id", "DESC"]
 						],
 						where: {
-							author: name
+							author: penName
 						},
 						limit: 4
 					});
@@ -135,7 +137,7 @@ router
 
 router
 	.delete(
-		"/authors",
+		"/authors/:id",
 		getToken,
 		getIdentity,
 		permissionsFilter({
@@ -150,7 +152,7 @@ router
 
 router
 	.put(
-		"/authors",
+		"/authors/:id",
 		getToken,
 		getIdentity,
 		permissionsFilter({

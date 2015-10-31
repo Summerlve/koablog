@@ -1,31 +1,31 @@
 "use strict";
-let router = require("koa-router")();
-let views = require("co-views");
-let parse = require("co-body");
-let User = require("../models/User");
-let Group = require("../models/Group");
-let MD5 = require("md5");
-let jwt = require("jsonwebtoken");
-let moment = require("moment");
+const router = require("koa-router")();
+const views = require("co-views");
+const parse = require("co-body");
+const User = require("../models/User");
+const Group = require("../models/Group");
+const MD5 = require("md5");
+const jwt = require("jsonwebtoken");
+const moment = require("moment");
 
 // use redis to store token.
-let redisClient = global.redisClient;
+const redisClient = global.redisClient;
 
 // get the cert to decode or encode jwt.
-let cert = global.cert;
+const cert = global.cert;
 
 // get the view's path
-let viewsPath = global.path.views;
+const viewsPath = global.path.views;
 
 // render
-let render = views(viewsPath, {
+const render = views(viewsPath, {
 	map: {
 		html: "ejs"
 	}
 });
 
 // middlewares
-let getToken = require("../middlewares/getToken");
+const getToken = require("../middlewares/getToken");
 
 router
 	.post("/authentications", function* (next) {
@@ -46,7 +46,6 @@ router
 				reasonPhrase: "Unauthorized",
 				description: "username or password is not correct"
 			};
-
 			return ;
 		}
 
@@ -76,6 +75,7 @@ router
 			expires: expires,
 			user: user
 		};
+		return ;
 	});
 
 // 注销功能：删除存储在redis里面的token，如果删除成功则通知前端。
@@ -91,9 +91,11 @@ router
 			// 在redis中删除这个token。
 			redisClient.del(token);
 			this.body = {
-				status_code: 200,
+				statusCode: 200,
+				reasonPhrase: "OK",
 				description: "log out succeed"
 			};
+			return ;
 		}
 	);
 
@@ -102,10 +104,10 @@ router
 		"/authentications",
 		getToken,
 		function* (next) {
-			this.status = 200;
 			this.body = {
 
 			};
+			return ;
 		}
 	);
 

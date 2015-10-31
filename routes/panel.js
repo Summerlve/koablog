@@ -1,12 +1,12 @@
 "use strict";
-let router = require("koa-router")();
-let views = require("co-views");
+const router = require("koa-router")();
+const views = require("co-views");
 
 // get the view's path
-let viewsPath = global.path.views;
+const viewsPath = global.path.views;
 
 // render
-let render = views(viewsPath, {
+const render = views(viewsPath, {
 	map: {
 		html: "ejs"
 	}
@@ -17,6 +17,7 @@ router
 		this.body = yield render("/backend/panel", {
 			title: "Panel"
 		});
+		return ;
 	});
 
 module.exports = router.routes();
