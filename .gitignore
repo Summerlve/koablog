@@ -1,5 +1,4 @@
 # igonre files and directories
-/test
 .DS_Store
 jsconfig.json
 /.settings
