@@ -4,9 +4,9 @@
  *  this.token
  *  this.tokenType
  */
-let jwt = require("jsonwebtoken");
-let cert = global.cert;
-let redisClient = global.redisClient;
+const jwt = require("jsonwebtoken");
+const cert = global.cert;
+const redisClient = global.redisClient;
 
 function* getToken (next) {
     // get token from http request header field 'Authorization'.

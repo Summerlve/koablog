@@ -1,26 +1,26 @@
 "use strict";
-let router = require("koa-router")();
-let ArticleView = require("../models/Article").ArticleView;
-let Article = require("../models/Article").Article;
-let Tag = require("../models/Tag");
-let views = require("co-views");
-let parse = require("co-body");
+const router = require("koa-router")();
+const ArticleView = require("../models/Article").ArticleView;
+const Article = require("../models/Article").Article;
+const Tag = require("../models/Tag");
+const views = require("co-views");
+const parse = require("co-body");
 
 // path
-let viewsPath = global.path.views;
+const viewsPath = global.path.views;
 // page
-let limit = 5;
+const limit = 5;
 // render
-let render = views(viewsPath, {
+const render = views(viewsPath, {
 	map: {
 		html: "ejs"
 	}
 });
 
 // middlewares
-let getToken = require("../middlewares/getToken");
-let getIdentity = require("../middlewares/getIdentity");
-let permissionsFilter = require("../middlewares/permissionsFilter");
+const getToken = require("../middlewares/getToken");
+const getIdentity = require("../middlewares/getIdentity");
+const permissionsFilter = require("../middlewares/permissionsFilter");
 
 // redirect '/' to the '/articles'
 router

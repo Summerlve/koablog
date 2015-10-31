@@ -1,6 +1,6 @@
 "use strict";
 // app init
-let app = require("koa")();
+const app = require("koa")();
 
 /* 	config:
  *	this is configuration file.
@@ -13,16 +13,16 @@ require("./configs/config");
 /*	middleware:
  *	the pageNotFound middleware is handle all of the 404 error for whole situation.
  */
-let pageNotFound = require("./middlewares/pageNotFound");
+const pageNotFound = require("./middlewares/pageNotFound");
 app.use(pageNotFound);
 
 // static files
-let serve = require("koa-static");
-let staticFilePath = global.path.static;
+const serve = require("koa-static");
+const staticFilePath = global.path.static;
 app.use(serve(staticFilePath));
 
 // session
-let session = require("koa-session");
+const session = require("koa-session");
 app.keys = ["koaBlog"];
 app.use(session(app));
 
@@ -33,11 +33,11 @@ app.use(require("./routes/authentications"));
 app.use(require("./routes/panel"));
 app.use(require("./routes/root"));
 app.use(require("./routes/tags"));
-app.use(require("./routes/users/users"));
+app.use(require("./routes/users"));
 
 // gzip compress
-let compress = require("koa-compress");
+const compress = require("koa-compress");
 app.use(compress())
 
-let port = 8080;
+const port = 8080;
 app.listen(port);

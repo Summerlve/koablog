@@ -4,10 +4,10 @@
  * this.groupId
  * this.userId
  */
-let MD5 = require("md5");
-let jwt = require("jsonwebtoken");
-let User = require("../models/User");
-let cert = global.cert;
+const MD5 = require("md5");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+const cert = global.cert;
 
 // identity
 function* getIdentity (next) {
