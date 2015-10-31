@@ -12,7 +12,7 @@ module.exports = function* pageNotFound (next) {
 			this.body = this.body || "Not Found";
 			break;
 		case "json":
-			this.body = {
+			this.body = this.body || {
 				statusCode: 404,
 				reasonPhrase: "Not Found"
 			};

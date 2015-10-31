@@ -146,7 +146,7 @@ router
 			]
 		}),
 		function* (next) {
-
+			console.log(this.params.id);
 		}
 	);
 
