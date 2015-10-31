@@ -1,8 +1,8 @@
 "use strict";
 let router = require("koa-router")();
-let ArticleView = require("../../models/Article").ArticleView;
-let Article = require("../../models/Article").Article;
-let Tag = require("../../models/Tag");
+let ArticleView = require("../models/Article").ArticleView;
+let Article = require("../models/Article").Article;
+let Tag = require("../models/Tag");
 let views = require("co-views");
 let parse = require("co-body");
 
@@ -18,12 +18,9 @@ let render = views(viewsPath, {
 });
 
 // middlewares
-let getToken = require("../../middlewares/getToken");
-let getIdentity = require("../../middlewares/getIdentity");
-let permissionsFilter = require("../../middlewares/permissionsFilter");
-
-// middlewares
-let resourceCheck = require("./middlewares/resourceCheck");
+let getToken = require("../middlewares/getToken");
+let getIdentity = require("../middlewares/getIdentity");
+let permissionsFilter = require("../middlewares/permissionsFilter");
 
 // redirect '/' to the '/articles'
 router
@@ -57,8 +54,8 @@ router
 				});
 
 				// 即便是查询到的articles长度为0也需要返回
-
 				this.body = articles;
+				return ;
 			}break;
 			case "html": {
 				// 当请求html时
@@ -95,10 +92,12 @@ router
 						next: next_
 					}
 				});
+				return ;
 			}break;
 			default: {
 				// 只允许json和html。
 				this.throw(406, "json and html only");
+				return ;
 			}
 		}
 	});
@@ -107,13 +106,27 @@ router
 router
 	.get(
 		"/articles/:id",
-		resourceCheck,
 		function* (next) {
+			let id = parseInt(this.params.id, 10);
+
+			if (isNaN(id)) {
+				this.status = 404;
+				return ;
+			}
+
+			let article = yield ArticleView.find({
+				where: {
+					id: id
+				}
+			});
+
+			if (article === null) {
+				this.status = 404;
+				return;
+			}
+
 			switch (this.accepts("json", "html")) {
 				case "html": {
-					let id = this.id;
-					let article = this.resource;
-
 					// 检测previous、next页面
 					let previous = yield ArticleView.find({
 						order: [
@@ -145,21 +158,16 @@ router
 							next: next_ === null ? 0 : next_.id
 						}
 					});
+					return ;
 				}break;
 				case "json": {
-					let id = this.id;
-
-					let article = yield ArticleView.find({
-						where: {
-							id: id
-						}
-					});
-
 					this.body = article;
+					return ;
 				}break;
 				default: {
 					// 只允许json和html。
 					this.throw(406, "json and html only");
+					return ;
 				}
 			}
 		}
@@ -209,6 +217,7 @@ router
 					reasonPhrase: "OK",
 					description: "add article succeed"
 				};
+				return ;
 			}
 			catch (error) {
 				this.status = 500;
@@ -217,7 +226,8 @@ router
 					reasonPhrase: "Internal Server Error",
 					description: "add article fialed",
 					errorCode: 1004
-				}
+				};
+				return ;
 			}
 		}
 	);
@@ -226,7 +236,6 @@ router
 router
 	.delete(
 		"/articles/:id",
-		resourceCheck,
 		getToken,
 		getIdentity,
 		permissionsFilter({
@@ -236,7 +245,23 @@ router
 			]
 		}),
 		function* (next) {
-			let id = this.id;
+			let id = parseInt(this.params.id, 10);
+
+			if (isNaN(id)) {
+				this.status = 404;
+				return ;
+			}
+
+			let article = Article.find({
+				where: {
+					id:id
+				}
+			});
+
+            if (article === null) {
+                this.status = 404;
+				return;
+            }
 
 			yield Article.destroy({
 				where: {
@@ -244,12 +269,12 @@ router
 				}
 			});
 
-			this.status = 200;
 			this.body = {
 				statusCode: 200,
 				reasonPhrase: "OK",
 				description: "delete article succeed"
 			};
+			return ;
 		}
 	);
 
@@ -257,7 +282,6 @@ router
 router
 	.put(
 		"/articles/:id",
-		resourceCheck,
 		getToken,
 		getIdentity,
 		permissionsFilter({
@@ -272,13 +296,23 @@ router
 			]
 		}),
 		function* (next) {
-			let id = this.id;
+			let id = parseInt(this.params.id, 10);
+
+			if (isNaN(id)) {
+				this.status = 404;
+				return ;
+			}
 
 			let article = yield Article.find({
 				where: {
 					id: id
 				}
 			});
+
+			if (article === null) {
+				this.status = 404;
+				return;
+			}
 
 			// get the article
 			let body = yield parse.form(this);
@@ -306,6 +340,7 @@ router
 					reasonPhrase: "OK",
 					description: "update article succeed"
 				};
+				return ;
 			}
 			catch (error) {
 				this.status = 500;
@@ -314,7 +349,8 @@ router
 					reasonPhrase: "Internal Server Error",
 					description: "update article fialed",
 					errorCode: 1004
-				}
+				};
+				return ;
 			}
 		}
 	);

@@ -2,8 +2,8 @@
 let router = require("koa-router")();
 let views = require("co-views");
 let parse = require("co-body");
-let User = require("../../models/User");
-let Group = require("../../models/Group");
+let User = require("../models/User");
+let Group = require("../models/Group");
 let MD5 = require("md5");
 let jwt = require("jsonwebtoken");
 let moment = require("moment");
@@ -25,7 +25,7 @@ let render = views(viewsPath, {
 });
 
 // middlewares
-let getToken = require("../../middlewares/getToken");
+let getToken = require("../middlewares/getToken");
 
 router
 	.post("/authentications", function* (next) {

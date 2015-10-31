@@ -34,7 +34,7 @@
 			var token = JSON.parse(window.localStorage.getItem("token")).token;
 
 			var verify = $.ajax({
-				url: "/authentication",
+				url: "/authentications",
 				dataType: "json",
 				method: "PUT",
 				headers: {

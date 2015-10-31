@@ -109,7 +109,7 @@
                 var token = JSON.parse(window.localStorage.getItem("token")).token;
 
                 var loggingOut = $.ajax({
-                    url: "/authentication",
+                    url: "/authentications",
                     dataType: "json",
                     method: "DELETE",
                     headers: {

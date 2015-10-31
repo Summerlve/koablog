@@ -2,9 +2,9 @@
 // 将权限拦截器写在外部的中间件中
 // 在needs中的填写很多的权限无外乎两种关系，and 和 or，当然也可以嵌套
 
-let Permission = require("../models/Permission").Permission;
-let Article = require("../models/Article").Article;
-let PermissionToGroup = require("../models/Permission").PermissionToGroup;
+const getAllPermissions = require("./getAllPermissions");
+const getOwnPermissions = require("./getOwnPermissions");
+const Article = require("../models/Article").Article;
 
 function permissionsFilter (needs) {
     // 返回一个Generator函数
@@ -49,20 +49,31 @@ function permissionsFilter (needs) {
     			let userId = this.userId;
 
     			// get article's id from routes param handler
-    			let id = this.id;
+                let id = parseInt(this.params.id, 10);
+
+    			if (isNaN(id)) {
+    				this.status = 404;
+
+    				return ;
+    			}
 
     			let article = yield Article.find({
     				where: {
-    					id: id,
-                        user_id: userId
+    					id: id
     				}
     			});
 
                 if (article === null) {
-                    pair.set(item, false);
+                    this.status = 404;
+
+    				return;
+                }
+
+                if (article.user_id === userId) {
+                    pair.set(item, true);
                 }
                 else {
-                    pair.set(item, true);
+                    pair.set(item, false);
                 }
             }
         }
@@ -141,35 +152,6 @@ function passHandler (value, pair) {
     else if (typeof value === "string"){
         return pair.get(value);
     }
-}
-
-function getAllPermissions (context) {
-    return function* () {
-        let allPermissions = new Map();
-
-        let pers = yield Permission.findAll();
-        pers.forEach(value => allPermissions.set(value.name, value.id));
-
-        this.allPermissions = allPermissions;
-    }.bind(context)();
-}
-
-function getOwnPermissions (context) {
-    return function* () {
-        let groupId = this.groupId;
-
-        let own = yield PermissionToGroup.findAll({
-            attributes: ["permission_id"],
-            where: {
-                group_id: groupId
-            }
-        });
-
-        let ownPermissions = new Set();
-        own.forEach(value => ownPermissions.add(value.permission_id));
-
-        this.ownPermissions = ownPermissions;
-    }.bind(context)();
 }
 
 module.exports = permissionsFilter;

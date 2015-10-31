@@ -3,13 +3,13 @@
 module.exports = function* pageNotFound (next) {
 	yield next;
 
-	if (404 !== this.status) return ;
+	if (this.status !== 404) return ;
 
 	this.status = 404;
 
 	switch (this.accepts("html", "json")) {
 		case "html":
-			this.body = this.body || "404 Not Found ......";
+			this.body = this.body || "Not Found";
 			break;
 		case "json":
 			this.body = {
@@ -19,6 +19,6 @@ module.exports = function* pageNotFound (next) {
 			break;
 		default:
 			this.type = "text";
-			this.body = this.body || "404 Not Found ......";
+			this.body = this.body || "404 Not Found";
 	}
 };

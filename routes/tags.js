@@ -1,6 +1,6 @@
 "use strict";
 let router = require("koa-router")();
-let Tag = require("../../models/Tag");
+let Tag = require("../models/Tag");
 let views = require("co-views");
 
 // path

@@ -28,11 +28,11 @@ app.use(session(app));
 
 // routes loader
 app.use(require("./routes/about"));
-app.use(require("./routes/articles/articles"));
-app.use(require("./routes/authentications/authentications"));
+app.use(require("./routes/articles"));
+app.use(require("./routes/authentications"));
 app.use(require("./routes/panel"));
 app.use(require("./routes/root"));
-app.use(require("./routes/tags/tags"));
+app.use(require("./routes/tags"));
 app.use(require("./routes/users/users"));
 
 // gzip compress
