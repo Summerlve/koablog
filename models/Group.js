@@ -1,6 +1,6 @@
 "use strict";
-let Sequelize = require("sequelize");
-let sequelize = global.sequelize;
+const Sequelize = require("sequelize");
+const sequelize = global.sequelize;
 
 let Group = sequelize.define("koablog_group", {
 	id: {
@@ -23,4 +23,4 @@ let Group = sequelize.define("koablog_group", {
 	}
 });
 
-module.exports.Group = Group;
+module.exports = Group;

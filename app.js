@@ -34,6 +34,7 @@ app.use(require("./routes/panel"));
 app.use(require("./routes/root"));
 app.use(require("./routes/tags"));
 app.use(require("./routes/users"));
+app.use(require("./routes/groups"));
 
 // gzip compress
 const compress = require("koa-compress");
