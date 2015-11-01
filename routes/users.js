@@ -127,7 +127,7 @@ router
 		getIdentity,
 		permissionsFilter({
 			and: [
-				"addUser"
+				"create_users"
 			]
 		}),
 		function* (next) {
@@ -158,7 +158,7 @@ router
 		getIdentity,
 		permissionsFilter({
 			and: [
-				"deleteUser"
+				"delete_users"
 			]
 		}),
 		function* (next) {
@@ -177,8 +177,9 @@ router
 		getToken,
 		getIdentity,
 		permissionsFilter({
-			and: [
-				"updateUser"
+			or: [
+				"update_users",
+				"update_private_users"
 			]
 		}),
 		function* (next) {

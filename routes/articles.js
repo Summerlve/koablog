@@ -181,8 +181,8 @@ router
 		getIdentity,
 		permissionsFilter({
 			and: [
-				"addArticle",
-				"addTag"
+				"create_articles",
+				"create_tags"
 			]
 		}),
 		function* (next) {
@@ -240,8 +240,8 @@ router
 		getIdentity,
 		permissionsFilter({
 			or: [
-				"deletetArticle",
-				"deleteSelfArticle"
+				"deletet_articles",
+				"delete_private_articles"
 			]
 		}),
 		function* (next) {
@@ -286,11 +286,11 @@ router
 		getIdentity,
 		permissionsFilter({
 			and: [
-				"addTag",
+				"create_tags",
 				{
 					or: [
-						"updateArticle",
-						"updateSelfArticle"
+						"update_articles",
+						"update_private_articles"
 					]
 				}
 			]

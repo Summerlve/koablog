@@ -44,7 +44,7 @@ function permissionsFilter (needs) {
             }
 
             // 检查该文章是否属于作者
-            if (item === "deleteSelfArticle" || item === "updateSelfArticle") {
+            if (item === "delete_private_articles" || item === "update_private_articles") {
                 // get userId and from muddleware getIdentity.js
     			let userId = this.userId;
 
