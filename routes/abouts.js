@@ -11,9 +11,9 @@ const render = views(viewsPath, {
 });
 
 router
-	.get("/about", function* (next) {
-		this.body = yield render("/frontend/about/about.html", {
-			title: "About"
+	.get("/abouts", function* (next) {
+		this.body = yield render("/frontend/abouts/abouts.html", {
+			title: "Abouts"
 		});
 	});
 
