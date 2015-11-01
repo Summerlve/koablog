@@ -4,6 +4,7 @@ const views = require("co-views");
 const User = require("../models/User");
 const ArticleView = require("../models/Article").ArticleView;
 const parse = require("co-body");
+const MD5 = require("md5");
 
 // path
 const viewsPath = global.path.views;
@@ -65,7 +66,12 @@ router
 	.get(
 		"/authors/:id",
 		function* (next) {
-			let id = this.params.id;
+			let id = parseInt(this.params.id, 10);
+
+			if (isNaN(id)) {
+				this.status = 404;
+				return ;
+			}
 
 		    let author = yield User.find({
 				attributes: ["id", "pen_name", "introduce", "avatar"],
@@ -83,7 +89,8 @@ router
 
 			switch (this.accepts("json", "html")) {
 				case "json": {
-
+					this.body = author;
+					return ;
 				}break;
 				case "html": {
 					// get the newest 4 articles of this author
@@ -127,7 +134,16 @@ router
 			let body = yield parse.form(this);
 
 			try {
-
+				yield User
+						.build({
+							username: body.username,
+							password: MD5(body.password),
+							pen_name: body.penName,
+							avatar: body.avatar || null,
+							introduce: body.introduce || null,
+							group_id: body.groupId
+						})
+						.save();
 			}
 			catch (error) {
 
@@ -146,7 +162,12 @@ router
 			]
 		}),
 		function* (next) {
-			console.log(this.params.id);
+			let id = parseInt(this.params.id, 10);
+
+			if (isNaN(id)) {
+				this.status = 404;
+				return ;
+			}
 		}
 	);
 

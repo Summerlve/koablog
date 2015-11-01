@@ -15,6 +15,11 @@ let Group = sequelize.define("koablog_group", {
 		allowNull: false,
 		unique: true,
 		field: "name"
+	},
+	description: {
+		type: Sequelize.STRING(100),
+		allowNull: true,
+		field: "description"
 	}
 });
 

@@ -27,7 +27,7 @@ app.keys = ["koaBlog"];
 app.use(session(app));
 
 // routes loader
-app.use(require("./routes/about"));
+app.use(require("./routes/abouts"));
 app.use(require("./routes/articles"));
 app.use(require("./routes/authentications"));
 app.use(require("./routes/panel"));

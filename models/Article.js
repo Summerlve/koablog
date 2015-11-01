@@ -1,9 +1,9 @@
 "use strict";
-let Sequelize = require("sequelize");
-let sequelize = global.sequelize;
-let User = require("./User");
-let Tag = require("./Tag");
-let moment = require("moment");
+const Sequelize = require("sequelize");
+const sequelize = global.sequelize;
+const User = require("./User");
+const Tag = require("./Tag");
+const moment = require("moment");
 
 let ArticleView = sequelize.define("koablog_view_article", {
 	id: {

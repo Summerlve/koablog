@@ -1,6 +1,6 @@
 "use strict";
-let Sequelize = require("sequelize");
-let sequelize = global.sequelize;
+const Sequelize = require("sequelize");
+const sequelize = global.sequelize;
 
 let User = sequelize.define("koablog_user", {
 	id: {

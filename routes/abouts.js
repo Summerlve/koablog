@@ -1,10 +1,10 @@
 "use strict";
-let router = require("koa-router")();
-let views = require("co-views");
+const router = require("koa-router")();
+const views = require("co-views");
 // path
-let viewsPath = global.path.views;
+const viewsPath = global.path.views;
 // render
-let render = views(viewsPath, {
+const render = views(viewsPath, {
 	map: {
 		html: "ejs"
 	}
