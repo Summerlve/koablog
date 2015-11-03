@@ -2,6 +2,7 @@
 // 401 handler
 module.exports = function* (next) {
     yield next;
+    
     if (this.status !== 401) return ;
     this.status = 401;
 
