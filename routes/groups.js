@@ -25,6 +25,11 @@ router
 router
     .get(
         "/groups/:id",
+        getToken,
+		getIdentity,
+        permissionsFilter({
+            only: "read_groups"
+        }),
         function* (next) {
             let id = parseInt(this.params.id, 10);
 
@@ -41,7 +46,8 @@ router
 
             switch (this.accepts("html", "json")) {
                 case "html": {
-                    this.body = "123123";
+                    this.body = group;
+                    return ;
                 }break;
                 case "json": {
                     this.body = group;
