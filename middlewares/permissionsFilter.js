@@ -1,6 +1,6 @@
 "use strict";
 // 将权限拦截器写在外部的中间件中
-// 在needs中的填写很多的权限无外乎两种关系，and 和 or，当然也可以嵌套
+// 在needs中的填写很多的权限无外乎两种关系，and 和 or，当然也可以嵌套，当只需满足一个权限的时候就是only
 
 const getAllPermissions = require("./getAllPermissions");
 const getOwnPermissions = require("./getOwnPermissions");
@@ -80,14 +80,26 @@ function permissionsFilter (needs) {
         let isPass = passHandler(needs, pair);
 
         if (!isPass) {
-            this.status = 401;
-            this.body = {
-                statusCode: 401,
-                reasonPhrase: "Unauthorized",
-                description: "insufficient permission",
-                errorCode: 1000
-            };
-            return ;
+            switch (this.accepts(["html", "json"])) {
+                case "html": {
+                    this.status = 401;
+                    this.body = "rinima";
+                }break;
+                case "json": {
+                    this.status = 401;
+                    this.body = {
+                        statusCode: 401,
+                        reasonPhrase: "Unauthorized",
+                        description: "insufficient permission",
+                        errorCode: 1000
+                    };
+                    return ;
+                }break;
+                default: {
+                    this.throw(406, "json and html only");
+    				return ;
+                }
+            }
         }
 
         yield next;
@@ -132,9 +144,7 @@ function passHandler (value, pair) {
                 else if (value[key].length === 1) {
                     return passHandler(value[key][0], pair);
                 }
-            }
-
-            if (key === "or") {
+            } else if (key === "or") {
                 if (value[key].length >= 2) {
                     return value[key].reduce(function (pre, cur) {
                         return passHandler(pre, pair) || passHandler(cur, pair);
@@ -143,6 +153,8 @@ function passHandler (value, pair) {
                 else if (value[key].length === 1) {
                     return passHandler(value[key][0], pair);
                 }
+            } else if (key === "only") {
+                return passHandler(value[key], pair);
             }
         }
     }

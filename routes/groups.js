@@ -2,10 +2,18 @@
 
 const router = require("koa-router")();
 const Group = require("../models/Group");
+const permissionsFilter = require("../middlewares/permissionsFilter");
+const getToken = require("../middlewares/getToken");
+const getIdentity = require("../middlewares/getIdentity");
 
 router
     .get(
         "/groups",
+        getToken,
+		getIdentity,
+        permissionsFilter({
+            only: "read_groups"
+        }),
         function* (next) {
             // return all (just 2 group) groups
             let groups = yield Group.findAll();
