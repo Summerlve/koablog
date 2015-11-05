@@ -31,10 +31,10 @@ function* getToken (next) {
     try {
         decode = jwt.verify(token, cert);
     } catch (e) {
-        this.status = 400;
+        this.status = 401;
         this.body = {
-            statusCode: 400,
-            reasonPhrase: "Bad Request",
+            statusCode: 401,
+            reasonPhrase: "Unauthorized",
             description: "wrong token",
             errorCode: 1001
         };
@@ -47,8 +47,8 @@ function* getToken (next) {
     if (expires <= Date.now()) {
         this.status = 400;
         this.body = {
-            statusCode: 400,
-            reasonPhrase: "Bad Request",
+            statusCode: 401,
+            reasonPhrase: "Unauthorized",
             description: "token out of date",
             errorCode: 1002
         };
@@ -64,8 +64,8 @@ function* getToken (next) {
     if (!isTokenExsit) {
         this.status = 400;
         this.body = {
-            statusCode: 400,
-            reasonPhrase: "Bad Request",
+            statusCode: 401,
+            reasonPhrase: "Unauthorized",
             description: "token do not exsit, please log in again",
             errorCode: 1003
         };

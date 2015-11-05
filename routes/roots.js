@@ -13,7 +13,7 @@ const render = views(viewsPath, {
 });
 
 router
-	.get("/root", function* (next) {
+	.get("/roots", function* (next) {
 		this.body = yield render("/backend/root", {
 			title: "Root"
 		});

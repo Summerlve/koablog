@@ -15,7 +15,7 @@ router
             only: "read_groups"
         }),
         function* (next) {
-            // return all (just 2 group) groups
+            // return all (just 2 group, may be will have more groups) groups
             let groups = yield Group.findAll();
             this.body = groups;
             return ;
@@ -54,7 +54,7 @@ router
                     return ;
                 }break;
                 default: {
-
+                    
                 }
             }
         }

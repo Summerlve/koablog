@@ -14,7 +14,9 @@ require("./configs/config");
  *	the pageNotFound middleware is handle all of the 404 error for whole situation.
  */
 const pageNotFound = require("./middlewares/pageNotFound");
+const unauthorized = require("./middlewares/unauthorized");
 app.use(pageNotFound);
+app.use(unauthorized);
 
 // static files
 const serve = require("koa-static");
@@ -30,11 +32,12 @@ app.use(session(app));
 app.use(require("./routes/abouts"));
 app.use(require("./routes/articles"));
 app.use(require("./routes/authentications"));
-app.use(require("./routes/panel"));
-app.use(require("./routes/root"));
+app.use(require("./routes/panels"));
+app.use(require("./routes/roots"));
 app.use(require("./routes/tags"));
 app.use(require("./routes/users"));
 app.use(require("./routes/groups"));
+app.use(require("./routes/files"));
 
 // gzip compress
 const compress = require("koa-compress");
