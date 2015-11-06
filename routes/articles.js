@@ -22,6 +22,9 @@ const getToken = require("../middlewares/getToken");
 const getIdentity = require("../middlewares/getIdentity");
 const permissionsFilter = require("../middlewares/permissionsFilter");
 
+// db
+const sequelize = global.sequelize;
+
 // redirect '/' to the '/articles'
 router
 	.redirect("/", "/articles");
@@ -201,6 +204,8 @@ router
 
 			let tagId = tag.id;
 
+			// start transaction
+			let transaction = yield sequelize.transaction();
 			// create artilce
 			try {
 				yield Article
@@ -210,7 +215,11 @@ router
 							content: body.content,
 							user_id: userId
 						})
-						.save();
+						.save({
+							transaction: transaction
+						});
+
+				transaction.commit(); // commit the transaction
 
 				this.body = {
 					statusCode: 200,
@@ -220,6 +229,7 @@ router
 				return ;
 			}
 			catch (error) {
+				transaction.rollback();
 				this.status = 500;
 				this.body = {
 					statusCode: 500,
@@ -263,18 +273,30 @@ router
 				return;
             }
 
-			yield Article.destroy({
-				where: {
-					id: id
-				}
-			});
+			// start transaction
+			let transaction = yield sequelize.transaction();
+			// delete article
+			try {
+				yield Article
+						.destroy({
+							where: {
+								id: id
+							},
+							transaction: transaction
+						});
 
-			this.body = {
-				statusCode: 200,
-				reasonPhrase: "OK",
-				description: "delete article succeed"
-			};
-			return ;
+				transaction.commit();
+
+				this.body = {
+					statusCode: 200,
+					reasonPhrase: "OK",
+					description: "delete article succeed"
+				};
+				return ;
+			}
+			catch (error) {
+				transaction.rollback();
+			}
 		}
 	);
 
