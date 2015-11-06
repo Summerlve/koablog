@@ -18,51 +18,89 @@ const render = views(viewsPath, {
 
 router
 	.get("/tags", function* (next) {
-		let tags = yield Tag.findAll({
-			order: ["id"]
-		});
+		switch (this.accepts(["html", "json"])) {
+			case "html": {
+				let tags = yield Tag.findAll({
+					order: ["id"]
+				});
 
-		this.body = yield render("/frontend/tags/tags", {
-			tags: tags,
-			title: "Tags",
-			tagsPerRow: tagsPerRow
-		});
-		return ;
+				this.body = yield render("/frontend/tags/tags", {
+					tags: tags,
+					title: "Tags",
+					tagsPerRow: tagsPerRow
+				});
+				return ;
+			}break;
+			case "json": {
+				let tags = yield Tag.findAll({
+					order: ["id"]
+				});
+
+				this.body = tags;
+				return ;
+			}break;
+			default: {
+				this.throw(406, "json and html only");
+				return ;
+			}
+		}
 	});
 
 router
-	.param("name", function* (name, next) {
-		if (typeof name !== "string") return this.status = 404;
-		else this.name = name;
-		yield next;
-	})
-	.get("/tag/:name", function* (next) {
-		let tag = yield Tag.find({
-			attributes: ["id"],
-			where: {
-				name: this.name
+	.get("/tags/:id", function* (next) {
+		switch (this.accepts(["html", "json"])) {
+			case "html": {
+				let id = parseInt(this.params.id, 10);
+
+				if (isNaN(id)) {
+					this.status = 404;
+					return ;
+				}
+
+				let tag = yield Tag.find({
+					attributes: ["id", "name"],
+					where: {
+						id: id
+					}
+				});
+
+				if (tag === null) {
+					this.status = 404;
+					this.body = "tag not found"
+					return;
+				}
+
+				this.body = tag;
+				return ;
+			}break;
+			case "json": {
+				let id = parseInt(this.params.id, 10);
+
+				if (isNaN(id)) {
+					this.status = 404;
+					return ;
+				}
+
+				let tag = yield Tag.find({
+					attributes: ["id", "name"],
+					where: {
+						id: id
+					}
+				});
+
+				if (tag === null) {
+					this.status = 404;
+					this.body = "tag not found"
+					return;
+				}
+
+				this.body = tag;
+				return ;
+			}break;
+			default: {
+				this.throw(406, "json and html only");
+				return ;
 			}
-		});
-
-		if (tag === null) {
-			this.status = 404;
-			this.body = "tag not found"
-			return ;
-		}
-
-		let tag_id = tag.id;
-
-		let articles = yield Article.findAll({
-			where: {
-				tag_id: tag_id
-			}
-		});
-
-		if (articles.length === 0) {
-			this.body = "this tag dont have any article"
-		}
-		else {
-			this.body = articles;
 		}
 	});
 

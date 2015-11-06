@@ -230,6 +230,7 @@ router
 			}
 			catch (error) {
 				transaction.rollback();
+
 				this.status = 500;
 				this.body = {
 					statusCode: 500,
@@ -349,7 +350,6 @@ router
 			let body = yield parse.form(this);
 			// start transaction
 			let transaction = yield sequelize.transaction();
-
 			// update an article
 			try {
 				let tag = yield Tag.findOrCreate({
@@ -368,6 +368,8 @@ router
 							title: body.title,
 							content: body.content,
 							tag_id: tagId
+						}, {
+							transaction: transaction
 						});
 
 				transaction.commit();
