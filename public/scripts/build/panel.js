@@ -574,6 +574,7 @@
 	        // 生命周期
 	        created: function () {
 	            // hackthis
+
 	            var self = this;
 
 	            this.$on("get-artcile-by-id", function (data) {
@@ -592,8 +593,10 @@
 	            // 实例化编辑器，并且设置自定义的配置文件
 	            // 将editor添加到当前的组件实例上，以便于访问
 	            this.editor = CKEDITOR.replace("editor", {
-	                customConfig: "/scripts/ckeditor_config.js"
+	                customConfig: "/scripts/ckeditor_config.js",
+	                filebrowserUploadUrl: "/files"
 	            });
+	            
 
 	            // 将modal添加到当前的组件实例上，以便于访问。
 	            this.modal = $("#new-article-modal");

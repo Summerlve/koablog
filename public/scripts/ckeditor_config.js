@@ -39,4 +39,7 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// set the fullPage mode , store the full html page
 	// config.fullPage = true;
+
+	// set the upload path
+	config.filebrowserImageUploadUrl = "/files";
 };
