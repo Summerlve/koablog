@@ -296,6 +296,7 @@ router
 			}
 			catch (error) {
 				transaction.rollback();
+
 				this.status = 500;
 				this.body = {
 					statusCode: 500,
@@ -362,11 +363,14 @@ router
 				let tagId = tag.id;
 
 				// update the article
-				yield article.update({
-					title: body.title,
-					content: body.content,
-					tag_id: tagId
-				});
+				yield article
+						.update({
+							title: body.title,
+							content: body.content,
+							tag_id: tagId
+						});
+
+				transaction.commit();
 
 				this.body = {
 					statusCode: 200,
@@ -376,6 +380,8 @@ router
 				return ;
 			}
 			catch (error) {
+				transaction.rollback();
+
 				this.status = 500;
 				this.body = {
 					statusCode: 500,
