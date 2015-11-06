@@ -296,6 +296,14 @@ router
 			}
 			catch (error) {
 				transaction.rollback();
+				this.status = 500;
+				this.body = {
+					statusCode: 500,
+					reasonPhrase: "Internal Server Error",
+					description: "delete article fialed",
+					errorCode: 1005
+				};
+				return ;
 			}
 		}
 	);
@@ -338,7 +346,10 @@ router
 
 			// get the article
 			let body = yield parse.form(this);
+			// start transaction
+			let transaction = yield sequelize.transaction();
 
+			// update an article
 			try {
 				let tag = yield Tag.findOrCreate({
 					where: {
