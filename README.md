@@ -6,7 +6,7 @@
 	Using CKEditor.
 
 # API Design
-/authentication
+/authentications
 
 /articles
 	GET
@@ -19,7 +19,7 @@
 /users
 	GET
 
-/panel
+/panels
 
 /tags
 
