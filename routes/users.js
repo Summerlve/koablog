@@ -5,6 +5,7 @@ const User = require("../models/User");
 const ArticleView = require("../models/Article").ArticleView;
 const parse = require("co-body");
 const MD5 = require("md5");
+const sequelize = global.sequelize;
 
 // path
 const viewsPath = global.path.views;
@@ -85,14 +86,15 @@ router
 				return ;
 			}
 
-			let penName = author.pen_name;
-
 			switch (this.accepts("json", "html")) {
 				case "json": {
 					this.body = author;
 					return ;
 				}break;
 				case "html": {
+					// get the pen_name
+					let penName = author.pen_name;
+
 					// get the newest 4 articles of this author
 					let articles = yield ArticleView.findAll({
 						order: [
@@ -120,6 +122,7 @@ router
 		}
 	);
 
+// create a new user
 router
 	.post(
 		"/authors",
@@ -133,24 +136,65 @@ router
 		function* (next) {
 			let body = yield parse.form(this);
 
+			//start transaction
+			let transaction = yield sequelize.transaction();
+
+			// create a new user
 			try {
 				yield User
 						.build({
 							username: body.username,
 							password: MD5(body.password),
 							pen_name: body.penName,
-							avatar: body.avatar || null,
-							introduce: body.introduce || null,
-							group_id: body.groupId
+							avatar: body.avatar,
+							introduce: body.introduce,
+							group_id: parseInt(body.groupId, 10) // String -> Number
 						})
 						.save();
+
+				transaction.commit();
+
+				this.body = {
+					statusCode: 200,
+					reasonPhrase: "OK",
+					description: "add user succeed"
+				};
+				return ;
 			}
 			catch (error) {
+				console.log(error);
+				transaction.rollback();
 
+				this.status = 500;
+				this.body = {
+					statusCode: 500,
+					reasonPhrase: "Internal Server Error",
+					description: "add author fialed",
+					errorCode: 1004
+				};
+				return ;
 			}
 		}
 	);
 
+// update a user
+router
+	.put(
+		"/authors/:id",
+		getToken,
+		getIdentity,
+		permissionsFilter({
+			or: [
+				"update_users",
+				"update_private_users"
+			]
+		}),
+		function* (next) {
+
+		}
+	);
+
+// delete a user
 router
 	.delete(
 		"/authors/:id",
@@ -168,22 +212,8 @@ router
 				this.status = 404;
 				return ;
 			}
-		}
-	);
 
-router
-	.put(
-		"/authors/:id",
-		getToken,
-		getIdentity,
-		permissionsFilter({
-			or: [
-				"update_users",
-				"update_private_users"
-			]
-		}),
-		function* (next) {
-
+			console.log(id);
 		}
 	);
 

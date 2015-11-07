@@ -78,6 +78,19 @@ router
 		return ;
 	});
 
+// 查看token是否过期
+router
+	.put(
+		"/authentications",
+		getToken,
+		function* (next) {
+			this.body = {
+
+			};
+			return ;
+		}
+	);
+
 // 注销功能：删除存储在redis里面的token，如果删除成功则通知前端。
 // 当前端和后端都将token删除之后则注销成功。
 router
@@ -94,18 +107,6 @@ router
 				statusCode: 200,
 				reasonPhrase: "OK",
 				description: "log out succeed"
-			};
-			return ;
-		}
-	);
-
-router
-	.put(
-		"/authentications",
-		getToken,
-		function* (next) {
-			this.body = {
-
 			};
 			return ;
 		}

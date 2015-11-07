@@ -5,7 +5,7 @@ const parse = require("co-busboy");
 const path = require("path");
 const fs = require("fs");
 const uuid = require("node-uuid");
-const staticPath = global.path.static;
+const staticFilePath = global.path.static;
 
 router
     .post(
@@ -29,13 +29,14 @@ router
             while (part = yield parts) {
                 let extension = path.extname(part.filename); // get extension
                 fileName += extension; // the final file name
-                let store = path.join(staticPath, "images", fileName); // the store path
+                let store = path.join(staticFilePath, "images", fileName); // the store path
                 let stream = fs.createWriteStream(store); // create a stream to write file
                 part.pipe(stream);
             }
 
             this.status = 200;
             this.body = path.join("/images", fileName);
+            return ;
         }
     );
 

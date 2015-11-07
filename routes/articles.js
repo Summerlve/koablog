@@ -243,73 +243,6 @@ router
 		}
 	);
 
-// delete an article
-router
-	.delete(
-		"/articles/:id",
-		getToken,
-		getIdentity,
-		permissionsFilter({
-			or: [
-				"deletet_articles",
-				"delete_private_articles"
-			]
-		}),
-		function* (next) {
-			let id = parseInt(this.params.id, 10);
-
-			if (isNaN(id)) {
-				this.status = 404;
-				return ;
-			}
-
-			let article = Article.find({
-				where: {
-					id:id
-				}
-			});
-
-            if (article === null) {
-                this.status = 404;
-				return;
-            }
-
-			// start transaction
-			let transaction = yield sequelize.transaction();
-			// delete article
-			try {
-				yield Article
-						.destroy({
-							where: {
-								id: id
-							},
-							transaction: transaction
-						});
-
-				transaction.commit();
-
-				this.body = {
-					statusCode: 200,
-					reasonPhrase: "OK",
-					description: "delete article succeed"
-				};
-				return ;
-			}
-			catch (error) {
-				transaction.rollback();
-
-				this.status = 500;
-				this.body = {
-					statusCode: 500,
-					reasonPhrase: "Internal Server Error",
-					description: "delete article fialed",
-					errorCode: 1005
-				};
-				return ;
-			}
-		}
-	);
-
 // change an article
 router
 	.put(
@@ -395,5 +328,74 @@ router
 			}
 		}
 	);
+
+// delete an article
+router
+	.delete(
+		"/articles/:id",
+		getToken,
+		getIdentity,
+		permissionsFilter({
+			or: [
+				"deletet_articles",
+				"delete_private_articles"
+			]
+		}),
+		function* (next) {
+			let id = parseInt(this.params.id, 10);
+
+			if (isNaN(id)) {
+				this.status = 404;
+				return ;
+			}
+
+			let article = Article.find({
+				where: {
+					id:id
+				}
+			});
+
+            if (article === null) {
+                this.status = 404;
+				return;
+            }
+
+			// start transaction
+			let transaction = yield sequelize.transaction();
+			// delete article
+			try {
+				yield Article
+						.destroy({
+							where: {
+								id: id
+							},
+							transaction: transaction
+						});
+
+				transaction.commit();
+
+				this.body = {
+					statusCode: 200,
+					reasonPhrase: "OK",
+					description: "delete article succeed"
+				};
+				return ;
+			}
+			catch (error) {
+				transaction.rollback();
+
+				this.status = 500;
+				this.body = {
+					statusCode: 500,
+					reasonPhrase: "Internal Server Error",
+					description: "delete article fialed",
+					errorCode: 1005
+				};
+				return ;
+			}
+		}
+	);
+
+
 
 module.exports = router.routes();

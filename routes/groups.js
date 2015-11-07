@@ -54,9 +54,36 @@ router
                     return ;
                 }break;
                 default: {
-                    
+
                 }
             }
+        }
+    );
+
+// create a new group
+router
+    .post(
+        "/groups",
+        function* (next) {
+
+        }
+    );
+
+// update a group
+router
+    .put(
+        "/groups",
+        function* (next) {
+
+        }
+    );
+
+// delete a group
+router
+    .delete(
+        "/groups",
+        function* (next) {
+
         }
     );
 
