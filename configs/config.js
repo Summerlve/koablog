@@ -3,10 +3,12 @@
  *	use Sequelize ORM
  */
 const Sequelize = require("sequelize");
+const dbHost = "localhost";
+const dbPort = 3306;
 const sequelize = new Sequelize("koablog", "root", "123456", {
-	host: "localhost",
+	host: dbHost,
 	dialect: "mysql",
-	port: 3306,
+	port: dbPort,
 	pool: {
 		max: 5,
 		min: 0,
@@ -25,9 +27,9 @@ global.sequelize = sequelize;
  */
 // create redis socket , and listening to the error event.
 const redis = require("redis");
-const host = "127.0.0.1";
-const port = 6379;
-const redisClient = redis.createClient(port, host, {});
+const redisHost = "localhost";
+const redisPort = 6379;
+const redisClient = redis.createClient(redisPort, redisHost, {});
 
 redisClient.on("error", (error) => {
 	console.log("Redis Error", error);

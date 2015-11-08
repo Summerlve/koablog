@@ -357,7 +357,7 @@ router
 
             if (article === null) {
                 this.status = 404;
-				return;
+				return ;
             }
 
 			// start transaction

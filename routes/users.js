@@ -213,6 +213,50 @@ router
 				return ;
 			}
 
+			let user = yield User.find({
+				where: {
+					id: id
+				}
+			});
+
+			if (user === null) {
+				this.status = 404;
+				return ;
+			}
+
+			let transaction = yield sequelize.transaction();
+
+			try {
+				yield User
+						.destroy({
+							where: {
+								id: id
+							},
+							transaction: transaction
+						});
+
+				transaction.commit();
+
+				this.body = {
+					statusCode: 200,
+					reasonPhrase: "OK",
+					description: "delete user succeed"
+				};
+				return ;
+			}
+			catch (error) {
+				transaction.rollback();
+
+				this.status = 500;
+				this.body = {
+					statusCode: 500,
+					reasonPhrase: "Internal Server Error",
+					description: "delete user fialed",
+					errorCode: 1005
+				};
+				return ;
+			}
+
 			console.log(id);
 		}
 	);
