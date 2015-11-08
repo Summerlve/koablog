@@ -46,9 +46,6 @@ function permissionsFilter (needs) {
 
             // 检查该文章是否属于作者
             if (item === "delete_private_articles" || item === "update_private_articles") {
-                // get userId and from muddleware getIdentity.js
-    			let userId = this.userId;
-
     			// get article's id from routes param handler
                 let id = parseInt(this.params.id, 10);
 
@@ -68,15 +65,24 @@ function permissionsFilter (needs) {
     				return;
                 }
 
+                // get userId and from muddleware getIdentity.js
+    			let userId = this.userId;
+
                 if (article.user_id === userId) pair.set(item, true);
                 else pair.set(item, false);
             }
 
             if (item === "update_private_users") {
-                // get userId and from muddleware getIdentity.js
-    			let userId = this.userId;
                 // get user's id from routes param handler
                 let id = parseInt(this.params.id, 10);
+
+                if (isNaN(id)) {
+    				this.status = 404;
+    				return ;
+    			}
+
+                // get userId and from muddleware getIdentity.js
+    			let userId = this.userId;
 
                 if (userId === id) pair.set(item, true);
                 else pair.set(item, false);

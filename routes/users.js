@@ -191,6 +191,26 @@ router
 		}),
 		function* (next) {
 			// 修改用户的设置，除了koablog_user的id不能更改以外，其他的都可以更改的
+			let id = parseInt(this.params.id, 10);
+
+			if (isNaN(id)) {
+				this.status = 404;
+				return ;
+			}
+
+			let user = yield User.find({
+				where: {
+					id: id
+				}
+			});
+
+			if (user === null) {
+				this.status = 404;
+				return;
+			}
+
+			let body = yield parse.form(this);
+
 		}
 	);
 
