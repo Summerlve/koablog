@@ -33,33 +33,6 @@ router
 router
 	.get("/articles", function* (next) {
 		switch (this.accepts("json", "html")) {
-			case "json": {
-				// 当请求json时
-				// 取得查询字符串中的key、value
-				let sort = this.query.sort;
-				let limit = this.query.limit;
-				let offset = this.query.offset;
-				//  指定作者，这是可选的
-				let author = this.query.author;
-
-				let sign = sort.slice(0, 1); // get the sort's sign
-				let orderByWhat = sort.slice(1); // order by what
-
-				let sortingWay = sign === "+" ? "ASC" : "DESC"; // 确定升序还是降序
-
-				let articles = yield ArticleView.findAll({
-					where: author ? {author: author} : void 0,
-					order: [
-						[orderByWhat, sortingWay]
-					],
-					offset: offset,
-					limit: limit
-				});
-
-				// 即便是查询到的articles长度为0也需要返回
-				this.body = articles;
-				return ;
-			}break;
 			case "html": {
 				// 当请求html时
 				// page默认为1
@@ -95,6 +68,33 @@ router
 						next: next_
 					}
 				});
+				return ;
+			}break;
+			case "json": {
+				// 当请求json时
+				// 取得查询字符串中的key、value
+				let sort = this.query.sort;
+				let limit = this.query.limit;
+				let offset = this.query.offset;
+				//  指定作者，这是可选的
+				let author = this.query.author;
+
+				let sign = sort.slice(0, 1); // get the sort's sign
+				let orderByWhat = sort.slice(1); // order by what
+
+				let sortingWay = sign === "+" ? "ASC" : "DESC"; // 确定升序还是降序
+
+				let articles = yield ArticleView.findAll({
+					where: author ? {author: author} : void 0,
+					order: [
+						[orderByWhat, sortingWay]
+					],
+					offset: offset,
+					limit: limit
+				});
+
+				// 即便是查询到的articles长度为0也需要返回
+				this.body = articles;
 				return ;
 			}break;
 			default: {

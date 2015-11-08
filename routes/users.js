@@ -87,10 +87,6 @@ router
 			}
 
 			switch (this.accepts("json", "html")) {
-				case "json": {
-					this.body = author;
-					return ;
-				}break;
 				case "html": {
 					// get the pen_name
 					let penName = author.pen_name;
@@ -111,6 +107,10 @@ router
 						articles: articles,
 						title: author.pen_name
 					});
+					return ;
+				}break;
+				case "json": {
+					this.body = author;
 					return ;
 				}break;
 				default: {
@@ -146,8 +146,8 @@ router
 							username: body.username,
 							password: MD5(body.password),
 							pen_name: body.penName,
-							avatar: body.avatar,
-							introduce: body.introduce,
+							avatar: body.avatar || void 0,
+							introduce: body.introduce || void 0,
 							group_id: parseInt(body.groupId, 10) // String -> Number
 						})
 						.save();
@@ -190,7 +190,7 @@ router
 			]
 		}),
 		function* (next) {
-
+			// 修改用户的设置，除了koablog_user的id不能更改以外，其他的都可以更改的
 		}
 	);
 
@@ -212,6 +212,8 @@ router
 				this.status = 404;
 				return ;
 			}
+
+			console.log(id);
 
 			let user = yield User.find({
 				where: {
@@ -246,7 +248,7 @@ router
 			}
 			catch (error) {
 				transaction.rollback();
-
+				console.log(error);
 				this.status = 500;
 				this.body = {
 					statusCode: 500,
@@ -256,8 +258,6 @@ router
 				};
 				return ;
 			}
-
-			console.log(id);
 		}
 	);
 

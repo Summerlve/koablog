@@ -68,12 +68,18 @@ function permissionsFilter (needs) {
     				return;
                 }
 
-                if (article.user_id === userId) {
-                    pair.set(item, true);
-                }
-                else {
-                    pair.set(item, false);
-                }
+                if (article.user_id === userId) pair.set(item, true);
+                else pair.set(item, false);
+            }
+
+            if (item === "update_private_users") {
+                // get userId and from muddleware getIdentity.js
+    			let userId = this.userId;
+                // get user's id from routes param handler
+                let id = parseInt(this.params.id, 10);
+
+                if (userId === id) pair.set(item, true);
+                else pair.set(item, false);
             }
         }
 

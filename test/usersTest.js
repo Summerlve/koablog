@@ -20,9 +20,9 @@ request
                 Accept: "application/json"
             },
             form: {
-                username: "author3@test.com",
+                username: "author5@test.com",
                 password: "123456",
-                penName: "authorTest-3",
+                penName: "authorTest-5",
                 avatar: null,
                 introduce: null,
                 groupId: 3
