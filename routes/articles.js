@@ -79,6 +79,17 @@ router
 				//  指定作者，这是可选的
 				let author = this.query.author;
 
+				// check the params
+				if (!sort || !limit || !offset) {
+					this.status = 400;
+					this.body = {
+						statusCode: 400,
+						reasonPhrase: "Bad Request",
+						description: "params wrong"
+					};
+					return ;
+				}
+
 				let sign = sort.slice(0, 1); // get the sort's sign
 				let orderByWhat = sort.slice(1); // order by what
 
@@ -395,7 +406,5 @@ router
 			}
 		}
 	);
-
-
 
 module.exports = router.routes();

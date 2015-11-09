@@ -15,7 +15,7 @@ router
                 // extension check , allow only .jpg .gif .png
                 checkFile: function (fieldname, file, filename) {
                     console.dir(file);
-                    if ([".jpg", ".png", ".gif"].indexOf(path.extname(filename)) === -1) {
+                    if ([".jpg", ".png", ".gif", ".jpeg"].indexOf(path.extname(filename)) === -1) {
                         var error = new Error('invalid file extension allow only .jpg .gif .png');
                         error.status = 400;
                         return error;

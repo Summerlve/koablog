@@ -211,6 +211,19 @@ router
 
 			let body = yield parse.form(this);
 
+			// change the user
+			let username = body.username || undefined;
+			let password = body.password || undefined;
+			let penName = body.penName || undefined;
+
+			// check username and pen_name , it's the unique key
+			
+
+			// root can change group_id
+			// author can not change group_id
+
+
+
 		}
 	);
 
