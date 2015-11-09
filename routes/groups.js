@@ -64,6 +64,11 @@ router
 router
     .post(
         "/groups",
+        getToken,
+        getIdentity,
+        permissionsFilter({
+            only: "create_groups"
+        }),
         function* (next) {
 
         }
@@ -73,6 +78,11 @@ router
 router
     .put(
         "/groups",
+        getToken,
+        getIdentity,
+        permissionsFilter({
+            only: "update_groups"
+        }),
         function* (next) {
 
         }
@@ -82,6 +92,11 @@ router
 router
     .delete(
         "/groups",
+        getToken,
+        getIdentity,
+        permissionsFilter({
+            only: "delete_groups"
+        }),
         function* (next) {
 
         }
