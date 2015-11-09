@@ -1,5 +1,10 @@
 "use strict";
+// set router
 const router = require("koa-router")();
+const prefix = "/authors"; // router's prefix
+router.prefix(prefix); // set router's prefix
+
+// import modules
 const views = require("co-views");
 const User = require("../models/User");
 const ArticleView = require("../models/Article").ArticleView;
@@ -28,7 +33,7 @@ const permissionsFilter = require("../middlewares/permissionsFilter");
 
 // page of authors
 router
-	.get("/authors", function* (next) {
+	.get("/", function* (next) {
 		// page默认为1
 		let current = parseInt(this.query.page || 1, 10);
 
@@ -65,7 +70,7 @@ router
 // one of the author
 router
 	.get(
-		"/authors/:id",
+		"/:id",
 		function* (next) {
 			let id = parseInt(this.params.id, 10);
 
@@ -125,7 +130,7 @@ router
 // create a new user
 router
 	.post(
-		"/authors",
+		"/",
 		getToken,
 		getIdentity,
 		permissionsFilter({
@@ -180,7 +185,7 @@ router
 // update a user
 router
 	.put(
-		"/authors/:id",
+		"/:id",
 		getToken,
 		getIdentity,
 		permissionsFilter({
@@ -217,12 +222,12 @@ router
 			let penName = body.penName || undefined;
 
 			// check username and pen_name , it's the unique key
-			
+			let avatar = body.avatar || undefined;
+			let introduce = body.introduce || undefined;
+			let groupId = body.groupId || undefined;
 
 			// root can change group_id
 			// author can not change group_id
-
-
 
 		}
 	);
@@ -230,7 +235,7 @@ router
 // delete a user
 router
 	.delete(
-		"/authors/:id",
+		"/:id",
 		getToken,
 		getIdentity,
 		permissionsFilter({
