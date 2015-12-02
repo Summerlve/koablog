@@ -1,7 +1,5 @@
 # TODOS
 
-### Transactions
+### nested router
 
-### create update and delete users
-
-### upload files
+### json config file
