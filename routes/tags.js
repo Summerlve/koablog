@@ -16,92 +16,90 @@ const render = views(viewsPath, {
 	}
 });
 
-router
-	.get("/tags", function* (next) {
-		switch (this.accepts(["html", "json"])) {
-			case "html": {
-				let tags = yield Tag.findAll({
-					order: ["id"]
-				});
+router.get("/tags", function* (next) {
+	switch (this.accepts(["html", "json"])) {
+		case "html": {
+			let tags = yield Tag.findAll({
+				order: ["id"]
+			});
 
-				this.body = yield render("/frontend/tags/tags", {
-					tags: tags,
-					title: "Tags",
-					tagsPerRow: tagsPerRow
-				});
-				return ;
-			}break;
-			case "json": {
-				let tags = yield Tag.findAll({
-					order: ["id"]
-				});
+			this.body = yield render("/frontend/tags/tags", {
+				tags: tags,
+				title: "Tags",
+				tagsPerRow: tagsPerRow
+			});
+			return ;
+		}break;
+		case "json": {
+			let tags = yield Tag.findAll({
+				order: ["id"]
+			});
 
-				this.body = tags;
-				return ;
-			}break;
-			default: {
-				this.throw(406, "json and html only");
+			this.body = tags;
+			return ;
+		}break;
+		default: {
+			this.throw(406, "json and html only");
+			return ;
+		}
+	}
+});
+
+router.get("/tags/:id", function* (next) {
+	switch (this.accepts(["html", "json"])) {
+		case "html": {
+			let id = parseInt(this.params.id, 10);
+
+			if (isNaN(id)) {
+				this.status = 404;
 				return ;
 			}
-		}
-	});
 
-router
-	.get("/tags/:id", function* (next) {
-		switch (this.accepts(["html", "json"])) {
-			case "html": {
-				let id = parseInt(this.params.id, 10);
-
-				if (isNaN(id)) {
-					this.status = 404;
-					return ;
+			let tag = yield Tag.find({
+				attributes: ["id", "name"],
+				where: {
+					id: id
 				}
+			});
 
-				let tag = yield Tag.find({
-					attributes: ["id", "name"],
-					where: {
-						id: id
-					}
-				});
+			if (tag === null) {
+				this.status = 404;
+				this.body = "tag not found"
+				return;
+			}
 
-				if (tag === null) {
-					this.status = 404;
-					this.body = "tag not found"
-					return;
-				}
+			this.body = tag;
+			return ;
+		}break;
+		case "json": {
+			let id = parseInt(this.params.id, 10);
 
-				this.body = tag;
-				return ;
-			}break;
-			case "json": {
-				let id = parseInt(this.params.id, 10);
-
-				if (isNaN(id)) {
-					this.status = 404;
-					return ;
-				}
-
-				let tag = yield Tag.find({
-					attributes: ["id", "name"],
-					where: {
-						id: id
-					}
-				});
-
-				if (tag === null) {
-					this.status = 404;
-					this.body = "tag not found"
-					return;
-				}
-
-				this.body = tag;
-				return ;
-			}break;
-			default: {
-				this.throw(406, "json and html only");
+			if (isNaN(id)) {
+				this.status = 404;
 				return ;
 			}
+
+			let tag = yield Tag.find({
+				attributes: ["id", "name"],
+				where: {
+					id: id
+				}
+			});
+
+			if (tag === null) {
+				this.status = 404;
+				this.body = "tag not found"
+				return;
+			}
+
+			this.body = tag;
+			return ;
+		}break;
+		default: {
+			this.throw(406, "json and html only");
+			return ;
 		}
-	});
+	}
+});
 
 module.exports = router.routes();

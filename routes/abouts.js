@@ -10,11 +10,10 @@ const render = views(viewsPath, {
 	}
 });
 
-router
-	.get("/abouts", function* (next) {
-		this.body = yield render("/frontend/abouts/abouts.html", {
-			title: "Abouts"
-		});
+router.get("/abouts", function* (next) {
+	this.body = yield render("/frontend/abouts/abouts.html", {
+		title: "Abouts"
 	});
+});
 
 module.exports = router.routes();

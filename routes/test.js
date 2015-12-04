@@ -1,24 +1,33 @@
 "use strict";
 
-const router = require("koa-router")();
+const router1 = require("koa-router")();
+const router2 = require("koa-router")();
 const one = require("koa-router")();
-const two = require("koa-router")();
-
-one.get("/one", function* (next) {
-    console.log("one");
+one.get("/", function* (next) {
+    console.log("jjjj");
+});
+one.get("/:id", function* (next) {
     console.log(this.params.id);
-    this.body = "123";
-    return ;
+});
+
+router1.get("/foo/bar", function* (next) {
+    console.log("router2");
 });
 
 
-router.use(
-    "/test/:id",
+router1.use(
+    "/foo/bar",
+    one.routes(),
     function* (next) {
-        console.log("asdfadf");
+        console.log("router1 midd 1");
         yield next;
     },
-    one.routes()
+    function* (next) {
+        console.log("router1 midd 2");
+        yield next;
+    }
 );
 
-module.exports = router.routes();
+
+
+module.exports = router1.routes();

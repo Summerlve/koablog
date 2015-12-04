@@ -1,12 +1,16 @@
 "use strict";
 
-function superClass (){}
+let a = Promise.resolve(1);
 
-function subClass () {}
-
-console.log(subClass.prototype.constructor === subClass);
-
-subClass.prototype = Object.create(superClass.prototype);
-
-console.log(subClass.prototype.constructor);
-
+a
+    .then(
+        (value) => {
+            console.log(value);
+            return value
+        }
+    )
+    .then(
+        (value) => {
+            console.log(value);
+        }
+    );

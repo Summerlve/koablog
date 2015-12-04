@@ -12,12 +12,11 @@ const render = views(viewsPath, {
 	}
 });
 
-router
-	.get("/panels", function* (next) {
-		this.body = yield render("/backend/panel", {
-			title: "Panels"
-		});
-		return ;
+router.get("/panels", function* (next) {
+	this.body = yield render("/backend/panel", {
+		title: "Panels"
 	});
+	return ;
+});
 
 module.exports = router.routes();
