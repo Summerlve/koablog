@@ -215,6 +215,7 @@ router.put("/:id",
 		let penName = body.penName || undefined;
 		let introduce = body.introduce || undefined;
 
+		// needs check penName and username whether unique
 		let isPenNameExist = (yield User.find({
 			where: {
 				pen_name: penName
