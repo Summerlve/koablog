@@ -186,10 +186,7 @@ router.post("/articles",
 	getToken,
 	getIdentity,
 	permissionsFilter({
-		and: [
-			"create_articles",
-			"create_tags"
-		]
+		and: ["create_articles", "create_tags"]
 	}),
 	function* (next) {
 		// get userId from getIdentity.js
@@ -251,15 +248,7 @@ router.put("/articles/:id",
 	getToken,
 	getIdentity,
 	permissionsFilter({
-		and: [
-			"create_tags",
-			{
-				or: [
-					"update_articles",
-					"update_private_articles"
-				]
-			}
-		]
+		and: ["create_tags", { or: ["update_articles", "update_private_articles"] }]
 	}),
 	function* (next) {
 		let id = parseInt(this.params.id, 10);
@@ -335,10 +324,7 @@ router.delete("/articles/:id",
 	getToken,
 	getIdentity,
 	permissionsFilter({
-		or: [
-			"deletet_articles",
-			"delete_private_articles"
-		]
+		or: ["deletet_articles", "delete_private_articles"]
 	}),
 	function* (next) {
 		let id = parseInt(this.params.id, 10);

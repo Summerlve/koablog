@@ -1,0 +1,20 @@
+[
+    {
+        "group": "root",
+        "users": [
+            {
+                "username": "root",
+                "password": "123456"
+            }
+        ]
+    },
+    {
+        "group": "author",
+        "users": [
+            {
+                "username": "author1@test.com",
+                "password": "123456"
+            }
+        ]
+    }
+]

@@ -128,9 +128,7 @@ router.post("/",
 	getToken,
 	getIdentity,
 	permissionsFilter({
-		and: [
-			"create_users"
-		]
+		only: "create_users"
 	}),
 	function* (next) {
 		let body = yield parse.form(this);
@@ -181,13 +179,10 @@ router.put("/:id",
 	getToken,
 	getIdentity,
 	permissionsFilter({
-		or: [
-			"update_users",
-			"update_private_users"
-		]
+		or: ["update_users", "update_private_users"]
 	}),
 	function* (next) {
-		// 修改用户的设置，除了koablog_user的id不能更改以外，其他的都可以更改的
+		// 修改用户的设置
 		let id = parseInt(this.params.id, 10);
 
 		if (isNaN(id)) {
@@ -203,7 +198,7 @@ router.put("/:id",
 
 		if (user === null) {
 			this.status = 404;
-			return;
+			return ;
 		}
 
 		let body = yield parse.form(this);
@@ -216,11 +211,43 @@ router.put("/:id",
 		let introduce = body.introduce || undefined;
 
 		// needs check penName and username whether unique
-		let isPenNameExist = (yield User.find({
-			where: {
-				pen_name: penName
-			}
-		})) === null ? false : true;
+		if (penName) {
+			let isPenNameExist = (yield User.find({
+				where: {
+					pen_name: penName
+				}
+			})) === null ? false : true;
+		}
+
+		if (username) {
+			let isUsernameExist = (yield User.find({
+				where: {
+					username: username
+				}
+			})) === null ? false : true;
+		}
+
+		if (penName) {
+			this.status = 400;
+			this.body = {
+				statusCode: 400,
+				reasonPhrase: "Bad Request",
+				description: "pen name excist",
+				errorCode: 1004
+			};
+			return ;
+		}
+
+		if (username) {
+			this.status = 400;
+			this.body = {
+				statusCode: 400,
+				reasonPhrase: "Bad Request",
+				description: "username excist",
+				errorCode: 1004
+			};
+			return ;
+		}
 
 		let transaction = yield sequelize.transaction();
 
@@ -235,7 +262,14 @@ router.put("/:id",
 			});
 		}
 		catch (e) {
-
+			this.status = 500;
+			this.body = {
+				statusCode: 500,
+				reasonPhrase: "Internal Server Error",
+				description: "update user failed",
+				errorCode: 1004
+			};
+			return ;
 		}
 	}
 );
@@ -245,10 +279,32 @@ router.put("/:id/groupdId",
 	getToken,
 	getIdentity,
 	permissionsFilter({
-		only: "promote_users"
+		and: ["promote_users", "read_groups"]
 	}),
 	function* (next) {
+		let id = parseInt(this.params.id, 10);
 
+		if (isNaN(id)) {
+			this.status = 404;
+			return ;
+		}
+
+		let user = yield User.find({
+			where: {
+				id: id
+			}
+		});
+
+		if (user === null) {
+			this.status = 404;
+			return ;
+		}
+
+		let body = yield parse.form(this);
+
+		let groupId = body.groupId;
+
+		let all = yield Group.findAll();
 	}
 );
 
@@ -257,9 +313,7 @@ router.delete("/:id",
 	getToken,
 	getIdentity,
 	permissionsFilter({
-		and: [
-			"delete_users"
-		]
+		only: "delete_users"
 	}),
 	function* (next) {
 		let id = parseInt(this.params.id, 10);
@@ -285,13 +339,12 @@ router.delete("/:id",
 		let transaction = yield sequelize.transaction();
 
 		try {
-			yield User
-					.destroy({
-						where: {
-							id: id
-						},
-						transaction: transaction
-					});
+			yield User.destroy({
+				where: {
+					id: id
+				},
+				transaction: transaction
+			});
 
 			transaction.commit();
 
