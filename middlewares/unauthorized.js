@@ -1,5 +1,6 @@
 "use strict";
 // 401 handler
+
 module.exports = function* (next) {
     yield next;
 

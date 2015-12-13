@@ -6,7 +6,7 @@ global.configs = configs;
 // app init
 const app = require("koa")();
 
-// db redis init, set path etc. 
+// db redis init, set path etc.
 require("./configs/configs");
 
 // gzip compress
@@ -15,13 +15,9 @@ if (configs.gzip) {
     app.use(compress());
 }
 
-/*	middleware:
- *	the pageNotFound middleware is handle all of the 404 error for whole situation.
- */
-const pageNotFound = require("./middlewares/pageNotFound");
-const unauthorized = require("./middlewares/unauthorized");
-app.use(pageNotFound);
-app.use(unauthorized);
+// middleware
+app.use(require("./middlewares/pageNotFound"));
+app.use(require("./middlewares/unauthorized"));
 
 // static files
 const serve = require("koa-static");
@@ -33,7 +29,7 @@ const session = require("koa-session");
 app.keys = ["koaBlog"];
 app.use(session(app));
 
-// routes loader
+// load all router
 app.use(require("./routes/abouts"));
 app.use(require("./routes/articles"));
 app.use(require("./routes/authentications"));
@@ -44,5 +40,6 @@ app.use(require("./routes/users"));
 app.use(require("./routes/groups"));
 app.use(require("./routes/files"));
 
+// listen
 const port = configs.port;
 app.listen(port);

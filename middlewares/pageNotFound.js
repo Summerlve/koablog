@@ -1,5 +1,6 @@
 "use strict";
-// 404 handler
+// the pageNotFound middleware is handle all of the 404 error for whole situation.
+
 module.exports = function* pageNotFound (next) {
 	yield next;
 
