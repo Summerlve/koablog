@@ -31,6 +31,7 @@ const render = views(viewsPath, {
 const getToken = require("../middlewares/getToken");
 const getIdentity = require("../middlewares/getIdentity");
 const permissionsFilter = require("../middlewares/permissionsFilter");
+const checkUser = require("../middlewares/checkUser");
 
 // page of authors
 router.get("/", function* (next) {
@@ -69,29 +70,13 @@ router.get("/", function* (next) {
 
 // one of the author
 router.get("/:id", function* (next) {
-	let id = parseInt(this.params.id, 10);
-
-	if (isNaN(id)) {
-		this.status = 404;
-		return ;
-	}
-
-    let author = yield User.find({
-		attributes: ["id", "pen_name", "introduce", "avatar"],
-        where: {
-            id: id
-        }
-    });
-
-	if (author === null) {
-		this.status = 404;
-		return ;
-	}
+	yield* checkUser(this);
+	let user = this.user;
 
 	switch (this.accepts("json", "html")) {
 		case "html": {
 			// get the pen_name
-			let penName = author.pen_name;
+			let penName = user.pen_name;
 
 			// get the newest 4 articles of this author
 			let articles = yield ArticleView.findAll({
@@ -105,14 +90,14 @@ router.get("/:id", function* (next) {
 			});
 
 			this.body = yield render("/frontend/authors/details", {
-				author: author,
+				author: user,
 				articles: articles,
-				title: author.pen_name
+				title: penName
 			});
 			return ;
 		}break;
 		case "json": {
-			this.body = author;
+			this.body = user;
 			return ;
 		}break;
 		default: {
@@ -138,16 +123,15 @@ router.post("/",
 
 		// create a new user
 		try {
-			yield User
-					.build({
-						username: body.username,
-						password: MD5(body.password),
-						pen_name: body.penName,
-						avatar: body.avatar || void 0,
-						introduce: body.introduce || void 0,
-						group_id: parseInt(body.groupId, 10) // String -> Number
-					})
-					.save();
+			yield User.build({
+				username: body.username,
+				password: MD5(body.password),
+				pen_name: body.penName,
+				avatar: body.avatar || void 0,
+				introduce: body.introduce || void 0,
+				group_id: parseInt(body.groupId, 10) // String -> Number
+			})
+			.save();
 
 			transaction.commit();
 
@@ -183,23 +167,9 @@ router.put("/:id",
 	}),
 	function* (next) {
 		// 修改用户的设置
-		let id = parseInt(this.params.id, 10);
-
-		if (isNaN(id)) {
-			this.status = 404;
-			return ;
-		}
-
-		let user = yield User.find({
-			where: {
-				id: id
-			}
-		});
-
-		if (user === null) {
-			this.status = 404;
-			return ;
-		}
+		// check whether user excist
+		yield checkUser(this);
+		let user = this.user;
 
 		let body = yield parse.form(this);
 
@@ -217,6 +187,17 @@ router.put("/:id",
 					pen_name: penName
 				}
 			})) === null ? false : true;
+
+			if (isPenNameExist) {
+				this.status = 400;
+				this.body = {
+					statusCode: 400,
+					reasonPhrase: "Bad Request",
+					description: "pen name excist",
+					errorCode: 1004
+				};
+				return ;
+			}
 		}
 
 		if (username) {
@@ -225,28 +206,17 @@ router.put("/:id",
 					username: username
 				}
 			})) === null ? false : true;
-		}
 
-		if (penName) {
-			this.status = 400;
-			this.body = {
-				statusCode: 400,
-				reasonPhrase: "Bad Request",
-				description: "pen name excist",
-				errorCode: 1004
-			};
-			return ;
-		}
-
-		if (username) {
-			this.status = 400;
-			this.body = {
-				statusCode: 400,
-				reasonPhrase: "Bad Request",
-				description: "username excist",
-				errorCode: 1004
-			};
-			return ;
+			if (isUsernameExist) {
+				this.status = 400;
+				this.body = {
+					statusCode: 400,
+					reasonPhrase: "Bad Request",
+					description: "username excist",
+					errorCode: 1004
+				};
+				return ;
+			}
 		}
 
 		let transaction = yield sequelize.transaction();
@@ -260,8 +230,19 @@ router.put("/:id",
 			}, {
 				transaction: transaction
 			});
+
+			transaction.commit();
+
+			this.body = {
+				statusCode: 200,
+				reasonPhrase: "OK",
+				description: "update user succeed"
+			};
+			return ;
 		}
 		catch (e) {
+			transaction.rollback();
+
 			this.status = 500;
 			this.body = {
 				statusCode: 500,
@@ -274,6 +255,145 @@ router.put("/:id",
 	}
 );
 
+// update user's password
+router.put("/:id/password",
+	getToken,
+	getIdentity,
+	permissionsFilter({
+		or: ["update_users", "update_private_users"]
+	}),
+	function* (next) {
+		//  check user excist
+		yield* checkUser(this);
+		let user = this.user;
+
+		let body = yield parse.form(this);
+
+		let password = body.password;
+
+		if (!password) {
+			// password can not be void
+			return ;
+		}
+
+		let transaction = yield sequelize.transaction();
+
+		try {
+			yield user.update({
+				password: password
+			}, {
+				transaction: transaction
+			});
+
+			transaction.commit();
+
+			this.body = {
+				statusCode: 200,
+				reasonPhrase: "OK",
+				description: "update user's password succeed"
+			};
+			return ;
+		}
+		catch (e) {
+			transaction.rollback();
+
+			this.status = 500;
+			this.body = {
+				statusCode: 500,
+				reasonPhrase: "Internal Server Error",
+				description: "update user's password failed",
+				errorCode: 1004
+			};
+			return ;
+		}
+
+	}
+);
+
+// update user's username
+router.put("/:id/username",
+	getToken,
+	getIdentity,
+	permissionsFilter({
+		or: ["update_users", "update_private_users"]
+	}),
+	function* (next) {
+		// check user
+		yield* checkUser(this);
+		let user = this.user;
+
+		let body = yield parse.form(this);
+
+		let username = body.username;
+
+		if (!username) {
+			// username can not be void
+			return ;
+		}
+
+		let isUsernameExist = (yield User.find({
+			where: {
+				username: username
+			}
+		})) === null ? false : true;
+
+		// 如果存在
+		if (isUsernameExist) {
+			this.body = {
+				statusCode: 400,
+				reasonPhrase: "Bad Request",
+				description: "username excists",
+				errorCode: 1004
+			};
+
+			return ;
+		}
+
+		let transaction = sequelize.transaction();
+
+		try {
+			yield user.update({
+				username: username
+			}, {
+				transaction: transaction
+			});
+
+			transaction.commit();
+
+			this.body = {
+				statusCode: 200,
+				reasonPhrase: "OK",
+				description: "update user's username failed",
+			};
+
+			return ;
+		}
+		catch (e) {
+			transaction.rollback();
+
+			this.body = {
+				statusCode: 500,
+				reasonPhrase: "Internal Server Error",
+				description: "update user's username failed",
+				errorCode: 1004
+			};
+			return ;
+		}
+	}
+);
+
+//update user's pen_name
+router.put("/:id/penName",
+	getToken,
+	getIdentity,
+	permissionsFilter({
+		or: ["update_users", "update_private_users"]
+	}),
+	function* (next) {
+
+	}
+);
+
 //promote user's permission
 router.put("/:id/groupdId",
 	getToken,
@@ -282,23 +402,9 @@ router.put("/:id/groupdId",
 		and: ["promote_users", "read_groups"]
 	}),
 	function* (next) {
-		let id = parseInt(this.params.id, 10);
-
-		if (isNaN(id)) {
-			this.status = 404;
-			return ;
-		}
-
-		let user = yield User.find({
-			where: {
-				id: id
-			}
-		});
-
-		if (user === null) {
-			this.status = 404;
-			return ;
-		}
+		// check user
+		yield* checkUser(this);
+		let user = this.user;
 
 		let body = yield parse.form(this);
 
@@ -316,25 +422,10 @@ router.delete("/:id",
 		only: "delete_users"
 	}),
 	function* (next) {
-		let id = parseInt(this.params.id, 10);
-
-		if (isNaN(id)) {
-			this.status = 404;
-			return ;
-		}
-
-		console.log(id);
-
-		let user = yield User.find({
-			where: {
-				id: id
-			}
-		});
-
-		if (user === null) {
-			this.status = 404;
-			return ;
-		}
+		// check user
+		yield* checkUser(this);
+		let user = this.user;
+		let id = user.id;
 
 		let transaction = yield sequelize.transaction();
 
