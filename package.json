@@ -33,7 +33,9 @@
     "request": "2.65.0",
     "vue-loader": "3.0.3"
   },
-  "scripts": {},
+  "scripts": {
+      "test": "supervisor app.js"
+  },
   "keywords": [
     "koa",
     "blog"

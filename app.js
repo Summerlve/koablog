@@ -1,14 +1,19 @@
 "use strict";
+// loading config file and add to global
+const configs = require("./configs");
+global.configs = configs;
+
 // app init
 const app = require("koa")();
 
-/* 	config:
- *	this is configuration file.
- *  database's config set into global.db
- *  path's config set into global.path
- *  for more details , see the config.js file.
- */
-require("./configs/config");
+// db redis init, set path etc. 
+require("./configs/configs");
+
+// gzip compress
+if (configs.gzip) {
+    const compress = require("koa-compress");
+    app.use(compress());
+}
 
 /*	middleware:
  *	the pageNotFound middleware is handle all of the 404 error for whole situation.
@@ -39,9 +44,5 @@ app.use(require("./routes/users"));
 app.use(require("./routes/groups"));
 app.use(require("./routes/files"));
 
-// gzip compress
-const compress = require("koa-compress");
-app.use(compress())
-
-const port = 8080;
+const port = configs.port;
 app.listen(port);

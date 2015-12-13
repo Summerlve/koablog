@@ -1,8 +1,8 @@
 "use strict";
 const Sequelize = require("sequelize");
-const config = require("../config.json");
 const redis = require("redis");
 const path = require("path");
+const config = global.configs;
 
 /*	database config
  *	use Sequelize ORM
@@ -29,7 +29,7 @@ global.sequelize = sequelize;
 /* redis
  * use redis to store token
  */
- 
+
 // create redis socket , and listening to the error event.
 const redisHost = config.redis.host;
 const redisPort = config.redis.port;
