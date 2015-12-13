@@ -1,10 +1,14 @@
 "use strict";
+const Sequelize = require("sequelize");
+const config = require("../config.json");
+const redis = require("redis");
+const path = require("path");
+
 /*	database config
  *	use Sequelize ORM
  */
-const Sequelize = require("sequelize");
-const dbHost = "localhost";
-const dbPort = 3306;
+const dbHost = config.mysql.host;
+const dbPort = config.mysql.port;
 const sequelize = new Sequelize("koablog", "root", "123456", {
 	host: dbHost,
 	dialect: "mysql",
@@ -25,10 +29,10 @@ global.sequelize = sequelize;
 /* redis
  * use redis to store token
  */
+ 
 // create redis socket , and listening to the error event.
-const redis = require("redis");
-const redisHost = "localhost";
-const redisPort = 6379;
+const redisHost = config.redis.host;
+const redisPort = config.redis.port;
 const redisClient = redis.createClient(redisPort, redisHost, {});
 
 redisClient.on("error", (error) => {
@@ -51,7 +55,6 @@ global.redisClient = redisClient;
  *	set views's path
  *	set static file's path
  */
-const path = require("path");
 const root = path.dirname(__dirname); // Located in the root directory of the project
 
 global.path = {};
