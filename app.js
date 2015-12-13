@@ -41,5 +41,5 @@ app.use(require("./routes/groups"));
 app.use(require("./routes/files"));
 
 // listen
-const port = configs.port;
+const port = configs.app.port;
 app.listen(port);

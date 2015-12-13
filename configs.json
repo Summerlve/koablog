@@ -1,5 +1,7 @@
 {
-    "port": 8080,
+    "app": {
+        "port": 8080
+    },
     "mysql": {
         "host": "localhost",
         "port": 3306

@@ -1,16 +1,14 @@
 "use strict";
-
+// test router '/users'
 const request = require("request");
-const host = process.argv[2];
-const account = require("./account.json");
+const configs = require("./configs.json");
+const assert = require("assert");
 
-let roots;
-let authors;
-
-for (let i of account) {
-    if (i.group === "root") roots = i.users;
-    if (i.group === "author") authors = i.users;
-}
+describe("get users info from configs.json", function () {
+    it("get root", function () {
+        assert.deepStrictEqual(configs.users.root.length, 1, "root users's length must be one");
+    });
+});
 
 
 

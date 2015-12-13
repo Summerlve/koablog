@@ -1,20 +1,19 @@
-[
-    {
-        "group": "root",
-        "users": [
+{
+    "app": {
+        "port": 8080
+    },
+    "users": {
+        "root": [
             {
                 "username": "root",
                 "password": "123456"
             }
-        ]
-    },
-    {
-        "group": "author",
-        "users": [
+        ],
+        "author": [
             {
                 "username": "author1@test.com",
                 "password": "123456"
             }
         ]
     }
-]
+}
