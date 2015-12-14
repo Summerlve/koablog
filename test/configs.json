@@ -1,17 +1,13 @@
 {
     "app": {
+        "protocol": "http",
+        "host": "localhost",
         "port": 8080
     },
     "users": {
         "root": [
             {
                 "username": "root",
-                "password": "123456"
-            }
-        ],
-        "author": [
-            {
-                "username": "author1@test.com",
                 "password": "123456"
             }
         ]
