@@ -7,7 +7,8 @@
     "users": {
         "root": [
             {
-                "username": "root",
+                "id": 1,
+                "username": "dzxx0563zh@126.com",
                 "password": "123456"
             }
         ]
