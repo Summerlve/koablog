@@ -138,7 +138,8 @@ router.post("/",
 			this.body = {
 				statusCode: 200,
 				reasonPhrase: "OK",
-				description: "add user succeed"
+				description: "add user succeed",
+				userId: 1
 			};
 			return ;
 		}

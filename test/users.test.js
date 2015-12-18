@@ -40,6 +40,40 @@ describe("test the /authors", function () {
         });
     });
 
+    it("create a user with right token must be ok", function (done) {
+        request({
+            method: "POST",
+            url: url: util.format("%s://%s:%s%s", protocol, host, port, prefix),
+            form: {
+                username: "!@#$%^&*()",
+                password: "123456",
+                penName: "!@#$%^&*()"，
+                groupId: "3"
+            }
+            headers: {
+                "Authorization": "jwt " + token
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 200);
+        })
+    });
+
+    it("create a user with wrong token must be failed", function (done) {
+        request({
+            method: "POST",
+            url: util.format("%s://%s:%s%s", protocol, host, port, prefix),
+            headers: {
+                "Authorization": "jwt " + "wrongtoken"
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 401);
+            assert.strictEqual(JSON.parse(body).errorCode, 1001);
+            done();
+        })
+    });
+
     it("log out with right token must be ok", function (done) {
         request({
             method: "DELETE",
@@ -88,17 +122,5 @@ describe("test the /authors", function () {
             assert.strictEqual(response.statusCode, 200);
             done();
         });
-    });
-
-    it("create a user with right token must be ok", function (done) {
-        request({
-            method: "POST",
-            form: {
-                username
-            }
-        }, function (error, response, body) {
-            assert.strictEqual(error, null);
-            assert.strictEqual(response.statusCode, 200);
-        })
     });
 });

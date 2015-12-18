@@ -12,20 +12,7 @@ const cert = global.cert;
 // identity
 function* getIdentity (next) {
 	// get token from getToken middleware
-	let token = this.token;
-
-	let decode = null;
-    try {
-        decode = jwt.verify(token, cert);
-    } catch (e) {
-        this.status = 400;
-        this.body = {
-            status_code: 400,
-            error_description: "wrong token"
-        }
-
-        return ;
-    }
+	let decode = this.decode;
 
 	// get user_id from token
 	let userId = decode.iss;

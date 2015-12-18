@@ -6,43 +6,30 @@
 	Using CKEditor.
 
 # API Design
+
 /authentications
+
+/roots
+
+/panels
 
 /articles
 	GET
 
-
 /authors
 	GET
 
-
-/users
-	GET
-
-/panels
-
 /tags
 
-# Error Code
-<table width="100%" border="1">
-	<tr>
-		<td colspan="4">/users</td>
-	</tr>
-	<tr>
-		<td>/users</td>
-		<td colspan="3">/users</td>
-	</tr>
-</table>
+/groups
 
-<table border="1">
-  <tr>
-    <th>Month</th>
-    <th>Savings</th>
-  </tr>
-  <tr>
-    <td colspan="2">January</td>
-  </tr>
-  <tr>
-    <td colspan="2">February</td>
-  </tr>
-</table>
+/files
+
+/abouts
+
+
+# Error Code
+1000: there is no token in the http request header field 'Authorization'
+1001: wrong token (can not decode the token)
+1002: token out of date
+1003: token do not exsit (token can not find in redis)

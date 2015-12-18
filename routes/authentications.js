@@ -31,7 +31,7 @@ router.post("/authentications", function* (next) {
 	let body = yield parse.form(this);
 
 	let user = yield User.find({
-		attributes: ["id", "username", "avatar", "pen_name", "group_id"],
+		attributes: ["id", "username", "avatar", "pen_name"],
 		where: {
 			username: body.username,
 			password: MD5(body.password)

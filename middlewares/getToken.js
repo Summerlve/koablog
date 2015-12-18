@@ -73,8 +73,9 @@ function* getToken (next) {
         return ;
     }
 
-    // 将token与tokenType添加到context中
+    // 将decode与tokenType添加到context中
     this.token = token;
+    this.decode = decode;
     this.tokenType = tokenType;
 
     yield next;
