@@ -8,6 +8,7 @@ router.prefix(prefix); // set router's prefix
 // import modules
 const views = require("co-views");
 const User = require("../models/User");
+const Group = require("../models/Group");
 const ArticleView = require("../models/Article").ArticleView;
 const parse = require("co-body");
 const MD5 = require("md5");
@@ -122,14 +123,90 @@ router.post("/",
 		let transaction = yield sequelize.transaction();
 
 		// create a new user
+		let username = body.username;
+		let password = body.password;
+		let penName = body.penName;
+		let avatar = body.avatar;
+		let introduce = body.introduce;
+		let groupName = body.groupName;
+
+		if (!username || !password || !penName || !groupName) {
+			this.status = 400;
+			this.body = {
+				statusCode: 400,
+				reasonPhrase: "Bad Request",
+				description: "username, password, penName, group is required",
+				errorCode: 1004
+			};
+			return ;
+		}
+
+		// check is username exist
+		let isUsernameExist = (yield User.find({
+			where: {
+				username: username
+			}
+		})) === null ? false : true;
+
+		if (isUsernameExist) {
+			this.status = 400;
+			this.body = {
+				statusCode: 400,
+				reasonPhrase: "Bad Request",
+				description: "username exist",
+				errorCode: 1004
+			};
+			return ;
+		}
+
+		// check is pen_name exist
+		let isPenNameExist = (yield User.find({
+			where: {
+				pen_name: penName
+			}
+		})) === null ? false : true;
+
+		if (isPenNameExist) {
+			this.status = 400;
+			this.body = {
+				statusCode: 400,
+				reasonPhrase: "Bad Request",
+				description: "penName exist",
+				errorCode: 1005
+			};
+			return ;
+		}
+
+		// check group whether exist
+		let group = yield Group.find({
+			where: {
+				name: groupName
+			}
+		});
+
+		let hasGroup = group === null ? false : true
+
+		if (!hasGroup) {
+			this.status = 400;
+			this.body = {
+				statusCode: 400,
+				reasonPhrase: "Bad Request",
+				description: "group don't exist",
+				errorCode: 1006
+			};
+			return ;
+		}
+
+		let groupId = group.id;
+
 		try {
-			yield User.build({
+			let user = yield User.build({
 				username: body.username,
 				password: MD5(body.password),
 				pen_name: body.penName,
 				avatar: body.avatar || void 0,
 				introduce: body.introduce || void 0,
-				group_id: parseInt(body.groupId, 10) // String -> Number
+				group_id: groupId
 			})
 			.save();
 
@@ -139,7 +216,7 @@ router.post("/",
 				statusCode: 200,
 				reasonPhrase: "OK",
 				description: "add user succeed",
-				userId: 1
+				userId: user.id
 			};
 			return ;
 		}
@@ -151,8 +228,8 @@ router.post("/",
 			this.body = {
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
-				description: "add author fialed",
-				errorCode: 1004
+				description: "add user failed",
+				errorCode: 1007
 			};
 			return ;
 		}
@@ -194,8 +271,8 @@ router.put("/:id",
 				this.body = {
 					statusCode: 400,
 					reasonPhrase: "Bad Request",
-					description: "pen name excist",
-					errorCode: 1004
+					description: "penName exist",
+					errorCode: 1005
 				};
 				return ;
 			}
@@ -249,7 +326,7 @@ router.put("/:id",
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
 				description: "update user failed",
-				errorCode: 1004
+				errorCode: 1008
 			};
 			return ;
 		}
@@ -274,6 +351,13 @@ router.put("/:id/password",
 
 		if (!password) {
 			// password can not be void
+			this.status = 400;
+			this.body = {
+				statusCode: 400,
+				reasonPhrase: "Bad Request",
+				description: "password can't be void",
+				errorCode: 1009
+			};
 			return ;
 		}
 
@@ -303,11 +387,10 @@ router.put("/:id/password",
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
 				description: "update user's password failed",
-				errorCode: 1004
+				errorCode: 1010
 			};
 			return ;
 		}
-
 	}
 );
 
@@ -376,7 +459,7 @@ router.put("/:id/username",
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
 				description: "update user's username failed",
-				errorCode: 1004
+				errorCode: 1011
 			};
 			return ;
 		}
@@ -409,7 +492,7 @@ router.put("/:id/groupdId",
 
 		let body = yield parse.form(this);
 
-		let groupId = body.groupId;
+		let groupName = body.groupName;
 
 		let all = yield Group.findAll();
 	}
@@ -454,8 +537,8 @@ router.delete("/:id",
 			this.body = {
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
-				description: "delete user fialed",
-				errorCode: 1005
+				description: "delete user failed",
+				errorCode: 1014
 			};
 			return ;
 		}
