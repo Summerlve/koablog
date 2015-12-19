@@ -37,7 +37,7 @@ GET
 
 ##### /authentications
 | error code | description |
-| - | - |
+| ---------- | ----------- |
 | 1000 | there is no token in the http request header field 'Authorization' |
 | 1001 | wrong token (can not decode the token) |
 | 1002 | token out of date |
@@ -47,7 +47,7 @@ GET
 
 ##### /authors
 | error code | descript |
-| - | - |
+| ---------- | -------- |
 | 1004 | username exist (want to update username, but the username is exist, so failed) |
 | 1005 | penName exist (want to update penName, but the penName is exist, so failed) |
 | 1006 | groupId dont exist |
@@ -64,5 +64,5 @@ GET
 
 ##### /articles
 | error code | descript |
-| - | - |
+| ---------- | -------- |
 | 1015 | sdfsdfsdf |
