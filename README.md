@@ -46,8 +46,8 @@ GET
 <br/>
 
 ##### /authors
-| error code | descript |
-| ---------- | -------- |
+| error code | description |
+| ---------- | ----------- |
 | 1004 | username exist (want to update username, but the username is exist, so failed) |
 | 1005 | penName exist (want to update penName, but the penName is exist, so failed) |
 | 1006 | groupId dont exist |
@@ -63,6 +63,6 @@ GET
 <br/>
 
 ##### /articles
-| error code | descript |
-| ---------- | -------- |
+| error code | description |
+| ---------- | ----------- |
 | 1015 | sdfsdfsdf |
