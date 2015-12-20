@@ -45,7 +45,7 @@ module.exports = function* getToken (next) {
     // 检查token是否过期
     let expires = decode.exp;
     if (expires <= Date.now()) {
-        this.status = 400;
+        this.status = 401;
         this.body = {
             statusCode: 401,
             reasonPhrase: "Unauthorized",
@@ -62,7 +62,7 @@ module.exports = function* getToken (next) {
     let isTokenExsit = yield redisClient.co_exists(token);
 
     if (!isTokenExsit) {
-        this.status = 400;
+        this.status = 401;
         this.body = {
             statusCode: 401,
             reasonPhrase: "Unauthorized",

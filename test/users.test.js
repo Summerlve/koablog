@@ -10,7 +10,7 @@ const protocol = configs.app.protocol;
 const host = configs.app.host;
 const port = configs.app.port;
 
-describe("test the /authors", function () {
+describe("Test the /authors", function () {
     // temp variables for test
     let token;
     let userId;
@@ -55,7 +55,9 @@ describe("test the /authors", function () {
                 "Authorization": "jwt " + token
             }
         }, function (error, response, body) {
-            userId = parseInt(JSON.parse(body).userId, 10);
+            userId = JSON.parse(body).userId;
+            console.log(body);
+            console.log(response.statusCode);
             assert.strictEqual(typeof userId, "number");
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 200);
@@ -85,6 +87,7 @@ describe("test the /authors", function () {
                 "Authorization": "jwt " + token
             }
         }, function (error, response, body) {
+            console.log(body);
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 200);
         })

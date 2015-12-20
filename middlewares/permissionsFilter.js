@@ -97,6 +97,7 @@ module.exports = function permissionsFilter (needs) {
                 case "html": {
                     this.status = 401;
                     this.body = "rinima";
+                    return ;
                 }break;
                 case "json": {
                     this.status = 401;
