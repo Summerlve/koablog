@@ -2,7 +2,7 @@
 **Using**:
 
 * **Frontend**: Bootstrap, jQuery.js, Vue.js, CKEditor.
-* **Backend**: Koa, Sequelize.
+* **Backend**: Koa, Sequelize, EJS.
 * **Database&Cache**: MySQL, Redis.
 * **API Design**: RESTful API Design.
 
