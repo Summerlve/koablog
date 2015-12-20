@@ -48,10 +48,10 @@ GET
 ##### /authors
 | error code | description |
 | ---------- | ----------- |
-| 1004 | username exist (want to update username, but the username is exist, so failed) |
-| 1005 | penName exist (want to update penName, but the penName is exist, so failed) |
-| 1006 | groupId dont exist |
-| 1007 | add author failed (In most cases, this is a server error) |
+| 1004 | username exists (want to update username or create new user, but the username is exist, so failed) |
+| 1005 | penName exists (want to update penName or create new user, but the penName is exist, so failed) |
+| 1006 | group don'tt exists (accroding to group's name) |
+| 1007 | add user failed (In most cases, this is a server error) |
 | 1008 | update user failed (In most cases, this is a server error) |
 | 1009 | password can't be void (when update user's password) |
 | 1010 | update user's password failed (In most cases, this is a server error) |
@@ -59,7 +59,7 @@ GET
 | 1012 | update user's penName failed (In most cases, this is a server error) |
 | 1013 | promote user failed (In most cases, this is a server error) |
 | 1014 | delete user failed (In most cases, this is a server error) |
-
+| 1015 | username, password, penName, groupName is required |
 <br/>
 
 ##### /articles

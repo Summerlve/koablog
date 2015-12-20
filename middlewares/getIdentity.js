@@ -10,7 +10,7 @@ const User = require("../models/User");
 const cert = global.cert;
 
 // identity
-function* getIdentity (next) {
+module.exports = function* getIdentity (next) {
 	// get token from getToken middleware
 	let decode = this.decode;
 
@@ -29,6 +29,4 @@ function* getIdentity (next) {
 	this.userId = userId;
 
 	yield next;
-}
-
-module.exports = getIdentity;
+};

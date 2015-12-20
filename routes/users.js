@@ -135,8 +135,8 @@ router.post("/",
 			this.body = {
 				statusCode: 400,
 				reasonPhrase: "Bad Request",
-				description: "username, password, penName, group is required",
-				errorCode: 1004
+				description: "username, password, penName, groupName is required",
+				errorCode: 1015
 			};
 			return ;
 		}
@@ -191,7 +191,7 @@ router.post("/",
 			this.body = {
 				statusCode: 400,
 				reasonPhrase: "Bad Request",
-				description: "group don't exist",
+				description: "group don't exists",
 				errorCode: 1006
 			};
 			return ;

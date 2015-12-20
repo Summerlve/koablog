@@ -2,7 +2,7 @@
 
 const Permission = require("../models/Permission").Permission;
 
-function getAllPermissions (context) {
+module.exports = function getAllPermissions (context) {
     return function* () {
         let allPermissions = new Map();
 
@@ -11,6 +11,4 @@ function getAllPermissions (context) {
 
         this.allPermissions = allPermissions;
     }.bind(context)();
-}
-
-module.exports = getAllPermissions;
+};

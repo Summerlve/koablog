@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const cert = global.cert;
 const redisClient = global.redisClient;
 
-function* getToken (next) {
+module.exports = function* getToken (next) {
     // get token from http request header field 'Authorization'.
     let authorization = this.get("authorization");
     if (!authorization) {
@@ -79,6 +79,4 @@ function* getToken (next) {
     this.tokenType = tokenType;
 
     yield next;
-}
-
-module.exports = getToken;
+};

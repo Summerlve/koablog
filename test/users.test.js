@@ -11,25 +11,26 @@ const host = configs.app.host;
 const port = configs.app.port;
 
 describe("test the /authors", function () {
+    // temp variables for test
     let token;
     let userId;
-    let username;
-    let password;
+    let rootUserName;
+    let rootPassword;
 
     it("get root user must be ok", function (done) {
         assert.deepStrictEqual(configs.users.root.length >= 1, true, "root users's length must >= 1");
-        username = configs.users.root[0].username;
-        password = configs.users.root[0].password;
+        rootUserName = configs.users.root[0].username;
+        rootPassword = configs.users.root[0].password;
         done();
     });
 
-    it("log in must be ok", function (done) {
+    it("log in (get token) must be ok", function (done) {
         request({
             method: "POST",
             url: util.format("%s://%s:%s%s", protocol, host, port, auth),
             form: {
-                username: username,
-                password: password
+                username: rootUserName,
+                password: rootPassword
             }
         }, function (error, response, body) {
             assert.strictEqual(error, null);
@@ -43,17 +44,19 @@ describe("test the /authors", function () {
     it("create a user with right token must be ok", function (done) {
         request({
             method: "POST",
-            url: url: util.format("%s://%s:%s%s", protocol, host, port, prefix),
+            url: util.format("%s://%s:%s%s", protocol, host, port, prefix),
             form: {
                 username: "!@#$%^&*()",
                 password: "123456",
-                penName: "!@#$%^&*()"，
-                groupId: "3"
-            }
+                penName: "!@#$%^&*()",
+                groupName: "author"
+            },
             headers: {
                 "Authorization": "jwt " + token
             }
         }, function (error, response, body) {
+            userId = parseInt(JSON.parse(body).userId, 10);
+            assert.strictEqual(typeof userId, "number");
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 200);
         })
@@ -74,7 +77,20 @@ describe("test the /authors", function () {
         })
     });
 
-    it("log out with right token must be ok", function (done) {
+    it("delete a user with right token must be ok", function (done) {
+        request({
+            method: "DELETE",
+            url: util.format("%s://%s:%s%s%s", protocol, host, port, prefix, "/" + userId),
+            headers: {
+                "Authorization": "jwt " + token
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 200);
+        })
+    });
+
+    it("log out (delete token) with right token must be ok", function (done) {
         request({
             method: "DELETE",
             url: util.format("%s://%s:%s%s", protocol, host, port, auth),
@@ -88,7 +104,7 @@ describe("test the /authors", function () {
         });
     });
 
-    it("log out with none token must be failed", function (done) {
+    it("log out (delete token) with none token must be failed", function (done) {
         request({
             method: "DELETE",
             url: util.format("%s://%s:%s%s", protocol, host, port, auth),

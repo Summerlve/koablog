@@ -7,7 +7,7 @@ const getAllPermissions = require("./getAllPermissions");
 const getOwnPermissions = require("./getOwnPermissions");
 const Article = require("../models/Article").Article;
 
-function permissionsFilter (needs) {
+module.exports = function permissionsFilter (needs) {
     // 返回一个Generator函数
     return function* permissionsFilter (next) {
         // needs must be object.
@@ -117,7 +117,7 @@ function permissionsFilter (needs) {
 
         yield next;
     };
-}
+};
 
 // 从传入的权限描述对象中取出所有的权限名字
 function getStrings (value) {
@@ -175,5 +175,3 @@ function passHandler (value, pair) {
         return pair.get(value);
     }
 }
-
-module.exports = permissionsFilter;

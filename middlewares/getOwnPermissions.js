@@ -2,7 +2,7 @@
 
 const PermissionToGroup = require("../models/Permission").PermissionToGroup;
 
-function getOwnPermissions (context) {
+module.exports = function getOwnPermissions (context) {
     return function* () {
         let groupId = this.groupId;
 
@@ -18,6 +18,4 @@ function getOwnPermissions (context) {
 
         this.ownPermissions = ownPermissions;
     }.bind(context)();
-}
-
-module.exports = getOwnPermissions;
+};
