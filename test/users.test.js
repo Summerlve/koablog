@@ -134,7 +134,7 @@ describe("Test the /authors", function () {
         });
     });
 
-    it("get page of authors", function (done) {
+    it("get the first page of authors, should be ok", function (done) {
         let page = 1;
         request({
             method: "GET",
@@ -142,6 +142,18 @@ describe("Test the /authors", function () {
         }, function(error, response, body) {
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 200);
+            done();
+        });
+    });
+
+    it("get a large page of authors, must be 404 not found", function (done) {
+        let page = 100000000;
+        request({
+            method: "GET",
+            url: util.format("%s://%s:%s%s?page=%s", protocol, host, port, routerPrefix, page)
+        }, function(error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 404);
             done();
         });
     });

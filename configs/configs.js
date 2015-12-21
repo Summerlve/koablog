@@ -11,8 +11,9 @@ const dbHost = configs.mysql.host;
 const dbPort = configs.mysql.port;
 const dbUsername = configs.mysql.username;
 const dbPassword = configs.mysql.password;
+const dbName = configs.mysql.dbName;
 
-const sequelize = new Sequelize("koablog", "root", "123456", {
+const sequelize = new Sequelize(dbName, dbUsername, dbPassword, {
 	host: dbHost,
 	dialect: "mysql",
 	port: dbPort,

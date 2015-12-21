@@ -2,9 +2,18 @@
 **Using**:
 
 * **Frontend**: Bootstrap, jQuery.js, Vue.js, CKEditor.
-* **Backend**: Koa, Sequelize, EJS.
+* **Backend**: Node.js: Koa, Sequelize, EJS.
 * **Database&Cache**: MySQL, Redis.
 * **API Design**: RESTful API Design.
+
+<br/>
+
+# INSTALL
+This web app dependent on Node.js, MySQL, Redis.
+
+##### 1. Install the MySQL 5.6.19+
+##### 2. Install the Redis 2.8.4+
+##### 3. Install the Node.js 4.2.1+
 
 <br/>
 
