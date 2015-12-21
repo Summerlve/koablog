@@ -6,7 +6,7 @@ global.configs = configs;
 // app init
 const app = require("koa")();
 
-// db redis init, set path etc.
+// db and redis init, set path etc.
 require("./configs/configs");
 
 // gzip compress

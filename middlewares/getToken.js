@@ -66,7 +66,7 @@ module.exports = function* getToken (next) {
         this.body = {
             statusCode: 401,
             reasonPhrase: "Unauthorized",
-            description: "token do not exsit, please log in again",
+            description: "token do not exists, please log in again",
             errorCode: 1003
         };
 

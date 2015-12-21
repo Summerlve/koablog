@@ -41,10 +41,9 @@ GET
 | 1000 | there is no token in the http request header field 'Authorization' |
 | 1001 | wrong token (can not decode the token) |
 | 1002 | token out of date |
-| 1003 | token do not exsit (token can not find in redis) |
+| 1003 | token do not exists, please log in again (token can not find in redis) |
 | 1004 | username or password is not correct (when log in) |
 | 1005 | insufficient permission (when someone want to pass the permission filter, but failed) |
-
 
 <br/>
 
@@ -63,6 +62,7 @@ GET
 | 2009 | update user's penName failed (In most cases, this is a server error) |
 | 2010 | promote user's permission failed (In most cases, this is a server error) |
 | 2011 | delete user failed (In most cases, this is a server error) |
+
 <br/>
 
 ##### router /articles

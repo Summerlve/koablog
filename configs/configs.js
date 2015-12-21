@@ -2,13 +2,16 @@
 const Sequelize = require("sequelize");
 const redis = require("redis");
 const path = require("path");
-const config = global.configs;
+const configs = global.configs;
 
 /*	database config
  *	use Sequelize ORM
  */
-const dbHost = config.mysql.host;
-const dbPort = config.mysql.port;
+const dbHost = configs.mysql.host;
+const dbPort = configs.mysql.port;
+const dbUsername = configs.mysql.username;
+const dbPassword = configs.mysql.password;
+
 const sequelize = new Sequelize("koablog", "root", "123456", {
 	host: dbHost,
 	dialect: "mysql",
@@ -31,8 +34,8 @@ global.sequelize = sequelize;
  */
 
 // create redis socket , and listening to the error event.
-const redisHost = config.redis.host;
-const redisPort = config.redis.port;
+const redisHost = configs.redis.host;
+const redisPort = configs.redis.port;
 const redisClient = redis.createClient(redisPort, redisHost, {});
 
 redisClient.on("error", (error) => {

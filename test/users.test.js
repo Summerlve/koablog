@@ -4,8 +4,8 @@ const request = require("request");
 const configs = require("./configs.json");
 const assert = require("assert");
 const util = require("util");
-const prefix = "/authors";
-const auth = "/authentications";
+const routerPrefix = "/authors";
+const authentications = "/authentications";
 const protocol = configs.app.protocol;
 const host = configs.app.host;
 const port = configs.app.port;
@@ -13,7 +13,7 @@ const port = configs.app.port;
 describe("Test the /authors", function () {
     // temp variables for test
     let token;
-    let userId;
+    let newUserId;
     let root = {
         id: -1,
         username: "",
@@ -31,7 +31,7 @@ describe("Test the /authors", function () {
     it("log in (get token) must be ok", function (done) {
         request({
             method: "POST",
-            url: util.format("%s://%s:%s%s", protocol, host, port, auth),
+            url: util.format("%s://%s:%s%s", protocol, host, port, authentications),
             form: {
                 username: root.username,
                 password: root.password
@@ -40,7 +40,6 @@ describe("Test the /authors", function () {
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 200);
             token = JSON.parse(body).token;
-            console.log(token);
             assert.strictEqual(typeof token, "string");
             done();
         });
@@ -49,7 +48,7 @@ describe("Test the /authors", function () {
     it("create a user with right token must be ok", function (done) {
         request({
             method: "POST",
-            url: util.format("%s://%s:%s%s", protocol, host, port, prefix),
+            url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
             form: {
                 username: "!@#$%^&*()",
                 password: "123456",
@@ -60,19 +59,18 @@ describe("Test the /authors", function () {
                 "Authorization": "jwt " + token
             }
         }, function (error, response, body) {
-            userId = JSON.parse(body).userId;
-            console.log(body);
-            console.log(response.statusCode);
-            assert.strictEqual(typeof userId, "number");
+            newUserId = JSON.parse(body).userId;
+            assert.strictEqual(typeof newUserId, "number");
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 200);
+            done();
         })
     });
 
     it("create a user with wrong token must be failed", function (done) {
         request({
             method: "POST",
-            url: util.format("%s://%s:%s%s", protocol, host, port, prefix),
+            url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
             headers: {
                 "Authorization": "jwt " + "wrongtoken"
             }
@@ -87,21 +85,21 @@ describe("Test the /authors", function () {
     it("delete a user with right token must be ok", function (done) {
         request({
             method: "DELETE",
-            url: util.format("%s://%s:%s%s%s", protocol, host, port, prefix, "/" + userId),
+            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + newUserId),
             headers: {
                 "Authorization": "jwt " + token
             }
         }, function (error, response, body) {
-            console.log(body);
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 200);
+            done();
         })
     });
 
     it("log out (delete token) with right token must be ok", function (done) {
         request({
             method: "DELETE",
-            url: util.format("%s://%s:%s%s", protocol, host, port, auth),
+            url: util.format("%s://%s:%s%s", protocol, host, port, authentications),
             headers: {
                 "Authorization": "jwt " + token
             }
@@ -115,7 +113,7 @@ describe("Test the /authors", function () {
     it("log out (delete token) with none token must be failed", function (done) {
         request({
             method: "DELETE",
-            url: util.format("%s://%s:%s%s", protocol, host, port, auth),
+            url: util.format("%s://%s:%s%s", protocol, host, port, authentications),
         }, function (error, response, body) {
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 401);
@@ -128,7 +126,7 @@ describe("Test the /authors", function () {
         let id = root.id;
         request({
             method: "GET",
-            url: util.format("%s://%s:%s%s/%s", protocol, host, port, prefix, id)
+            url: util.format("%s://%s:%s%s/%s", protocol, host, port, routerPrefix, id)
         }, function (error, response, body) {
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 200);
@@ -140,7 +138,7 @@ describe("Test the /authors", function () {
         let page = 1;
         request({
             method: "GET",
-            url: util.format("%s://%s:%s%s?page=%s", protocol, host, port, prefix, page)
+            url: util.format("%s://%s:%s%s?page=%s", protocol, host, port, routerPrefix, page)
         }, function(error, response, body) {
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 200);

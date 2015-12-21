@@ -28,14 +28,14 @@ module.exports = function permissionsFilter (needs) {
 
         // filter
         // 将needs中的权限字符串全部取出来
-        let allPermissioStrings = getStrings(needs);
+        let needsStrings = getStrings(needs);
 
         // 存放permission 与 false/true，表示用户是否拥有这个permission
         let pair = new Map();
 
         // 判断用户是否拥有单个的权限，如果是文章的操作要检查文章是否属于作者
-        for (let i = 0; i < allPermissioStrings.length; i++) {
-            let item = allPermissioStrings[i];
+        for (let i = 0; i < needsStrings.length; i++) {
+            let item = needsStrings[i];
 
             if (!ownPermissions.has(allPermissions.get(item))) {
                 pair.set(item, false);
@@ -121,7 +121,7 @@ module.exports = function permissionsFilter (needs) {
 };
 
 // 从传入的权限描述对象中取出所有的权限名字
-function getStrings (value) {
+function getStrings (needs) {
     let strings = [];
 
     let inner = function inner (value) {
@@ -130,9 +130,11 @@ function getStrings (value) {
                 if (key === "and") {
                     value[key].forEach(value => inner(value));
                 }
-
-                if (key === "or") {
+                else if (key === "or") {
                     value[key].forEach(value => inner(value));
+                }
+                else if (key === "only") {
+                    inner(value[key]);
                 }
             }
         }
@@ -141,7 +143,7 @@ function getStrings (value) {
         }
     };
 
-    inner(value);
+    inner(needs);
     return strings;
 }
 
@@ -165,7 +167,7 @@ function passHandler (value, pair) {
                     });
                 }
                 else if (value[key].length === 1) {
-                    return passHandler(value[key][0], pair);
+                    return passHandler(needs[key][0], pair);
                 }
             } else if (key === "only") {
                 return passHandler(value[key], pair);

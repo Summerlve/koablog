@@ -34,7 +34,7 @@
     "vue-loader": "3.0.3"
   },
   "scripts": {
-      "test": "supervisor app.js"
+    "test": "supervisor app.js"
   },
   "keywords": [
     "koa",
