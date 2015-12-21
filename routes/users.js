@@ -136,7 +136,7 @@ router.post("/",
 				statusCode: 400,
 				reasonPhrase: "Bad Request",
 				description: "username, password, penName, groupName is required",
-				errorCode: 1015
+				errorCode: 2000
 			};
 			return ;
 		}
@@ -154,7 +154,7 @@ router.post("/",
 				statusCode: 400,
 				reasonPhrase: "Bad Request",
 				description: "username exist",
-				errorCode: 1004
+				errorCode: 2001
 			};
 			return ;
 		}
@@ -172,7 +172,7 @@ router.post("/",
 				statusCode: 400,
 				reasonPhrase: "Bad Request",
 				description: "penName exist",
-				errorCode: 1005
+				errorCode: 2002
 			};
 			return ;
 		}
@@ -192,7 +192,7 @@ router.post("/",
 				statusCode: 400,
 				reasonPhrase: "Bad Request",
 				description: "group don't exists",
-				errorCode: 1006
+				errorCode: 2003
 			};
 			return ;
 		}
@@ -229,7 +229,7 @@ router.post("/",
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
 				description: "add user failed",
-				errorCode: 1007
+				errorCode: 2004
 			};
 			return ;
 		}
@@ -272,7 +272,7 @@ router.put("/:id",
 					statusCode: 400,
 					reasonPhrase: "Bad Request",
 					description: "penName exist",
-					errorCode: 1005
+					errorCode: 2002
 				};
 				return ;
 			}
@@ -290,8 +290,8 @@ router.put("/:id",
 				this.body = {
 					statusCode: 400,
 					reasonPhrase: "Bad Request",
-					description: "username excist",
-					errorCode: 1004
+					description: "username exist",
+					errorCode: 2001
 				};
 				return ;
 			}
@@ -326,7 +326,7 @@ router.put("/:id",
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
 				description: "update user failed",
-				errorCode: 1008
+				errorCode: 2005
 			};
 			return ;
 		}
@@ -356,7 +356,7 @@ router.put("/:id/password",
 				statusCode: 400,
 				reasonPhrase: "Bad Request",
 				description: "password can't be void",
-				errorCode: 1009
+				errorCode: 2006
 			};
 			return ;
 		}
@@ -387,7 +387,7 @@ router.put("/:id/password",
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
 				description: "update user's password failed",
-				errorCode: 1010
+				errorCode: 2007
 			};
 			return ;
 		}
@@ -427,7 +427,7 @@ router.put("/:id/username",
 				statusCode: 400,
 				reasonPhrase: "Bad Request",
 				description: "username excists",
-				errorCode: 1004
+				errorCode: 2001
 			};
 
 			return ;
@@ -459,7 +459,7 @@ router.put("/:id/username",
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
 				description: "update user's username failed",
-				errorCode: 1011
+				errorCode: 2008
 			};
 			return ;
 		}
@@ -538,7 +538,7 @@ router.delete("/:id",
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
 				description: "delete user failed",
-				errorCode: 1014
+				errorCode: 2011
 			};
 			return ;
 		}

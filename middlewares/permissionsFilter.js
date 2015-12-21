@@ -96,7 +96,7 @@ module.exports = function permissionsFilter (needs) {
             switch (this.accepts(["html", "json"])) {
                 case "html": {
                     this.status = 401;
-                    this.body = "rinima";
+                    this.body = "401 Unauthorized, description: insufficient permission, errorCode: 1005";
                     return ;
                 }break;
                 case "json": {
@@ -105,7 +105,7 @@ module.exports = function permissionsFilter (needs) {
                         statusCode: 401,
                         reasonPhrase: "Unauthorized",
                         description: "insufficient permission",
-                        errorCode: 1000
+                        errorCode: 1005
                     };
                     return ;
                 }break;

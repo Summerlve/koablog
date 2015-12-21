@@ -14,13 +14,17 @@ describe("Test the /authors", function () {
     // temp variables for test
     let token;
     let userId;
-    let rootUserName;
-    let rootPassword;
+    let root = {
+        id: -1,
+        username: "",
+        password: ""
+    };
 
     it("get root user must be ok", function (done) {
         assert.deepStrictEqual(configs.users.root.length >= 1, true, "root users's length must >= 1");
-        rootUserName = configs.users.root[0].username;
-        rootPassword = configs.users.root[0].password;
+        root.username = configs.users.root[0].username;
+        root.password = configs.users.root[0].password;
+        root.id = configs.users.root[0].id;
         done();
     });
 
@@ -29,13 +33,14 @@ describe("Test the /authors", function () {
             method: "POST",
             url: util.format("%s://%s:%s%s", protocol, host, port, auth),
             form: {
-                username: rootUserName,
-                password: rootPassword
+                username: root.username,
+                password: root.password
             }
         }, function (error, response, body) {
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 200);
             token = JSON.parse(body).token;
+            console.log(token);
             assert.strictEqual(typeof token, "string");
             done();
         });
@@ -120,7 +125,7 @@ describe("Test the /authors", function () {
     });
 
     it("get one of authors", function (done) {
-        let id = configs.users.root[0].id;
+        let id = root.id;
         request({
             method: "GET",
             url: util.format("%s://%s:%s%s/%s", protocol, host, port, prefix, id)

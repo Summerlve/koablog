@@ -43,7 +43,8 @@ router.post("/authentications", function* (next) {
 		this.body = {
 			statusCode: 401,
 			reasonPhrase: "Unauthorized",
-			description: "username or password is not correct"
+			description: "username or password is not correct",
+			errorCode: 1004
 		};
 		return ;
 	}
