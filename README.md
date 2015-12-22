@@ -47,7 +47,7 @@ GET
 ##### authorization and permission
 | error code | description |
 | ---------- | ----------- |
-| 1000 | there is no token in the http request header field 'Authorization' |
+| 1000 | there is none token in the http request header field 'Authorization' |
 | 1001 | wrong token (can not decode the token) |
 | 1002 | token out of date |
 | 1003 | token do not exists, please log in again (token can not find in redis) |

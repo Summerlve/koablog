@@ -70,8 +70,8 @@ router.get("/", function* (next) {
 });
 
 // one of the author
-router.get("/:id", function* (next) {
-	yield* checkUser(this);
+router.get("/:id", checkUser, function* (next) {
+	// get user from checkUser
 	let user = this.user;
 
 	switch (this.accepts("json", "html")) {
@@ -243,10 +243,10 @@ router.put("/:id",
 	permissionsFilter({
 		or: ["update_users", "update_private_users"]
 	}),
+	checkUser,
 	function* (next) {
 		// 修改用户的设置
 		// check whether user excist
-		yield checkUser(this);
 		let user = this.user;
 
 		let body = yield parse.form(this);
@@ -340,9 +340,9 @@ router.put("/:id/password",
 	permissionsFilter({
 		or: ["update_users", "update_private_users"]
 	}),
+	checkUser,
 	function* (next) {
 		//  check user excist
-		yield* checkUser(this);
 		let user = this.user;
 
 		let body = yield parse.form(this);
@@ -401,9 +401,9 @@ router.put("/:id/username",
 	permissionsFilter({
 		or: ["update_users", "update_private_users"]
 	}),
+	checkUser,
 	function* (next) {
 		// check user
-		yield* checkUser(this);
 		let user = this.user;
 
 		let body = yield parse.form(this);
@@ -485,9 +485,9 @@ router.put("/:id/groupdId",
 	permissionsFilter({
 		and: ["promote_users", "read_groups"]
 	}),
+	checkUser,
 	function* (next) {
 		// check user
-		yield* checkUser(this);
 		let user = this.user;
 
 		let body = yield parse.form(this);
@@ -505,9 +505,9 @@ router.delete("/:id",
 	permissionsFilter({
 		only: "delete_users"
 	}),
+	checkUser,
 	function* (next) {
 		// check user
-		yield* checkUser(this);
 		let user = this.user;
 		let id = user.id;
 
