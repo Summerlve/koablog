@@ -3,8 +3,8 @@
 // 在needs中的填写很多的权限无外乎两种关系，and 和 or，当然也可以嵌套，当只需满足一个权限的时候就是only
 // 这个中间件需要和getToken和getIdentity配合使用
 
-const getAllPermissions = require("./getAllPermissions");
-const getOwnPermissions = require("./getOwnPermissions");
+const PermissionToGroup = require("../models/Permission").PermissionToGroup;
+const Permission = require("../models/Permission").Permission;
 const Article = require("../models/Article").Article;
 
 module.exports = function permissionsFilter (needs) {
@@ -19,12 +19,23 @@ module.exports = function permissionsFilter (needs) {
         }
 
         // get all permissions
-        yield* getAllPermissions(this);
-        let allPermissions = this.allPermissions;
+        let allPermissions = new Map();
+        let pers = yield Permission.findAll();
+        pers.forEach(value => allPermissions.set(value.name, value.id));
+
 
         // get own permissions
-        yield* getOwnPermissions(this);
-        let ownPermissions = this.ownPermissions;
+        let groupId = this.groupId;
+
+        let own = yield PermissionToGroup.findAll({
+            attributes: ["permission_id"],
+            where: {
+                group_id: groupId
+            }
+        });
+
+        let ownPermissions = new Set();
+        own.forEach(value => ownPermissions.add(value.permission_id));
 
         // filter
         // 将needs中的权限字符串全部取出来
@@ -81,7 +92,7 @@ module.exports = function permissionsFilter (needs) {
     				return ;
     			}
 
-                // get userId and from muddleware getIdentity.js
+                // get userId from muddleware getIdentity.js
     			let userId = this.userId;
 
                 if (userId === id) pair.set(item, true);

@@ -1,7 +1,6 @@
 "use strict";
 // set router
-const koaRouter = require("koa-router");
-const router = koaRouter();
+const router = require("koa-router")();
 const prefix = "/authors"; // router's prefix
 router.prefix(prefix); // set router's prefix
 

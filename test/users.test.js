@@ -4,6 +4,9 @@ const request = require("request");
 const configs = require("./configs.json");
 const assert = require("assert");
 const util = require("util");
+const jwt = require("jsonwebtoken");
+
+// some info
 const routerPrefix = "/authors";
 const authentications = "/authentications";
 const protocol = configs.app.protocol;
@@ -28,6 +31,9 @@ describe("Test the /authors", function () {
         groupName: "author",
         token: ""
     };
+
+    let outOfDateToken = "";
+    let doNotExistsToken = "";
 
     it("get root user must be ok", function (done) {
         assert.deepStrictEqual(configs.users.root.length >= 1, true, "root users's length must >= 1");
@@ -82,7 +88,7 @@ describe("Test the /authors", function () {
                 groupName: temp.groupName
             },
             headers: {
-                "Authorization": "jwt " + root.token
+                Authorization: "jwt " + root.token
             }
         }, function (error, response, body) {
             temp.id = JSON.parse(body).userId;
@@ -99,7 +105,7 @@ describe("Test the /authors", function () {
             method: "POST",
             url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
             headers: {
-                "Authorization": "jwt " + "wrongtoken"
+                Authorization: "jwt " + "wrongtoken"
             }
         }, function (error, response, body) {
             assert.strictEqual(error, null);
@@ -132,7 +138,8 @@ describe("Test the /authors", function () {
             method: "POST",
             url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
             headers: {
-                "Authorization": "jwt " + temp.token
+                Authorization: "jwt " + temp.token,
+                Accept: "application/json"
             }
         }, function (error, response, body) {
             assert.strictEqual(error, null);
@@ -147,7 +154,7 @@ describe("Test the /authors", function () {
             method: "DELETE",
             url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + temp.id),
             headers: {
-                "Authorization": "jwt " + root.token
+                Authorization: "jwt " + root.token
             }
         }, function (error, response, body) {
             assert.strictEqual(error, null);
@@ -161,7 +168,7 @@ describe("Test the /authors", function () {
             method: "DELETE",
             url: util.format("%s://%s:%s%s", protocol, host, port, authentications),
             headers: {
-                "Authorization": "jwt " + root.token
+                Authorization: "jwt " + root.token
             }
         }, function (error, response, body) {
             assert.strictEqual(error, null);
@@ -218,4 +225,9 @@ describe("Test the /authors", function () {
             done();
         });
     });
+
+    // it("generate two token(out of date, token do not in redis)", function (donce) {
+    //     var outOfDate = new Date().valueOf();
+    //
+    // });
 });

@@ -2,7 +2,8 @@
 const Sequelize = require("sequelize");
 const redis = require("redis");
 const path = require("path");
-const configs = global.configs;
+const configs = require("../configs");
+global.configs = configs;
 
 /*	database config
  *	use Sequelize ORM
@@ -65,7 +66,5 @@ global.path = {};
 global.path.static = path.join(root, "public");
 global.path.views = path.join(root, "views");
 
-/* token settings
- *
- */
-global.cert = "koaBlog";
+// jwt settings
+global.jwt = configs.jwt;

@@ -1,5 +1,7 @@
 "use strict";
 const router = require("koa-router")();
+const prefix = "/articles";
+router.prefix(prefix);
 const ArticleView = require("../models/Article").ArticleView;
 const Article = require("../models/Article").Article;
 const Tag = require("../models/Tag");
@@ -25,11 +27,8 @@ const permissionsFilter = require("../middlewares/permissionsFilter");
 // db
 const sequelize = global.sequelize;
 
-// redirect '/' to the '/articles'
-router.redirect("/", "/articles");
-
 // page of the articles
-router.get("/articles", function* (next) {
+router.get("/", function* (next) {
 	switch (this.accepts("json", "html")) {
 		case "html": {
 			// 当请求html时
@@ -115,7 +114,7 @@ router.get("/articles", function* (next) {
 });
 
 // one of the articles
-router.get("/articles/:id", function* (next) {
+router.get("/:id", function* (next) {
 	let id = parseInt(this.params.id, 10);
 
 	if (isNaN(id)) {
@@ -182,7 +181,7 @@ router.get("/articles/:id", function* (next) {
 });
 
 // add new article
-router.post("/articles",
+router.post("/",
 	getToken,
 	getIdentity,
 	permissionsFilter({
@@ -208,16 +207,15 @@ router.post("/articles",
 		let transaction = yield sequelize.transaction();
 		// create artilce
 		try {
-			yield Article
-					.build({
-						title: body.title,
-						tag_id: tagId,
-						content: body.content,
-						user_id: userId
-					})
-					.save({
-						transaction: transaction
-					});
+			yield Article.build({
+				title: body.title,
+				tag_id: tagId,
+				content: body.content,
+				user_id: userId
+			})
+			.save({
+				transaction: transaction
+			});
 
 			transaction.commit(); // commit the transaction
 
@@ -243,8 +241,8 @@ router.post("/articles",
 	}
 );
 
-// change an article
-router.put("/articles/:id",
+// update an article
+router.put("/:id",
 	getToken,
 	getIdentity,
 	permissionsFilter({
@@ -286,14 +284,13 @@ router.put("/articles/:id",
 			let tagId = tag.id;
 
 			// update the article
-			yield article
-					.update({
-						title: body.title,
-						content: body.content,
-						tag_id: tagId
-					}, {
-						transaction: transaction
-					});
+			yield article.update({
+				title: body.title,
+				content: body.content,
+				tag_id: tagId
+			}, {
+				transaction: transaction
+			});
 
 			transaction.commit();
 
@@ -320,7 +317,7 @@ router.put("/articles/:id",
 );
 
 // delete an article
-router.delete("/articles/:id",
+router.delete("/:id",
 	getToken,
 	getIdentity,
 	permissionsFilter({
@@ -349,13 +346,12 @@ router.delete("/articles/:id",
 		let transaction = yield sequelize.transaction();
 		// delete article
 		try {
-			yield Article
-					.destroy({
-						where: {
-							id: id
-						},
-						transaction: transaction
-					});
+			yield Article.destroy({
+				where: {
+					id: id
+				},
+				transaction: transaction
+			});
 
 			transaction.commit();
 

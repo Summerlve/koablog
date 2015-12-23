@@ -12,7 +12,7 @@ const moment = require("moment");
 const redisClient = global.redisClient;
 
 // get the cert to decode or encode jwt.
-const cert = global.cert;
+const cert = global.jwt.cert;
 
 // get the view's path
 const viewsPath = global.path.views;
