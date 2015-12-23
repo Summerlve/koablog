@@ -13,7 +13,7 @@ const render = views(viewsPath, {
 });
 
 router.get("/panels", function* (next) {
-	this.body = yield render("/backend/panel", {
+	this.body = yield render("/backend/panels/panels", {
 		title: "Panels"
 	});
 	return ;
