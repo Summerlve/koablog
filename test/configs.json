@@ -2,7 +2,10 @@
     "app": {
         "protocol": "http",
         "host": "localhost",
-        "port": 8080
+        "port": 8080,
+        "jwt": {
+            "cert": "koaBlog"
+        }
     },
     "users": {
         "root": [
@@ -13,7 +16,7 @@
             }
         ],
         "author": [
-            
+
         ]
     }
 }

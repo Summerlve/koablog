@@ -5,6 +5,7 @@ const configs = require("./configs.json");
 const assert = require("assert");
 const util = require("util");
 const jwt = require("jsonwebtoken");
+const moment = require("moment");
 
 // some info
 const routerPrefix = "/authors";
@@ -12,6 +13,7 @@ const authentications = "/authentications";
 const protocol = configs.app.protocol;
 const host = configs.app.host;
 const port = configs.app.port;
+const cert = configs.app.jwt.cert;
 
 describe("Test the /authors", function () {
     // temp variables for test
@@ -226,8 +228,23 @@ describe("Test the /authors", function () {
         });
     });
 
-    // it("generate two token(out of date, token do not in redis)", function (donce) {
-    //     var outOfDate = new Date().valueOf();
-    //
-    // });
+    it("generate two token(out of date, token do not in redis)", function (done) {
+        var outOfDate = new Date().valueOf();
+        outOfDateToken = jwt.sign({
+            iss: -1,
+            exp: outOfDate
+        }, cert);
+
+        doNotExistsToken = jwt.sign({
+            iss: -1,
+            exp: moment().utcOffset(8).add(1000, "seconds").valueOf()
+        }, cert);
+
+        assert.strictEqual(typeof outOfDateToken, "string");
+        assert.strictEqual(typeof doNotExistsToken, "string");
+
+        done();
+    });
+
+    // 1003
 });

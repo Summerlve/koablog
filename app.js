@@ -36,5 +36,5 @@ app.use(require("./routes/groups"));
 app.use(require("./routes/files"));
 
 // listen
-const port = global.configs.app.port;
+const port = global.app.port;
 app.listen(port);

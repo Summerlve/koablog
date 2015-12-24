@@ -17,13 +17,6 @@ const cert = global.jwt.cert;
 // get the view's path
 const viewsPath = global.path.views;
 
-// render
-const render = views(viewsPath, {
-	map: {
-		html: "ejs"
-	}
-});
-
 // middlewares
 const getToken = require("../middlewares/getToken");
 

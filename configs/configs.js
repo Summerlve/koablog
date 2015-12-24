@@ -3,7 +3,6 @@ const Sequelize = require("sequelize");
 const redis = require("redis");
 const path = require("path");
 const configs = require("../configs");
-global.configs = configs;
 
 /*	database config
  *	use Sequelize ORM
@@ -34,7 +33,6 @@ global.sequelize = sequelize;
 /* redis
  * use redis to store token
  */
-
 // create redis socket , and listening to the error event.
 const redisHost = configs.redis.host;
 const redisPort = configs.redis.port;
@@ -68,3 +66,6 @@ global.path.views = path.join(root, "views");
 
 // jwt settings
 global.jwt = configs.jwt;
+
+// port
+global.app = configs.app;

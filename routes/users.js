@@ -118,9 +118,6 @@ router.post("/",
 	function* (next) {
 		let body = yield parse.form(this);
 
-		//start transaction
-		let transaction = yield sequelize.transaction();
-
 		// create a new user
 		let username = body.username;
 		let password = body.password;
@@ -197,6 +194,9 @@ router.post("/",
 		}
 
 		let groupId = group.id;
+		
+		//start transaction
+		let transaction = yield sequelize.transaction();
 
 		try {
 			let user = yield User.build({

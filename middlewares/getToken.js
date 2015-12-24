@@ -5,7 +5,7 @@
  *  this.tokenType
  */
 const jwt = require("jsonwebtoken");
-const cert = global.cert;
+const cert = global.jwt.cert;
 const redisClient = global.redisClient;
 
 module.exports = function* getToken (next) {
