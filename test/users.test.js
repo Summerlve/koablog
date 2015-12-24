@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const moment = require("moment");
 
 // some info
-const routerPrefix = "/authors";
+const routerPrefix = "/users";
 const authentications = "/authentications";
 const protocol = configs.app.protocol;
 const host = configs.app.host;
@@ -196,7 +196,7 @@ describe("Test the /authors", function () {
         let id = root.id;
         request({
             method: "GET",
-            url: util.format("%s://%s:%s%s/%s", protocol, host, port, routerPrefix, id)
+            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + id)
         }, function (error, response, body) {
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 200);
@@ -229,10 +229,9 @@ describe("Test the /authors", function () {
     });
 
     it("generate two token(out of date, token do not in redis)", function (done) {
-        var outOfDate = new Date().valueOf();
         outOfDateToken = jwt.sign({
             iss: -1,
-            exp: outOfDate
+            exp: new Date().valueOf()
         }, cert);
 
         doNotExistsToken = jwt.sign({
@@ -246,5 +245,35 @@ describe("Test the /authors", function () {
         done();
     });
 
+    // 1002
+    it("if token out of date must ne failed", function (done) {
+        request({
+            method: "POST",
+            url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
+            headers: {
+                Authorization: "jwt " + outOfDateToken
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 401);
+            assert.strictEqual(JSON.parse(body).errorCode, 1002);
+            done();
+        });
+    });
+
     // 1003
+    it("if token do not exists must be failed", function (done) {
+        request({
+            method: "POST",
+            url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
+            headers: {
+                Authorization: "jwt " + doNotExistsToken
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 401);
+            assert.strictEqual(JSON.parse(body).errorCode, 1003);
+            done();
+        });
+    });
 });

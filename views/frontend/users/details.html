@@ -24,10 +24,10 @@
                     <div class="author-details row">
                         <div class="author-details-column col-md-8 col-md-offset-2">
                             <div class="author-details-column-thumbnail thumbnail">
-                                <img class="author-details-column-avatar" src="<%= author.avatar %>" alt="have no avatar">
+                                <img class="author-details-column-avatar" src="<%= user.avatar %>" alt="have no avatar">
                                 <div class="caption">
-                                    <h3><%= author.pen_name %></h3>
-                                    <p class="author-details-column-introduce"><%= author.introduce%></p>
+                                    <h3><%= user.pen_name %></h3>
+                                    <p class="author-details-column-introduce"><%= user.introduce%></p>
                                     <hr>
                                     <% if (articles.length !== 0) { %>
                                         <% for (var i = 0; i < articles.length; i++) { %>

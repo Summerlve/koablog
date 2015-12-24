@@ -22,20 +22,20 @@
             <div class="contents-row row">
                 <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1">
                     <%
-                        var length = authors.length;
-                	    var remainder = length % authorsPerRow;
-                    	var rows = Math.floor(length / authorsPerRow);
-                        var colsPerAuthor = Math.floor(12 / authorsPerRow);
+                        var length = users.length;
+                	    var remainder = length % usersPerRow;
+                    	var rows = Math.floor(length / usersPerRow);
+                        var colsPerUsers = Math.floor(12 / usersPerRow);
                     %>
                     <% for (var i = 0; i < rows; i++) { %>
                     <div class="author-row row">
-                        <% for (var j = i * authorsPerRow; j < i * authorsPerRow + authorsPerRow; j++) { %>
-                        <div class="author-column col-md-<%= colsPerAuthor %> col-sm-<%= colsPerAuthor %> col-xs-12">
+                        <% for (var j = i * usersPerRow; j < i * usersPerRow + usersPerRow; j++) { %>
+                        <div class="author-column col-md-<%= colsPerUsers %> col-sm-<%= colsPerUsers %> col-xs-12">
                             <div class="author-column-thumbnail thumbnail">
-                                <img class="author-column-avatar" src="<%= authors[j].avatar %>" alt="have no avatar">
+                                <img class="author-column-avatar" src="<%= users[j].avatar %>" alt="have no avatar">
                                 <div class="caption">
-                                    <a href="/authors/<%= authors[j].id %>"><h3><%= authors[j].pen_name %></h3></a>
-                                    <p class="author-column-introduce"><%= authors[j].introduce%></p>
+                                    <a href="/users/<%= users[j].id %>"><h3><%= users[j].pen_name %></h3></a>
+                                    <p class="author-column-introduce"><%= users[j].introduce%></p>
                                 </div>
                             </div>
                         </div>
@@ -45,13 +45,13 @@
 
                     <% if (remainder > 0) { %>
                         <div class="author-row row">
-                        <% for (var i = rows * authorsPerRow; i < rows * authorsPerRow + remainder; i++) { %>
-                        <div class="author-column col-md-<%= colsPerAuthor %> col-sm-<%= colsPerAuthor %> col-xs-12">
+                        <% for (var i = rows * usersPerRow; i < rows * usersPerRow + remainder; i++) { %>
+                        <div class="author-column col-md-<%= colsPerUsers %> col-sm-<%= colsPerUsers %> col-xs-12">
                             <div class="author-column-thumbnail thumbnail">
-                                <img class="author-column-avatar" src="<%= authors[i].avatar %>" alt="have no avatar">
+                                <img class="author-column-avatar" src="<%= users[i].avatar %>" alt="have no avatar">
                                 <div class="caption">
-                                    <a href="/authors/<%= authors[i].pen_name %>"><h3><%= authors[i].pen_name %></h3></a>
-                                    <p class="author-column-introduce"><%= authors[i].introduce %></p>
+                                    <a href="/users/<%= users[i].id %>"><h3><%= users[i].pen_name %></h3></a>
+                                    <p class="author-column-introduce"><%= users[i].introduce %></p>
                                 </div>
                             </div>
                         </div>

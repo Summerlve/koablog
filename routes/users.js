@@ -1,7 +1,7 @@
 "use strict";
 // set router
 const router = require("koa-router")();
-const prefix = "/authors"; // router's prefix
+const prefix = "/users"; // router's prefix
 router.prefix(prefix); // set router's prefix
 
 // import modules
@@ -15,10 +15,6 @@ const sequelize = global.sequelize;
 
 // path
 const viewsPath = global.path.views;
-
-// page and row
-const limit = 4;
-const authorsPerRow = 2; // 一行有numPerRow个作者，因为bootstrap的栅格一行有12列，所以此处必须能把12整除
 
 // render
 const render = views(viewsPath, {
@@ -38,13 +34,18 @@ router.get("/", function* (next) {
 	// page默认为1
 	let current = parseInt(this.query.page || 1, 10);
 
-	let authors = yield User.findAll({
+	// page and row
+	const limit = 4;
+	// 一行有numPerRow个作者，因为bootstrap的栅格一行有12列，所以此处必须能把12整除
+	const usersPerRow = 2;
+
+	let users = yield User.findAll({
 		order: ["id"],
 		offset: (current - 1) * limit,
 		limit: limit
 	});
 
-	if (authors.length === 0) {
+	if (users.length === 0) {
 		this.status = 404;
 		this.body = "没有更多的作者了";
 		return ;
@@ -55,16 +56,16 @@ router.get("/", function* (next) {
 	let previous = current - 1;
 	let next_ = count - limit * current > 0 ? current + 1 : 0;
 
-	this.body = yield render("/frontend/authors/authors", {
-		title: "Authors",
-		authors: authors,
+	this.body = yield render("/frontend/users/users", {
+		title: "Users",
+		users: users,
 		page: {
-			urlPrefix: "/authors",
+			urlPrefix: "/users",
 			current: current,
 			previous: previous,
 			next: next_
 		},
-		authorsPerRow: authorsPerRow
+		usersPerRow: usersPerRow
 	});
 });
 
@@ -89,8 +90,8 @@ router.get("/:id", checkUser, function* (next) {
 				limit: 4
 			});
 
-			this.body = yield render("/frontend/authors/details", {
-				author: user,
+			this.body = yield render("/frontend/users/details", {
+				user: user,
 				articles: articles,
 				title: penName
 			});
@@ -194,7 +195,7 @@ router.post("/",
 		}
 
 		let groupId = group.id;
-		
+
 		//start transaction
 		let transaction = yield sequelize.transaction();
 
