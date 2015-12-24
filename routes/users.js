@@ -126,13 +126,13 @@ router.post("/",
 		let groupName = body.groupName;
 		let avatar = body.avatar;
 		let introduce = body.introduce;
-		
+
 		if (!username || !password || !penName || !groupName) {
 			this.status = 400;
 			this.body = {
 				statusCode: 400,
 				reasonPhrase: "Bad Request",
-				description: "username, password, penName, groupName is required",
+				description: "username, password, penName, groupName is required, and must be not void",
 				errorCode: 2000
 			};
 			return ;
@@ -204,8 +204,8 @@ router.post("/",
 				username: body.username,
 				password: MD5(body.password),
 				pen_name: body.penName,
-				avatar: body.avatar || void 0,
-				introduce: body.introduce || void 0,
+				avatar: body.avatar || undefined,
+				introduce: body.introduce || undefined,
 				group_id: groupId
 			})
 			.save();
@@ -245,40 +245,35 @@ router.put("/:id",
 	}),
 	checkUser,
 	function* (next) {
-		// 修改用户的设置
-		// check whether user excist
+		// update user's info
+
+		// get user from checkUser
 		let user = this.user;
 
 		let body = yield parse.form(this);
 
-		// change the user
-		// check username and pen_name , it's the unique key
-		let username = body.username || undefined;
-		let password = body.password || undefined;
-		let penName = body.penName || undefined;
-		let introduce = body.introduce || undefined;
+		// Check which items need to be updated
+		let username = "";
+		let password = "";
+		let penName = "";
+		let introduce = "";
 
-		// needs check penName and username whether unique
-		if (penName) {
-			let isPenNameExist = (yield User.find({
-				where: {
-					pen_name: penName
-				}
-			})) === null ? false : true;
+		let updater = {};
 
-			if (isPenNameExist) {
+		if ("username" in body) {
+			username = body.username;
+
+			if (!username) {
 				this.status = 400;
 				this.body = {
 					statusCode: 400,
 					reasonPhrase: "Bad Request",
-					description: "penName exist",
-					errorCode: 2002
+					description: "this item cannot be empty can't be void",
+					errorCode: 2006
 				};
 				return ;
 			}
-		}
 
-		if (username) {
 			let isUsernameExist = (yield User.find({
 				where: {
 					username: username
@@ -295,17 +290,70 @@ router.put("/:id",
 				};
 				return ;
 			}
+
+			updater.username = username;
+		}
+
+		if ("penName" in body) {
+			penName = body.penName;
+
+			if (!penName) {
+				this.status = 400;
+				this.body = {
+					statusCode: 400,
+					reasonPhrase: "Bad Request",
+					description: "this item cannot be empty can't be void",
+					errorCode: 2006
+				};
+				return ;
+			}
+
+			let isPenNameExist = (yield User.find({
+				where: {
+					pen_name: penName
+				}
+			})) === null ? false : true;
+
+			if (isPenNameExist) {
+				this.status = 400;
+				this.body = {
+					statusCode: 400,
+					reasonPhrase: "Bad Request",
+					description: "penName exist",
+					errorCode: 2002
+				};
+				return ;
+			}
+
+			updater.penName = penName;
+		}
+
+		if ("password" in body) {
+			password = body.password;
+
+			if (!password) {
+				this.status = 400;
+				this.body = {
+					statusCode: 400,
+					reasonPhrase: "Bad Request",
+					description: "this item cannot be empty can't be void",
+					errorCode: 2006
+				};
+				return ;
+			}
+
+			updater.password = MD5(password);
+		}
+
+		if ("introduce" in body) {
+			introduce = body.introduce;
+			updater.introduce = introduce;
 		}
 
 		let transaction = yield sequelize.transaction();
 
 		try {
-			yield user.update({
-				username: username,
-				pen_name: penName,
-				password: password,
-				introduce: introduce
-			}, {
+			yield user.update(updater, {
 				transaction: transaction
 			});
 
@@ -333,152 +381,7 @@ router.put("/:id",
 	}
 );
 
-// update user's username
-router.put("/:id/username",
-	verifyToken,
-	getIdentity,
-	permissionsFilter({
-		or: ["update_users", "update_private_users"]
-	}),
-	checkUser,
-	function* (next) {
-		// check user
-		let user = this.user;
-
-		let body = yield parse.form(this);
-
-		let username = body.username;
-
-		if (!username) {
-			// username can not be void
-			return ;
-		}
-
-		let isUsernameExist = (yield User.find({
-			where: {
-				username: username
-			}
-		})) === null ? false : true;
-
-		// 如果存在
-		if (isUsernameExist) {
-			this.body = {
-				statusCode: 400,
-				reasonPhrase: "Bad Request",
-				description: "username excists",
-				errorCode: 2001
-			};
-
-			return ;
-		}
-
-		let transaction = sequelize.transaction();
-
-		try {
-			yield user.update({
-				username: username
-			}, {
-				transaction: transaction
-			});
-
-			transaction.commit();
-
-			this.body = {
-				statusCode: 200,
-				reasonPhrase: "OK",
-				description: "update user's username failed",
-			};
-
-			return ;
-		}
-		catch (e) {
-			transaction.rollback();
-
-			this.body = {
-				statusCode: 500,
-				reasonPhrase: "Internal Server Error",
-				description: "update user's username failed",
-				errorCode: 2008
-			};
-			return ;
-		}
-	}
-);
-
-// update user's password
-router.put("/:id/password",
-	verifyToken,
-	getIdentity,
-	permissionsFilter({
-		or: ["update_users", "update_private_users"]
-	}),
-	checkUser,
-	function* (next) {
-		//  check user excist
-		let user = this.user;
-
-		let body = yield parse.form(this);
-
-		let password = body.password;
-
-		if (!password) {
-			// password can not be void
-			this.status = 400;
-			this.body = {
-				statusCode: 400,
-				reasonPhrase: "Bad Request",
-				description: "password can't be void",
-				errorCode: 2006
-			};
-			return ;
-		}
-
-		let transaction = yield sequelize.transaction();
-
-		try {
-			yield user.update({
-				password: password
-			}, {
-				transaction: transaction
-			});
-
-			transaction.commit();
-
-			this.body = {
-				statusCode: 200,
-				reasonPhrase: "OK",
-				description: "update user's password succeed"
-			};
-			return ;
-		}
-		catch (e) {
-			transaction.rollback();
-
-			this.status = 500;
-			this.body = {
-				statusCode: 500,
-				reasonPhrase: "Internal Server Error",
-				description: "update user's password failed",
-				errorCode: 2007
-			};
-			return ;
-		}
-	}
-);
-
-//update user's pen_name
-router.put("/:id/penName",
-	verifyToken,
-	getIdentity,
-	permissionsFilter({
-		or: ["update_users", "update_private_users"]
-	}),
-	function* (next) {
-
-	}
-);
-
-// promote user's permission, author -> root 
+// promote user's permission, author -> root
 router.put("/:id/groupdId",
 	verifyToken,
 	getIdentity,
@@ -507,7 +410,7 @@ router.delete("/:id",
 	}),
 	checkUser,
 	function* (next) {
-		// check user
+		// get user from checkUser
 		let user = this.user;
 		let id = user.id;
 
@@ -538,7 +441,7 @@ router.delete("/:id",
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
 				description: "delete user failed",
-				errorCode: 2011
+				errorCode: 2008
 			};
 			return ;
 		}

@@ -187,7 +187,7 @@ describe("Test the /authors", function () {
             done();
         });
     });
-	
+
 	// 2001
     it("create user (use root account) but username exist must be failed", function (done) {
 		request({
@@ -209,7 +209,7 @@ describe("Test the /authors", function () {
 			done();
         });
 	});
-	
+
 	// 2002
 	it("create user (use root account) but penName exist must be failed", function (done) {
 		request({
@@ -231,7 +231,7 @@ describe("Test the /authors", function () {
 			done();
         });
 	});
-	
+
 	// 2003
 	it("create user (use root account) but group don't exists must be failed", function (done) {
 		request({
@@ -253,10 +253,62 @@ describe("Test the /authors", function () {
 			done();
         });
 	});
-	
+
 	// 2006
-	it("update a temp account's password with password is void must be failed", function (done) {
-		
+	it("update a temp account's username when username is void must be failed", function (done) {
+        request({
+            method: "PUT",
+            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + root.id),
+            form: {
+                username: ""
+            },
+            headers: {
+                Authorization: "jwt " + root.token
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 400);
+			assert.strictEqual(JSON.parse(body).errorCode, 2006);
+			done();
+        });
+	});
+
+    // 2006
+    it("update a temp account's penName when penName is void must be failed", function (done) {
+        request({
+            method: "PUT",
+            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + root.id),
+            form: {
+                penName: ""
+            },
+            headers: {
+                Authorization: "jwt " + root.token
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 400);
+			assert.strictEqual(JSON.parse(body).errorCode, 2006);
+			done();
+        });
+	});
+
+    // 2006
+    it("update a temp account's password when password is void must be failed", function (done) {
+        request({
+            method: "PUT",
+            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + root.id),
+            form: {
+                password: ""
+            },
+            headers: {
+                Authorization: "jwt " + root.token
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 400);
+			assert.strictEqual(JSON.parse(body).errorCode, 2006);
+			done();
+        });
 	});
 
     // 1001
@@ -434,6 +486,4 @@ describe("Test the /authors", function () {
             done();
         });
     });
-
-    
 });
