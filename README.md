@@ -28,7 +28,7 @@ This web app dependent on Node.js, MySQL, Redis.
 
 GET
 
-/authors
+/users
 
 GET
 
@@ -56,7 +56,7 @@ GET
 
 <br/>
 
-##### router /authors
+##### router /users
 | error code | description |
 | ---------- | ----------- |
 | 2000 | username, password, penName, groupName is required (when create new user, but some info dont included in request body) |
