@@ -2,17 +2,18 @@
     "app": {
         "protocol": "http",
         "host": "localhost",
-        "port": 8080,
-        "jwt": {
-            "cert": "koaBlog"
-        }
+        "port": 8080
+    },
+    "jwt": {
+        "cert": "koaBlog"
     },
     "users": {
         "root": [
             {
                 "id": 1,
                 "username": "dzxx0563zh@126.com",
-                "password": "123456"
+                "password": "123456",
+				"penName": "Summer"
             }
         ],
         "author": [

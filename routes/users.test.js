@@ -21,8 +21,7 @@ describe("Test the /authors", function () {
         id: -1,
         username: "",
         password: "",
-		penName: "",
-        groupName: "",
+        groupName: "root",
         token: ""
     };
 
@@ -43,8 +42,6 @@ describe("Test the /authors", function () {
         root.username = configs.users.root[0].username;
         root.password = configs.users.root[0].password;
         root.id = configs.users.root[0].id;
-		root.groupName = "root";
-		root.penName = configs.users.root[0].penName;
         done();
     });
 
@@ -103,6 +100,29 @@ describe("Test the /authors", function () {
             done();
         });
     });
+	
+	// 2001
+    it("create user (use root account) but username exist must be failed", function (done) {
+		request({
+            method: "POST",
+            url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
+            form: {
+                username: root.username,
+                password: root.password,
+                penName: root.penName,
+                groupName: root.groupName
+            },
+            headers: {
+                Authorization: "jwt " + root.token
+            }
+        }, function (error, response, body) {
+            temp.id = JSON.parse(body).userId;
+            assert.strictEqual(typeof temp.id, "number");
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 200);
+            done();
+        });
+	});
 
     // 2000
     it("create a user without username must be failed", function (done) {
@@ -187,77 +207,6 @@ describe("Test the /authors", function () {
             done();
         });
     });
-	
-	// 2001
-    it("create user (use root account) but username exist must be failed", function (done) {
-		request({
-            method: "POST",
-            url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
-            form: {
-                username: root.username,
-                password: root.password,
-                penName: ":>?:{>?>",
-                groupName: root.groupName
-            },
-            headers: {
-                Authorization: "jwt " + root.token
-            }
-        }, function (error, response, body) {
-            assert.strictEqual(error, null);
-            assert.strictEqual(response.statusCode, 400);
-			assert.strictEqual(JSON.parse(body).errorCode, 2001);
-			done();
-        });
-	});
-	
-	// 2002
-	it("create user (use root account) but penName exist must be failed", function (done) {
-		request({
-            method: "POST",
-            url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
-            form: {
-                username: "123123()(())(()",
-                password: root.password,
-                penName: root.penName,
-                groupName: root.groupName
-            },
-            headers: {
-                Authorization: "jwt " + root.token
-            }
-        }, function (error, response, body) {
-            assert.strictEqual(error, null);
-            assert.strictEqual(response.statusCode, 400);
-			assert.strictEqual(JSON.parse(body).errorCode, 2002);
-			done();
-        });
-	});
-	
-	// 2003
-	it("create user (use root account) but group don't exists must be failed", function (done) {
-		request({
-            method: "POST",
-            url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
-            form: {
-                username: "123123()(())(()",
-                password: root.password,
-                penName: "123sgfsdfgaeaweafd",
-                groupName: "nmb"
-            },
-            headers: {
-                Authorization: "jwt " + root.token
-            }
-        }, function (error, response, body) {
-            assert.strictEqual(error, null);
-            assert.strictEqual(response.statusCode, 400);
-			assert.strictEqual(JSON.parse(body).errorCode, 2003);
-			done();
-        });
-	});
-	
-	// 2006
-	it("update a temp account's password with password is void must be failed", function (done) {
-		
-	});
 
     // 1001
     it("create user with wrong token must be failed", function (done) {

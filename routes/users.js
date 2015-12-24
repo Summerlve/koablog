@@ -123,10 +123,10 @@ router.post("/",
 		let username = body.username;
 		let password = body.password;
 		let penName = body.penName;
+		let groupName = body.groupName;
 		let avatar = body.avatar;
 		let introduce = body.introduce;
-		let groupName = body.groupName;
-
+		
 		if (!username || !password || !penName || !groupName) {
 			this.status = 400;
 			this.body = {
@@ -333,67 +333,6 @@ router.put("/:id",
 	}
 );
 
-// update user's password
-router.put("/:id/password",
-	verifyToken,
-	getIdentity,
-	permissionsFilter({
-		or: ["update_users", "update_private_users"]
-	}),
-	checkUser,
-	function* (next) {
-		//  check user excist
-		let user = this.user;
-
-		let body = yield parse.form(this);
-
-		let password = body.password;
-
-		if (!password) {
-			// password can not be void
-			this.status = 400;
-			this.body = {
-				statusCode: 400,
-				reasonPhrase: "Bad Request",
-				description: "password can't be void",
-				errorCode: 2006
-			};
-			return ;
-		}
-
-		let transaction = yield sequelize.transaction();
-
-		try {
-			yield user.update({
-				password: password
-			}, {
-				transaction: transaction
-			});
-
-			transaction.commit();
-
-			this.body = {
-				statusCode: 200,
-				reasonPhrase: "OK",
-				description: "update user's password succeed"
-			};
-			return ;
-		}
-		catch (e) {
-			transaction.rollback();
-
-			this.status = 500;
-			this.body = {
-				statusCode: 500,
-				reasonPhrase: "Internal Server Error",
-				description: "update user's password failed",
-				errorCode: 2007
-			};
-			return ;
-		}
-	}
-);
-
 // update user's username
 router.put("/:id/username",
 	verifyToken,
@@ -466,6 +405,67 @@ router.put("/:id/username",
 	}
 );
 
+// update user's password
+router.put("/:id/password",
+	verifyToken,
+	getIdentity,
+	permissionsFilter({
+		or: ["update_users", "update_private_users"]
+	}),
+	checkUser,
+	function* (next) {
+		//  check user excist
+		let user = this.user;
+
+		let body = yield parse.form(this);
+
+		let password = body.password;
+
+		if (!password) {
+			// password can not be void
+			this.status = 400;
+			this.body = {
+				statusCode: 400,
+				reasonPhrase: "Bad Request",
+				description: "password can't be void",
+				errorCode: 2006
+			};
+			return ;
+		}
+
+		let transaction = yield sequelize.transaction();
+
+		try {
+			yield user.update({
+				password: password
+			}, {
+				transaction: transaction
+			});
+
+			transaction.commit();
+
+			this.body = {
+				statusCode: 200,
+				reasonPhrase: "OK",
+				description: "update user's password succeed"
+			};
+			return ;
+		}
+		catch (e) {
+			transaction.rollback();
+
+			this.status = 500;
+			this.body = {
+				statusCode: 500,
+				reasonPhrase: "Internal Server Error",
+				description: "update user's password failed",
+				errorCode: 2007
+			};
+			return ;
+		}
+	}
+);
+
 //update user's pen_name
 router.put("/:id/penName",
 	verifyToken,
@@ -478,7 +478,7 @@ router.put("/:id/penName",
 	}
 );
 
-//promote user's permission
+// promote user's permission, author -> root 
 router.put("/:id/groupdId",
 	verifyToken,
 	getIdentity,

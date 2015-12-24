@@ -2,6 +2,8 @@
 const Sequelize = require("sequelize");
 const redis = require("redis");
 const path = require("path");
+
+// load configs.json
 const configs = require("../configs");
 
 /*	database config

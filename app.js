@@ -5,11 +5,11 @@ const app = require("koa")();
 // loading config file and add to global
 require("./configs/configs");
 
-// gzip compress
+// gzip compress open by default
 const compress = require("koa-compress");
 app.use(compress());
 
-// middleware
+// load all handler
 app.use(require("./middlewares/pageNotFound"));
 app.use(require("./middlewares/unauthorized"));
 
