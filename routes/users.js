@@ -114,7 +114,7 @@ router.post("/",
 	verifyToken,
 	getIdentity,
 	permissionsFilter({
-		only: "create_users"
+		and: ["create_users", "read_groups"]
 	}),
 	function* (next) {
 		let body = yield parse.form(this);
@@ -382,7 +382,8 @@ router.put("/:id",
 );
 
 // promote user's permission, author -> root
-router.put("/:id/groupdId",
+// if the user is a member of root yet, here will return the same result when promote permission
+router.put("/:id/groupName",
 	verifyToken,
 	getIdentity,
 	permissionsFilter({
@@ -396,6 +397,28 @@ router.put("/:id/groupdId",
 		let body = yield parse.form(this);
 
 		let groupName = body.groupName;
+
+		// check group whether exist
+		let group = yield Group.find({
+			where: {
+				name: groupName
+			}
+		});
+
+		let hasGroup = group === null ? false : true
+
+		if (!hasGroup) {
+			this.status = 400;
+			this.body = {
+				statusCode: 400,
+				reasonPhrase: "Bad Request",
+				description: "group don't exists",
+				errorCode: 2003
+			};
+			return ;
+		}
+
+		let groupId = group.id;
 
 		let all = yield Group.findAll();
 	}
@@ -429,7 +452,8 @@ router.delete("/:id",
 			this.body = {
 				statusCode: 200,
 				reasonPhrase: "OK",
-				description: "delete user succeed"
+				description: "delete user succeed",
+				userId: user.id
 			};
 			return ;
 		}

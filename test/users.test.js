@@ -16,7 +16,7 @@ const port = configs.app.port;
 const cert = configs.jwt.cert;
 
 describe("Test the /authors", function () {
-    // temp variables for test
+    // group of root
     let root = {
         id: -1,
         username: "",
@@ -26,6 +26,7 @@ describe("Test the /authors", function () {
         token: ""
     };
 
+    // group of author
     let temp = {
         id: -1,
         username: "!@#$%^&*()",
@@ -35,6 +36,7 @@ describe("Test the /authors", function () {
         token: ""
     };
 
+    // some temp token
     let outOfDateToken = "";
     let doNotExistsToken = "";
 
@@ -258,7 +260,7 @@ describe("Test the /authors", function () {
 	it("update a temp account's username when username is void must be failed", function (done) {
         request({
             method: "PUT",
-            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + root.id),
+            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + temp.id),
             form: {
                 username: ""
             },
@@ -274,10 +276,10 @@ describe("Test the /authors", function () {
 	});
 
     // 2006
-    it("update a temp account's penName when penName is void must be failed", function (done) {
+    it("update temp account's penName when penName is void must be failed", function (done) {
         request({
             method: "PUT",
-            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + root.id),
+            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + temp.id),
             form: {
                 penName: ""
             },
@@ -293,10 +295,10 @@ describe("Test the /authors", function () {
 	});
 
     // 2006
-    it("update a temp account's password when password is void must be failed", function (done) {
+    it("update temp account's password when password is void must be failed", function (done) {
         request({
             method: "PUT",
-            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + root.id),
+            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + temp.id),
             form: {
                 password: ""
             },
@@ -307,6 +309,23 @@ describe("Test the /authors", function () {
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 400);
 			assert.strictEqual(JSON.parse(body).errorCode, 2006);
+			done();
+        });
+	});
+
+    it("update root account's introduce must be ok", function (done) {
+        request({
+            method: "PUT",
+            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + root.id),
+            form: {
+                introduce: "update root account's introduce must be ok"
+            },
+            headers: {
+                Authorization: "jwt " + root.token
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 200);
 			done();
         });
 	});
@@ -345,7 +364,7 @@ describe("Test the /authors", function () {
     });
 
     // 1005
-    it("members of group author can not create new user, will return insufficient permission", function (done) {
+    it("members of group author (temp account) can not create new user, will return insufficient permission", function (done) {
         request({
             method: "POST",
             url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
@@ -371,6 +390,7 @@ describe("Test the /authors", function () {
         }, function (error, response, body) {
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 200);
+            assert.strictEqual(JSON.parse(body).userId, temp.id);
             done();
         });
     });
