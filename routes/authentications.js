@@ -18,7 +18,7 @@ const cert = global.jwt.cert;
 const viewsPath = global.path.views;
 
 // middlewares
-const getToken = require("../middlewares/getToken");
+const verifyToken = require("../middlewares/verifyToken");
 
 router.post("/authentications", function* (next) {
 	let body = yield parse.form(this);
@@ -73,7 +73,7 @@ router.post("/authentications", function* (next) {
 
 // 查看token是否过期
 router.put("/authentications",
-	getToken,
+	verifyToken,
 	function* (next) {
 		this.body = {
 
@@ -85,7 +85,7 @@ router.put("/authentications",
 // 注销功能：删除存储在redis里面的token，如果删除成功则通知前端。
 // 当前端和后端都将token删除之后则注销成功。
 router.delete("/authentications",
-	getToken,
+	verifyToken,
 	function* (next) {
 		// 从上一个中间件中获取token。
 		let token = this.token;

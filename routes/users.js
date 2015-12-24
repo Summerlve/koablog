@@ -24,7 +24,7 @@ const render = views(viewsPath, {
 });
 
 // middlewares
-const getToken = require("../middlewares/getToken");
+const verifyToken = require("../middlewares/verifyToken");
 const getIdentity = require("../middlewares/getIdentity");
 const permissionsFilter = require("../middlewares/permissionsFilter");
 const checkUser = require("../middlewares/checkUser");
@@ -111,7 +111,7 @@ router.get("/:id", checkUser, function* (next) {
 
 // create a new user
 router.post("/",
-	getToken,
+	verifyToken,
 	getIdentity,
 	permissionsFilter({
 		only: "create_users"
@@ -238,7 +238,7 @@ router.post("/",
 
 // update a user
 router.put("/:id",
-	getToken,
+	verifyToken,
 	getIdentity,
 	permissionsFilter({
 		or: ["update_users", "update_private_users"]
@@ -335,7 +335,7 @@ router.put("/:id",
 
 // update user's password
 router.put("/:id/password",
-	getToken,
+	verifyToken,
 	getIdentity,
 	permissionsFilter({
 		or: ["update_users", "update_private_users"]
@@ -396,7 +396,7 @@ router.put("/:id/password",
 
 // update user's username
 router.put("/:id/username",
-	getToken,
+	verifyToken,
 	getIdentity,
 	permissionsFilter({
 		or: ["update_users", "update_private_users"]
@@ -468,7 +468,7 @@ router.put("/:id/username",
 
 //update user's pen_name
 router.put("/:id/penName",
-	getToken,
+	verifyToken,
 	getIdentity,
 	permissionsFilter({
 		or: ["update_users", "update_private_users"]
@@ -480,7 +480,7 @@ router.put("/:id/penName",
 
 //promote user's permission
 router.put("/:id/groupdId",
-	getToken,
+	verifyToken,
 	getIdentity,
 	permissionsFilter({
 		and: ["promote_users", "read_groups"]
@@ -500,7 +500,7 @@ router.put("/:id/groupdId",
 
 // delete a user
 router.delete("/:id",
-	getToken,
+	verifyToken,
 	getIdentity,
 	permissionsFilter({
 		only: "delete_users"

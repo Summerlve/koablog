@@ -1,7 +1,7 @@
 "use strict";
 // 将权限拦截器写在外部的中间件中
 // 在needs中的填写很多的权限无外乎两种关系，and 和 or，当然也可以嵌套，当只需满足一个权限的时候就是only
-// 这个中间件需要和getToken和getIdentity配合使用
+// 这个中间件需要和verifyToken和getIdentity配合使用
 
 const PermissionToGroup = require("../models/Permission").PermissionToGroup;
 const Permission = require("../models/Permission").Permission;

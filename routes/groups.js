@@ -3,11 +3,11 @@
 const router = require("koa-router")();
 const Group = require("../models/Group");
 const permissionsFilter = require("../middlewares/permissionsFilter");
-const getToken = require("../middlewares/getToken");
+const verifyToken = require("../middlewares/verifyToken");
 const getIdentity = require("../middlewares/getIdentity");
 
 router.get("/groups",
-    getToken,
+    verifyToken,
 	getIdentity,
     permissionsFilter({
         only: "read_groups"
@@ -21,7 +21,7 @@ router.get("/groups",
 );
 
 router.get("/groups/:id",
-    getToken,
+    verifyToken,
 	getIdentity,
     permissionsFilter({
         only: "read_groups"
@@ -58,7 +58,7 @@ router.get("/groups/:id",
 
 // create a new group
 router.post("/groups",
-    getToken,
+    verifyToken,
     getIdentity,
     permissionsFilter({
         only: "create_groups"
@@ -70,7 +70,7 @@ router.post("/groups",
 
 // update a group
 router.put("/groups",
-    getToken,
+    verifyToken,
     getIdentity,
     permissionsFilter({
         only: "update_groups"
@@ -82,7 +82,7 @@ router.put("/groups",
 
 // delete a group
 router.delete("/groups",
-    getToken,
+    verifyToken,
     getIdentity,
     permissionsFilter({
         only: "delete_groups"

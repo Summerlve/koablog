@@ -20,7 +20,7 @@ const render = views(viewsPath, {
 });
 
 // middlewares
-const getToken = require("../middlewares/getToken");
+const verifyToken = require("../middlewares/verifyToken");
 const getIdentity = require("../middlewares/getIdentity");
 const permissionsFilter = require("../middlewares/permissionsFilter");
 
@@ -182,7 +182,7 @@ router.get("/:id", function* (next) {
 
 // add new article
 router.post("/",
-	getToken,
+	verifyToken,
 	getIdentity,
 	permissionsFilter({
 		and: ["create_articles", "create_tags"]
@@ -243,7 +243,7 @@ router.post("/",
 
 // update an article
 router.put("/:id",
-	getToken,
+	verifyToken,
 	getIdentity,
 	permissionsFilter({
 		and: ["create_tags", { or: ["update_articles", "update_private_articles"] }]
@@ -318,7 +318,7 @@ router.put("/:id",
 
 // delete an article
 router.delete("/:id",
-	getToken,
+	verifyToken,
 	getIdentity,
 	permissionsFilter({
 		or: ["deletet_articles", "delete_private_articles"]
