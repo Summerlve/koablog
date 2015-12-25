@@ -81,3 +81,6 @@ GET
 | ---------- | ----------- |
 | 4000 | add tag fialed (In most cases, this is a server error) |
 | 4001 | tag do not exists (when delete or update a tag, but tag do not exists) |
+| 4002 | tag's name can not be void (when update a tag's info set the tag's name to void will trigger this error) |
+| 4003 | update tag failed (In most cases, this is a server error) |
+| 4004 | delete tag failed (In most cases, this is a server error) |

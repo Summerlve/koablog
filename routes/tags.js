@@ -1,9 +1,13 @@
 "use strict";
+// set router
 const router = require("koa-router")();
 const prefix = "/tags";
 router.prefix(prefix);
+
+// import module
 const Tag = require("../models/Tag");
 const views = require("co-views");
+const sequelize = global.sequelize;
 
 // path
 const viewsPath = global.path.views;
@@ -135,8 +139,50 @@ router.put("/:id",
 		let body = yield parse.form(this);
 		let name = body.name;
 
+		if (!name) {
+			this.status = 400;
+			this.body = {
+				statusCode: 400,
+				reasonPhrase: "Bad Request",
+				description: "tag's name can not be void",
+				errorCode: 4002
+			};
+			return ;
+		}
+
 		// get target tag from checkTag
 		let tag = this.tag;
+
+		let transaction = sequelize.transaction();
+
+		try {
+			yield tag.update({
+				name: name
+			}, {
+				transaction: transaction
+			});
+
+			transaction.commit();
+
+			this.body = {
+				statusCode: 200,
+				reasonPhrase: "OK",
+				description: "update tag succeed"
+			};
+			return ;
+		}
+		catch (error) {
+			transaction.rollback();
+
+			this.status = 500;
+			this.body = {
+				statusCode: 500,
+				reasonPhrase: "Internal Server Error",
+				description: "update tag failed",
+				errorCode: 4003
+			};
+			return ;
+		}
 	}
 );
 
@@ -149,7 +195,41 @@ router.delete("/:id",
 	}),
 	checkTag,
 	function* (next) {
+		let tag = this.tag;
+		let id = tag.id;
 
+		let transaction = yield sequelize.transaction();
+
+		try {
+			yield Tag.destroy({
+				where: {
+					id: id
+				},
+				transaction: transaction
+			});
+
+			transaction.commit();
+
+			this.body = {
+				statusCode: 200,
+				reasonPhrase: "OK",
+				description: "delete tag succeed",
+				tag: id
+			};
+			return ;
+		}
+		catch (error) {
+			transaction.rollback();
+			console.log(error);
+			this.status = 500;
+			this.body = {
+				statusCode: 500,
+				reasonPhrase: "Internal Server Error",
+				description: "delete tag failed",
+				errorCode: 4004
+			};
+			return ;
+		}
 	}
 );
 

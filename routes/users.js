@@ -482,7 +482,7 @@ router.delete("/:id",
 				statusCode: 200,
 				reasonPhrase: "OK",
 				description: "delete user succeed",
-				userId: user.id
+				userId: id
 			};
 			return ;
 		}
