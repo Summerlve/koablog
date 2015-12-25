@@ -18,10 +18,11 @@ describe("Test the /", function () {
             url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
             headers: {
                 "Accept": "text/html"
-            }
+            },
+            followRedirect: false
         }, function (error, response, body) {
             assert.strictEqual(error, null);
-            assert.strictEqual(response.statusCode, 200);
+            assert.strictEqual(response.statusCode, 301);
             done();
         });
     });
