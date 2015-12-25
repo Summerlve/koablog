@@ -84,7 +84,7 @@ describe("Test the /authors", function () {
         });
     });
 
-    it("create a user by right token and all needs info must be ok", function (done) {
+    it("create a user by right token and has all needs info must be ok", function (done) {
         request({
             method: "POST",
             url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
@@ -376,6 +376,46 @@ describe("Test the /authors", function () {
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 401);
             assert.strictEqual(JSON.parse(body).errorCode, 1005);
+            done();
+        });
+    });
+
+    // PUT '/users/:id/group'
+    it("change temp account's group author -> root (use root account's token) must be ok", function (done) {
+        request({
+            method: "PUT",
+            url: util.format("%s://%s:%s%s%s%s", protocol, host, port, routerPrefix, "/" + temp.id, "/group"),
+            form: {
+                groupName: "root"
+            },
+            headers: {
+                Authorization: "jwt " + root.token,
+                Accept: "application/json"
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 200);
+            assert.strictEqual(JSON.parse(body).groupName, "root");
+            done();
+        });
+    });
+
+    // PUT '/users/:id/group'
+    it("change temp account's group by group do not exists (use root account's token) must be failed", function (done) {
+        request({
+            method: "PUT",
+            url: util.format("%s://%s:%s%s%s%s", protocol, host, port, routerPrefix, "/" + temp.id, "/group"),
+            form: {
+                groupName: "nmb"
+            },
+            headers: {
+                Authorization: "jwt " + root.token,
+                Accept: "application/json"
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 400);
+            assert.strictEqual(JSON.parse(body).errorCode, 2003);
             done();
         });
     });

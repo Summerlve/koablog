@@ -381,9 +381,8 @@ router.put("/:id",
 	}
 );
 
-// promote user's permission, author -> root
-// if the user is a member of root yet, here will return the same result when promote permission
-router.put("/:id/groupName",
+// change user's group
+router.put("/:id/group",
 	verifyToken,
 	getIdentity,
 	permissionsFilter({
@@ -391,21 +390,17 @@ router.put("/:id/groupName",
 	}),
 	checkUser,
 	function* (next) {
-		// check user
-		let user = this.user;
-
 		let body = yield parse.form(this);
-
-		let groupName = body.groupName;
+		let targetGroupName = body.groupName;
 
 		// check group whether exist
-		let group = yield Group.find({
+		let targetGroup = yield Group.find({
 			where: {
-				name: groupName
+				name: targetGroupName
 			}
 		});
 
-		let hasGroup = group === null ? false : true
+		let hasGroup = targetGroup === null ? false : true
 
 		if (!hasGroup) {
 			this.status = 400;
@@ -418,9 +413,43 @@ router.put("/:id/groupName",
 			return ;
 		}
 
-		let groupId = group.id;
+		let targetGroupId = targetGroup.id;
 
-		let all = yield Group.findAll();
+		// get user from checkUser
+		let user = this.user;
+
+		let transaction = yield sequelize.transaction();
+
+		try {
+			yield user.update({
+				group_id: targetGroupId
+			}, {
+				transaction: transaction
+			});
+
+			transaction.commit();
+
+			this.body = {
+				statusCode: 200,
+				reasonPhrase: "OK",
+				description: "change user's group succeed",
+				groupId: targetGroupId,
+				groupName: targetGroupName
+			};
+			return ;
+		}
+		catch (e) {
+			transaction.rollback();
+
+			this.status = 500;
+			this.body = {
+				statusCode: 500,
+				reasonPhrase: "Internal Server Error",
+				description: "change user's group failed",
+				errorCode: 2007
+			};
+			return ;
+		}
 	}
 );
 

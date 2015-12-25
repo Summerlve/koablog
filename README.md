@@ -66,7 +66,7 @@ GET
 | 2004 | add user failed (In most cases, this is a server error) |
 | 2005 | update user failed (In most cases, this is a server error) |
 | 2006 | this item cannot be empty can't be void (when update user's username, penName, password) |
-| 2007 | promote user's permission failed (In most cases, this is a server error) |
+| 2007 | change user's group failed (In most cases, this is a server error) |
 | 2008 | delete user failed (In most cases, this is a server error) |
 
 <br/>
