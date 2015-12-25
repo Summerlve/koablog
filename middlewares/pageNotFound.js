@@ -9,7 +9,7 @@ module.exports = function* pageNotFound (next) {
 
 	switch (this.accepts("html", "json")) {
 		case "html":
-			this.body = this.body || "<h1>401 Not Found</h1>";
+			this.body = this.body || "<h1>404 Not Found</h1>";
 			break;
 		case "json":
 			this.body = this.body || {

@@ -192,21 +192,21 @@ router.post("/",
 		let userId = this.userId;
 		let body = yield parse.form(this);
 
-		// create tag if no exist
-		let tag = yield Tag.findOrCreate({
-			where: {
-				name: body.tag
-			}
-		});
-
-		tag = tag[0];
-
-		let tagId = tag.id;
-
 		// start transaction
 		let transaction = yield sequelize.transaction();
 		// create artilce
 		try {
+			// create tag if no exist
+			let tag = yield Tag.findOrCreate({
+				where: {
+					name: body.tag
+				}
+			});
+
+			tag = tag[0];
+
+			let tagId = tag.id;
+
 			yield Article.build({
 				title: body.title,
 				tag_id: tagId,

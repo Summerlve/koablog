@@ -74,4 +74,10 @@ GET
 ##### router /articles
 | error code | description |
 | ---------- | ----------- |
-| 3000 |  |
+| 3000 |  asdfasdfasdf|
+
+##### router /tags
+| error code | description |
+| ---------- | ----------- |
+| 4000 | add tag fialed (In most cases, this is a server error) |
+| 4001 | tag do not exists (when delete or update a tag, but tag do not exists) |

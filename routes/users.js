@@ -23,7 +23,7 @@ const render = views(viewsPath, {
 	}
 });
 
-// middlewares
+// import middlewares
 const verifyToken = require("../middlewares/verifyToken");
 const getIdentity = require("../middlewares/getIdentity");
 const permissionsFilter = require("../middlewares/permissionsFilter");
@@ -386,7 +386,7 @@ router.put("/:id/group",
 	verifyToken,
 	getIdentity,
 	permissionsFilter({
-		and: ["promote_users", "read_groups"]
+		only: "promote_users"
 	}),
 	checkUser,
 	function* (next) {

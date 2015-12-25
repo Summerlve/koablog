@@ -15,7 +15,7 @@ const host = configs.app.host;
 const port = configs.app.port;
 const cert = configs.jwt.cert;
 
-describe("Test the /authors", function () {
+describe("Test the /users", function () {
     // group of root
     let root = {
         id: -1,

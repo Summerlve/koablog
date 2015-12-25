@@ -1,23 +1,22 @@
 "use strict";
-// check whether user exists
-const User = require("../models/User");
+const Tag = require("../models/Tag");
 
-module.exports = function* checkUser (next) {
+module.exports = function* checkTag (next) {
     let id = parseInt(this.params.id, 10);
 
-	if (isNaN(id)) {
-		this.status = 404;
-		return ;
-	}
+    if (isNaN(id)) {
+        this.status = 404;
+        return ;
+    }
 
-	let user = yield User.find({
-        attributes: ["id", "username", "pen_name", "introduce", "avatar", "group_id"],
-		where: {
-			id: id
-		}
-	});
+    let tag = yield Tag.find({
+        attributes: ["id", "name"],
+        where: {
+            id: id
+        }
+    });
 
-	if (user === null) {
+    if (tag === null) {
         switch (this.accepts("json", "html")) {
             case "html": {
                 this.status = 404;
@@ -28,7 +27,7 @@ module.exports = function* checkUser (next) {
                 this.body = {
                     statusCode: 404,
 					reasonPhrase: "Not Found",
-					description: "user dont exists"
+					description: "tag dont exists"
                 };
                 return ;
             }break;
@@ -38,10 +37,10 @@ module.exports = function* checkUser (next) {
     			return ;
             }
         }
-	}
+    }
 
     // add to context
-    this.user = user;
-
+    this.tag = tag;
+    
     yield next;
 };
