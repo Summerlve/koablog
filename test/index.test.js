@@ -16,11 +16,12 @@ describe("Test the /", function () {
         request({
             method: "GET",
             url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
-
+            headers: {
+                "Accept": "text/html"
+            }
         }, function (error, response, body) {
-            console.log(body);
             assert.strictEqual(error, null);
-            assert.strictEqual(response.statusCode, 301);
+            assert.strictEqual(response.statusCode, 200);
             done();
         });
     });
