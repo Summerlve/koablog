@@ -83,3 +83,4 @@ GET
 | 4001 | tag's name can not be void (when update a tag's info or create a new tag but the tag's name to void will trigger this error) |
 | 4002 | update tag failed (In most cases, this is a server error) |
 | 4003 | delete tag failed (In most cases, this is a server error) |
+| 4004 | this tag name already exists (when update or create) |

@@ -79,7 +79,7 @@ describe("Test the /tags", function () {
             method: "POST",
             url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
             form: {
-                name: "*"
+                name: ""
             },
             headers: {
                 Authorization: "jwt " + root.token
@@ -98,12 +98,13 @@ describe("Test the /tags", function () {
             method: "POST",
             url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
             form: {
-                name: "*()*&&*())??>"
+                tagName: "*()*&&*())??>"
             },
             headers: {
                 Authorization: "jwt " + root.token
             }
         }, function (error, response, body) {
+            console.log(body);
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 200);
             tempTag.id = JSON.parse(body).tagId;
@@ -118,7 +119,7 @@ describe("Test the /tags", function () {
             method: "PUT",
             url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + tempTag.id),
             form: {
-                name: "*()*&&*())??>"
+                tagName: "*()*&&*())??>"
             },
             headers: {
                 Authorization: "jwt " + root.token
@@ -132,9 +133,39 @@ describe("Test the /tags", function () {
         });
     });
 
+    // change temp tag's name, but name already exists
+    it("update temp tag's name but name already exists must be failed", function (done) {
+        request({
+            method: "PUT",
+            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + tempTag.id),
+            form: {
+                tagName: "*()*&&*())??>"
+            },
+            headers: {
+                Authorization: "jwt " + root.token
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 400);
+            assert.strictEqual(JSON.parse(body).errorCode, 4004);
+            done();
+        });
+    });
+
     // delete temp tag
     it("delete temp tag must be ok", function (done) {
-
+        request({
+            method: "DELETE",
+            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + tempTag.id),
+            headers: {
+                Authorization: "jwt " + root.token
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 200);
+            assert.strictEqual(JSON.parse(body).tagId, tempTag.id);
+            done();
+        });
     });
 
     // log out root account

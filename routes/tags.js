@@ -7,6 +7,7 @@ router.prefix(prefix);
 // import module
 const Tag = require("../models/Tag");
 const views = require("co-views");
+const parse = require("co-body");
 const sequelize = global.sequelize;
 
 // path
@@ -109,6 +110,8 @@ router.post("/",
 				where: {
 					name: tagName
 				}
+			}, {
+				transaction: transaction
 			});
 
 			tag = tag[0];
@@ -158,6 +161,24 @@ router.put("/:id",
 				reasonPhrase: "Bad Request",
 				description: "tag's name can not be void",
 				errorCode: 4001
+			};
+			return ;
+		}
+
+		// check this tagName whether exists
+		let hasTag = (yield Tag.find({
+			where: {
+				name: tagName
+			}
+		})) === null ? false : true;
+
+		if (hasTag) {
+			this.status = 400;
+			this.body = {
+				statusCode: 400,
+				reasonPhrase: "Bad Request",
+				description: "this tag name already exists",
+				errorCode: 4004
 			};
 			return ;
 		}
@@ -226,7 +247,7 @@ router.delete("/:id",
 				statusCode: 200,
 				reasonPhrase: "OK",
 				description: "delete tag succeed",
-				tag: id
+				tagId: id
 			};
 			return ;
 		}
