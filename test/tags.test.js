@@ -7,7 +7,7 @@ const util = require("util");
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
 
-// some info
+// configs
 const routerPrefix = "/tags";
 const authentications = "/authentications";
 const protocol = configs.app.protocol;
@@ -58,7 +58,7 @@ describe("Test the /tags", function () {
         });
     });
 
-    // 404
+    // delete failed
     it("delete a tag that do not exists (id is very large) must be failed", function (done) {
         request({
             method: "DELETE",
@@ -73,7 +73,7 @@ describe("Test the /tags", function () {
         });
     });
 
-    // create tag failed
+    // 4001 create tag failed
     it("create a new tag with name void must be failed", function (done) {
         request({
             method: "POST",
@@ -104,7 +104,6 @@ describe("Test the /tags", function () {
                 Authorization: "jwt " + root.token
             }
         }, function (error, response, body) {
-            console.log(body);
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 200);
             tempTag.id = JSON.parse(body).tagId;
@@ -113,27 +112,7 @@ describe("Test the /tags", function () {
         });
     });
 
-    // change temp tag's name
-    it("update temp tag's name must be ok", function (done) {
-        request({
-            method: "PUT",
-            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + tempTag.id),
-            form: {
-                tagName: "*()*&&*())??>"
-            },
-            headers: {
-                Authorization: "jwt " + root.token
-            }
-        }, function (error, response, body) {
-            assert.strictEqual(error, null);
-            assert.strictEqual(response.statusCode, 200);
-            tempTag.id = JSON.parse(body).tagId;
-            assert.strictEqual(typeof tempTag.id, "number");
-            done();
-        });
-    });
-
-    // change temp tag's name, but name already exists
+    // 4004 change temp tag's name, but name already exists
     it("update temp tag's name but name already exists must be failed", function (done) {
         request({
             method: "PUT",
@@ -148,6 +127,24 @@ describe("Test the /tags", function () {
             assert.strictEqual(error, null);
             assert.strictEqual(response.statusCode, 400);
             assert.strictEqual(JSON.parse(body).errorCode, 4004);
+            done();
+        });
+    });
+
+    // change temp tag's name
+    it("update temp tag's name must be ok", function (done) {
+        request({
+            method: "PUT",
+            url: util.format("%s://%s:%s%s%s", protocol, host, port, routerPrefix, "/" + tempTag.id),
+            form: {
+                tagName: "*()*&&*())??>......"
+            },
+            headers: {
+                Authorization: "jwt " + root.token
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 200);
             done();
         });
     });

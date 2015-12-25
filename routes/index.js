@@ -3,6 +3,6 @@
 const router = require("koa-router")();
 
 // redirect '/' to the '/articles'
-router.redirect("/", "/users");
+router.redirect("/", "/articles");
 
 module.exports = router.routes();

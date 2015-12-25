@@ -208,7 +208,9 @@ router.post("/",
 				introduce: body.introduce || undefined,
 				group_id: groupId
 			})
-			.save();
+			.save({
+				transaction: transaction
+			});
 
 			transaction.commit();
 

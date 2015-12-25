@@ -102,15 +102,14 @@ router.post("/",
 			return ;
 		}
 
-		let transaction = sequelize.transaction();
+		let transaction = yield sequelize.transaction();
 
 		try {
 			// create tag if no exist
 			let tag = yield Tag.findOrCreate({
 				where: {
 					name: tagName
-				}
-			}, {
+				},
 				transaction: transaction
 			});
 
@@ -129,6 +128,7 @@ router.post("/",
 			return ;
 		}
 		catch (error) {
+			console.error(error);
 			transaction.rollback();
 
 			this.status = 500;
@@ -186,7 +186,7 @@ router.put("/:id",
 		// get target tag from checkTag
 		let tag = this.tag;
 
-		let transaction = sequelize.transaction();
+		let transaction = yield sequelize.transaction();
 
 		try {
 			yield tag.update({

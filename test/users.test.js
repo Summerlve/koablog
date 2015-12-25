@@ -1,5 +1,5 @@
 "use strict";
-// test router '/authors' and '/authentications'
+// test router '/users' and '/authentications'
 const request = require("request");
 const configs = require("./configs.json");
 const assert = require("assert");
@@ -7,7 +7,7 @@ const util = require("util");
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
 
-// some info
+// configs
 const routerPrefix = "/users";
 const authentications = "/authentications";
 const protocol = configs.app.protocol;
