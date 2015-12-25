@@ -79,6 +79,7 @@ router.get("/:id", checkTag, function* (next) {
 	}
 });
 
+// create tag
 router.post("/",
 	verifyToken,
 	getIdentity,
@@ -87,7 +88,18 @@ router.post("/",
 	}),
 	function* (next) {
 		let body = yield parse.form(this);
-		let tagName = body.tag;
+		let tagName = body.tagName;
+
+		if (!tagName) {
+			this.status = 400;
+			this.body = {
+				statusCode: 400,
+				reasonPhrase: "Bad Request",
+				description: "tag's name can not be void",
+				errorCode: 4001
+			};
+			return ;
+		}
 
 		let transaction = sequelize.transaction();
 
@@ -137,15 +149,15 @@ router.put("/:id",
 	checkTag,
 	function* (next) {
 		let body = yield parse.form(this);
-		let name = body.name;
+		let tagName = body.tagName;
 
-		if (!name) {
+		if (!tagName) {
 			this.status = 400;
 			this.body = {
 				statusCode: 400,
 				reasonPhrase: "Bad Request",
 				description: "tag's name can not be void",
-				errorCode: 4002
+				errorCode: 4001
 			};
 			return ;
 		}
@@ -157,7 +169,7 @@ router.put("/:id",
 
 		try {
 			yield tag.update({
-				name: name
+				name: tagName
 			}, {
 				transaction: transaction
 			});
@@ -179,7 +191,7 @@ router.put("/:id",
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
 				description: "update tag failed",
-				errorCode: 4003
+				errorCode: 4002
 			};
 			return ;
 		}
@@ -226,7 +238,7 @@ router.delete("/:id",
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
 				description: "delete tag failed",
-				errorCode: 4004
+				errorCode: 4003
 			};
 			return ;
 		}

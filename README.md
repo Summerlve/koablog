@@ -62,7 +62,7 @@ GET
 | 2000 | username, password, penName, groupName is required and must be not void (when create new user, but some info dont included in request body) |
 | 2001| username exists (want to update username or create new user, but the username is exist, so failed) |
 | 2002 | penName exists (want to update penName or create new user, but the penName is exist, so failed) |
-| 2003 | group don't exists (accroding to group's name) |
+| 2003 | group don't exists |
 | 2004 | add user failed (In most cases, this is a server error) |
 | 2005 | update user failed (In most cases, this is a server error) |
 | 2006 | this item cannot be empty can't be void (when update user's username, penName, password) |
@@ -80,7 +80,6 @@ GET
 | error code | description |
 | ---------- | ----------- |
 | 4000 | add tag fialed (In most cases, this is a server error) |
-| 4001 | tag do not exists (when delete or update a tag, but tag do not exists) |
-| 4002 | tag's name can not be void (when update a tag's info set the tag's name to void will trigger this error) |
-| 4003 | update tag failed (In most cases, this is a server error) |
-| 4004 | delete tag failed (In most cases, this is a server error) |
+| 4001 | tag's name can not be void (when update a tag's info or create a new tag but the tag's name to void will trigger this error) |
+| 4002 | update tag failed (In most cases, this is a server error) |
+| 4003 | delete tag failed (In most cases, this is a server error) |
