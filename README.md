@@ -76,6 +76,8 @@ GET
 | ---------- | ----------- |
 | 3000 |  asdfasdfasdf|
 
+<br/>
+
 ##### router /tags
 | error code | description |
 | ---------- | ----------- |
@@ -84,3 +86,10 @@ GET
 | 4002 | update tag failed (In most cases, this is a server error) |
 | 4003 | delete tag failed (In most cases, this is a server error) |
 | 4004 | this tag name already exists (when update or create) |
+
+<br/>
+
+##### router /groups
+| error code | description |
+| ---------- | ----------- |
+| 5000 | asdfadfadf|

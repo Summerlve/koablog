@@ -1,10 +1,15 @@
 "use strict";
-
+// set router
 const router = require("koa-router")();
-const Group = require("../models/Group");
+
+// import module
 const permissionsFilter = require("../middlewares/permissionsFilter");
 const verifyToken = require("../middlewares/verifyToken");
 const getIdentity = require("../middlewares/getIdentity");
+const checkGroup = require("../middlewares/checkGroup");
+const Group = require("../models/Group");
+const parse = require("co-body");
+const sequelize = global.sequelize;
 
 router.get("/groups",
     verifyToken,
@@ -64,6 +69,32 @@ router.post("/groups",
         only: "create_groups"
     }),
     function* (next) {
+        let body = yield parse.form(this);
+
+        let groupName = body.groupName;
+        let description = body.description;
+
+        if (!groupName) {
+            // groupName can not be void
+        }
+
+        let transaction = yield sequelize.transaction();
+
+        try {
+            let group = yield Group.build({
+                name: groupName,
+                description: description
+            })
+            .save({
+                transaction: transaction
+            });
+
+            transaction.commit();
+        }
+        catch (error) {
+            console.error(eroor);
+            transaction.rollback();
+        }
 
     }
 );
@@ -75,6 +106,7 @@ router.put("/groups",
     permissionsFilter({
         only: "update_groups"
     }),
+    checkGroup,
     function* (next) {
 
     }
@@ -87,8 +119,12 @@ router.delete("/groups",
     permissionsFilter({
         only: "delete_groups"
     }),
+    checkGroup,
     function* (next) {
+        // get group from checkGroup
+        let group = this.group;
 
+        
     }
 );
 
