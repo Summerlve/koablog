@@ -56,6 +56,20 @@ describe("Test the /groups", function () {
         });
     });
 
+    it("get all of groups must be ok", function (done) {
+        request({
+            method: "GET",
+            url: util.format("%s://%s:%s%s", protocol, host, port, routerPrefix),
+            headers: {
+                Authorization: "jwt " + root.token
+            }
+        }, function (error, response, body) {
+            assert.strictEqual(error, null);
+            assert.strictEqual(response.statusCode, 200);
+            done();
+        });
+    });
+
     // create a new group
     it("create group must be ok", function (done) {
         request({
