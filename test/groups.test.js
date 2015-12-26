@@ -12,3 +12,9 @@ const authentications = "/authentications";
 const protocol = configs.app.protocol;
 const host = configs.app.host;
 const port = configs.app.port;
+
+description("Test the /groups", function () {
+    it("", function (done) {
+
+    });
+});

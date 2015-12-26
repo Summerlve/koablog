@@ -90,10 +90,13 @@ GET
 <br/>
 
 ##### router /groups
-| error code | description |
-| ---------- | ----------- |
-| 5000 | groupName can not be void (when create or update) |
-| 5001 | this group name already exists (when update or create) |
-｜ 5002 ｜ create group failed (In most cases, this is a server error) |
-| 5003 | update group failed(In most cases, this is a server error) |
-| 5004 | delete group failed (In most cases, this is a server error) |
+| error code | description                                                 |
+| ---------- | -----------                                                 |
+| 5000       | groupName can not be void (when create or update)           |
+| 5001       | this group name already exists (when update or create)      |
+| 5002       | create group failed (In most cases, this is a server error) |
+| 5003       | update group failed(In most cases, this is a server error)  |
+| 5004       | delete group failed (In most cases, this is a server error) |
+
+<br/>
+
