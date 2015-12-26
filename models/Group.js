@@ -5,9 +5,10 @@ const sequelize = global.sequelize;
 let Group = sequelize.define("koablog_group", {
 	id: {
 		type: Sequelize.INTEGER(11),
-		primaryKey: true,
 		allowNull: false,
 		unique: true,
+		primaryKey: true,
+		autoIncrement: true,
 		field: "id"
 	},
 	name: {

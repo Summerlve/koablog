@@ -1,6 +1,8 @@
 "use strict";
 // set router
 const router = require("koa-router")();
+const prefix = "/groups"; // router's prefix
+router.prefix(prefix); // set router's prefix
 
 // import module
 const permissionsFilter = require("../middlewares/permissionsFilter");
@@ -11,7 +13,7 @@ const Group = require("../models/Group");
 const parse = require("co-body");
 const sequelize = global.sequelize;
 
-router.get("/groups",
+router.get("/",
     verifyToken,
 	getIdentity,
     permissionsFilter({
@@ -25,7 +27,7 @@ router.get("/groups",
     }
 );
 
-router.get("/groups/:id",
+router.get("/:id",
     verifyToken,
 	getIdentity,
     permissionsFilter({
@@ -62,7 +64,7 @@ router.get("/groups/:id",
 );
 
 // create a new group
-router.post("/groups",
+router.post("/",
     verifyToken,
     getIdentity,
     permissionsFilter({
@@ -83,6 +85,7 @@ router.post("/groups",
 				description: "groupName can not be void",
 				errorCode: 5000
 			};
+            return ;
         }
 
         let hasGroup = (yield Group.find({
@@ -114,9 +117,17 @@ router.post("/groups",
             });
 
             transaction.commit();
+
+			this.body = {
+				statusCode: 200,
+				reasonPhrase: "OK",
+                description: "create group succeed",
+                groupId: group.id
+			};
+			return ;
         }
         catch (error) {
-            console.error(eroor);
+            console.error(error);
             transaction.rollback();
 
             this.status = 500;
@@ -132,7 +143,7 @@ router.post("/groups",
 );
 
 // update a group
-router.put("/groups",
+router.put("/:id",
     verifyToken,
     getIdentity,
     permissionsFilter({
@@ -156,7 +167,7 @@ router.put("/groups",
 
         let hasGroup = (yield Group.find({
 			where: {
-				name: tagName
+				name: groupName
 			}
 		})) === null ? false : true;
 
@@ -207,7 +218,7 @@ router.put("/groups",
 );
 
 // delete a group
-router.delete("/groups",
+router.delete("/:id",
     verifyToken,
     getIdentity,
     permissionsFilter({

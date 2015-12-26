@@ -10,7 +10,7 @@ module.exports = function* checkGroup (next) {
     }
 
     let group = yield Group.find({
-        attributes: ["id", "name"],
+        attributes: ["id", "name", "description"],
         where: {
             id: id
         }
@@ -40,7 +40,7 @@ module.exports = function* checkGroup (next) {
     }
 
     // add to context
-    this.tag = tag;
-
+    this.group = group;
+    
     yield next;
 };
