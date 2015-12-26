@@ -252,8 +252,9 @@ router.delete("/:id",
 			return ;
 		}
 		catch (error) {
-			transaction.rollback();
 			console.log(error);
+			transaction.rollback();
+
 			this.status = 500;
 			this.body = {
 				statusCode: 500,
