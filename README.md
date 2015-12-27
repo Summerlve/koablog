@@ -74,7 +74,11 @@ GET
 ##### router /articles
 | error code | description |
 | ---------- | ----------- |
-| 3000       | some error  |
+| 3000       | title, tag, content is required, and must be not void (when create new article, but some info dont included in request body) |
+| 3001 | add article fialed (In most cases, this is a server error) |
+| 3002 | this item cannot be empty can't be void (when update article's title, tag) |
+| 3003 | update article failed (In most cases, this is a server error) |
+| 3004 | delete article failed (In most cases, this is a server error) |
 
 <br/>
 
@@ -99,4 +103,3 @@ GET
 | 5004       | delete group failed (In most cases, this is a server error) |
 
 <br/>
-

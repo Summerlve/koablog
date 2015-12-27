@@ -1,17 +1,23 @@
 "use strict";
+// set router
 const router = require("koa-router")();
 const prefix = "/articles";
 router.prefix(prefix);
+
+// import modules
 const ArticleView = require("../models/Article").ArticleView;
 const Article = require("../models/Article").Article;
 const Tag = require("../models/Tag");
 const views = require("co-views");
 const parse = require("co-body");
+const sequelize = global.sequelize;
 
 // path
 const viewsPath = global.path.views;
+
 // page
 const limit = 5;
+
 // render
 const render = views(viewsPath, {
 	map: {
@@ -19,13 +25,11 @@ const render = views(viewsPath, {
 	}
 });
 
-// middlewares
+// import middlewares
 const verifyToken = require("../middlewares/verifyToken");
 const getIdentity = require("../middlewares/getIdentity");
 const permissionsFilter = require("../middlewares/permissionsFilter");
-
-// db
-const sequelize = global.sequelize;
+const checkArticle = require("../middlewares/checkArticle");
 
 // page of the articles
 router.get("/", function* (next) {
@@ -114,24 +118,10 @@ router.get("/", function* (next) {
 });
 
 // one of the articles
-router.get("/:id", function* (next) {
-	let id = parseInt(this.params.id, 10);
-
-	if (isNaN(id)) {
-		this.status = 404;
-		return ;
-	}
-
-	let article = yield ArticleView.find({
-		where: {
-			id: id
-		}
-	});
-
-	if (article === null) {
-		this.status = 404;
-		return;
-	}
+router.get("/:id", checkArticle, function* (next) {
+	// get target article from checkArticle
+	let article = this.article;
+	let id = article.id;
 
 	switch (this.accepts("json", "html")) {
 		case "html": {
@@ -181,6 +171,7 @@ router.get("/:id", function* (next) {
 });
 
 // add new article
+// 在创建文章时，title、tag、content都需要有并且都不能为空
 router.post("/",
 	verifyToken,
 	getIdentity,
@@ -188,18 +179,33 @@ router.post("/",
 		and: ["create_articles", "create_tags"]
 	}),
 	function* (next) {
-		// get userId from getIdentity.js
-		let userId = this.userId;
 		let body = yield parse.form(this);
 
-		// start transaction
+		let title = body.title;
+		let tagName = body.tag;
+		let content = body.content;
+
+		if (!title || !tagName || !content) {
+			this.status = 400;
+			this.body = {
+				statusCode: 400,
+				reasonPhrase: "Bad Request",
+				description: "title, tag, content is required, and must be not void",
+				errorCode: 3000
+			};
+			return ;
+		}
+
+		// get userId from getIdentity.js
+		let userId = this.userId;
+
 		let transaction = yield sequelize.transaction();
-		// create artilce
+
 		try {
 			// create tag if no exist
 			let tag = yield Tag.findOrCreate({
 				where: {
-					name: body.tag
+					name: tagName
 				}
 			});
 
@@ -208,9 +214,9 @@ router.post("/",
 			let tagId = tag.id;
 
 			yield Article.build({
-				title: body.title,
+				title: title,
 				tag_id: tagId,
-				content: body.content,
+				content: content,
 				user_id: userId
 			})
 			.save({
@@ -234,7 +240,7 @@ router.post("/",
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
 				description: "add article fialed",
-				errorCode: 1004
+				errorCode: 3001
 			};
 			return ;
 		}
@@ -242,53 +248,84 @@ router.post("/",
 );
 
 // update an article
+// 目前只能更新：title、content、tag_id
+// title和tag不能为空，content可以更新为空
+// 更新tag_id是检查tag是否存在，如果不存在就添加新的tag，在改变tag_id
 router.put("/:id",
 	verifyToken,
 	getIdentity,
 	permissionsFilter({
-		and: ["create_tags", { or: ["update_articles", "update_private_articles"] }]
+		and: [
+			"create_tags",
+			{or: ["update_articles", "update_private_articles"]}
+		]
 	}),
+	checkArticle,
 	function* (next) {
-		let id = parseInt(this.params.id, 10);
+		// get tar article from checkArticle
+		let article = this.article;
 
-		if (isNaN(id)) {
-			this.status = 404;
-			return ;
-		}
-
-		let article = yield Article.find({
-			where: {
-				id: id
-			}
-		});
-
-		if (article === null) {
-			this.status = 404;
-			return;
-		}
-
-		// get the article
 		let body = yield parse.form(this);
-		// start transaction
-		let transaction = yield sequelize.transaction();
-		// update an article
-		try {
+
+		// check which items need to update
+		let tagName = "";
+		let title = "";
+		let content = "";
+
+		let updater = {};
+
+		if ("title" in body) {
+			title = body.title;
+
+			if (!title) {
+				this.status = 400;
+				this.body = {
+					statusCode: 400,
+					reasonPhrase: "Bad Request",
+					description: "this item cannot be empty can't be void",
+					errorCode: 3002
+				};
+				return ;
+			}
+
+			updater.title = title;
+		}
+
+		if ("tag" in body) {
+			tagName = body.tag;
+
+			if (!tagName) {
+				this.status = 400;
+				this.body = {
+					statusCode: 400,
+					reasonPhrase: "Bad Request",
+					description: "this item cannot be empty can't be void",
+					errorCode: 3002
+				};
+				return ;
+			}
+
 			let tag = yield Tag.findOrCreate({
 				where: {
-					name: body.tag
+					name: tagName
 				}
 			});
 
 			tag = tag[0];
 
-			let tagId = tag.id;
+			updater.tag_id = tag.id;
+		}
 
-			// update the article
-			yield article.update({
-				title: body.title,
-				content: body.content,
-				tag_id: tagId
-			}, {
+		if ("content" in body) {
+			// content可以更新为空
+			content = body.content;
+			updater.content = content;
+		}
+
+		let transaction = yield sequelize.transaction();
+
+		try {
+			yield article.update(updater, {
 				transaction: transaction
 			});
 
@@ -308,8 +345,8 @@ router.put("/:id",
 			this.body = {
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
-				description: "update article fialed",
-				errorCode: 1004
+				description: "update article failed",
+				errorCode: 3003
 			};
 			return ;
 		}
@@ -323,28 +360,13 @@ router.delete("/:id",
 	permissionsFilter({
 		or: ["deletet_articles", "delete_private_articles"]
 	}),
+	checkArticle,
 	function* (next) {
-		let id = parseInt(this.params.id, 10);
+		// get article from checkArticle
+		let article = this.article
 
-		if (isNaN(id)) {
-			this.status = 404;
-			return ;
-		}
-
-		let article = Article.find({
-			where: {
-				id:id
-			}
-		});
-
-        if (article === null) {
-            this.status = 404;
-			return ;
-        }
-
-		// start transaction
 		let transaction = yield sequelize.transaction();
-		// delete article
+
 		try {
 			yield Article.destroy({
 				where: {
@@ -369,8 +391,8 @@ router.delete("/:id",
 			this.body = {
 				statusCode: 500,
 				reasonPhrase: "Internal Server Error",
-				description: "delete article fialed",
-				errorCode: 1005
+				description: "delete article failed",
+				errorCode: 3004
 			};
 			return ;
 		}

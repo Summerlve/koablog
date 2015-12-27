@@ -247,14 +247,12 @@ router.put("/:id",
 	}),
 	checkUser,
 	function* (next) {
-		// update user's info
-
 		// get user from checkUser
 		let user = this.user;
 
 		let body = yield parse.form(this);
 
-		// Check which items need to be updated
+		// check which items need to update
 		let username = "";
 		let password = "";
 		let penName = "";
@@ -327,7 +325,7 @@ router.put("/:id",
 				return ;
 			}
 
-			updater.penName = penName;
+			updater.pen_name = penName;
 		}
 
 		if ("password" in body) {
