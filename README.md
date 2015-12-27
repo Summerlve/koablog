@@ -60,7 +60,7 @@ GET
 | error code | description |
 | ---------- | ----------- |
 | 2000 | username, password, penName, groupName is required and must be not void (when create new user, but some info dont included in request body) |
-| 2001| username exists (want to update username or create new user, but the username is exist, so failed) |
+| 2001 | username exists (want to update username or create new user, but the username is exist, so failed) |
 | 2002 | penName exists (want to update penName or create new user, but the penName is exist, so failed) |
 | 2003 | group don't exists |
 | 2004 | add user failed (In most cases, this is a server error) |
@@ -74,7 +74,7 @@ GET
 ##### router /articles
 | error code | description |
 | ---------- | ----------- |
-| 3000 |  asdfasdfasdf|
+| 3000       | some error  |
 
 <br/>
 
