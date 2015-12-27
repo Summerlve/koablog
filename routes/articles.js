@@ -233,6 +233,7 @@ router.post("/",
 			return ;
 		}
 		catch (error) {
+			console.error(error);
 			transaction.rollback();
 
 			this.status = 500;
@@ -267,7 +268,7 @@ router.put("/:id",
 
 		let body = yield parse.form(this);
 
-		// check which items need to update
+		// check which filed need to update
 		let tagName = "";
 		let title = "";
 		let content = "";
@@ -339,6 +340,7 @@ router.put("/:id",
 			return ;
 		}
 		catch (error) {
+			console.error(error);
 			transaction.rollback();
 
 			this.status = 500;
@@ -385,6 +387,7 @@ router.delete("/:id",
 			return ;
 		}
 		catch (error) {
+			console.error(error);
 			transaction.rollback();
 
 			this.status = 500;

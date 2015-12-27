@@ -252,7 +252,7 @@ router.put("/:id",
 
 		let body = yield parse.form(this);
 
-		// check which items need to update
+		// check which field need to update
 		let username = "";
 		let password = "";
 		let penName = "";

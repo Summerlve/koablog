@@ -20,23 +20,19 @@ This web app dependent on Node.js, MySQL, Redis.
 # API Design
 **/authentications**
 
+**/users**
+
+**/articles**
+
+**/tags**
+
+**/groups**
+
+**/files**
+
 /roots
 
 /panels
-
-/articles
-
-GET
-
-/users
-
-GET
-
-/tags
-
-/groups
-
-/files
 
 /abouts
 
