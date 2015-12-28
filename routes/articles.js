@@ -313,8 +313,10 @@ router.put("/:id",
 			});
 
 			tag = tag[0];
+            console.log(tag.id);
 
 			updater.tag_id = tag.id;
+            
 		}
 
 		if ("content" in body) {

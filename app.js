@@ -35,6 +35,6 @@ app.use(require("./routes/users"));
 app.use(require("./routes/groups"));
 app.use(require("./routes/files"));
 
-// listen
+// listen, just listen localhost
 const port = global.app.port;
-app.listen(port);
+app.listen(port, "localhost");
