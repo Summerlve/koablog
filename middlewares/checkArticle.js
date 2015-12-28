@@ -23,6 +23,7 @@ module.exports = function* checkArticle (next) {
 	}
 
     this.article = article;
+    this.articleId = article.id;
 
     yield next;
 };

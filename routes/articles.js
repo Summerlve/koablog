@@ -264,7 +264,7 @@ router.put("/:id",
 	checkArticle,
 	function* (next) {
 		// get tar article from checkArticle
-		let article = this.article;
+		let articleId = this.articleId;
 
 		let body = yield parse.form(this);
 
@@ -313,10 +313,7 @@ router.put("/:id",
 			});
 
 			tag = tag[0];
-            console.log(tag.id);
-
 			updater.tag_id = tag.id;
-            
 		}
 
 		if ("content" in body) {
@@ -324,6 +321,13 @@ router.put("/:id",
 			content = body.content;
 			updater.content = content;
 		}
+
+		// 从checkArticle哪里获取的article是视图的实例不能update，所以从表里在检索一次，拿到表的实例就可以update了。
+		let article = yield Article.find({
+			where: {
+				id: articleId
+			}
+		});
 
 		let transaction = yield sequelize.transaction();
 
