@@ -19,6 +19,7 @@ a:hover{
 	height: 250px;
 }
 
+/*默认所有的图片都是响应式的，下面的rule就是bootstrap的img响应式的代码，直接抄过来的*/
 img {
 	max-width: 100%;
 	height: auto;
