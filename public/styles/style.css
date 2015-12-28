@@ -19,6 +19,12 @@ a:hover{
 	height: 250px;
 }
 
+img {
+	max-width: 100%;
+	height: auto;
+	display: block;
+}
+
 /* 将navbar里面的<a>强制变成紫色 */
 .navbar a{
 	color: #940094 !important;
