@@ -323,6 +323,7 @@ router.put("/:id",
 		}
 
 		// 从checkArticle哪里获取的article是视图的实例不能update，所以从表里在检索一次，拿到表的实例就可以update了。
+		// 这是很差的解决方法...
 		let article = yield Article.find({
 			where: {
 				id: articleId
