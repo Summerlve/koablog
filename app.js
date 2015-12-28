@@ -35,6 +35,6 @@ app.use(require("./routes/users"));
 app.use(require("./routes/groups"));
 app.use(require("./routes/files"));
 
-// listen, just listen localhost
+// listen, just listen localhost, use ngx to reverse proxy
 const port = global.app.port;
 app.listen(port, "localhost");
