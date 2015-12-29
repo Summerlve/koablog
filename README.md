@@ -1,5 +1,7 @@
 # Demo
-Click this link [Demo](http://example.com/).
+Click this link [Demo](http://www.koablogdemo.info/).
+
+<br/>
 
 # Using
 **Using**:
