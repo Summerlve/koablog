@@ -264,7 +264,7 @@ router.put("/:id",
 	checkArticle,
 	function* (next) {
 		// get tar article from checkArticle
-		let articleId = this.articleId;
+		let articleId = this.article.id;
 
 		let body = yield parse.form(this);
 
@@ -371,8 +371,7 @@ router.delete("/:id",
 	checkArticle,
 	function* (next) {
 		// get article from checkArticle
-		let article = this.article;
-		let id = article.id;
+		let id = this.article.id;
 
 		let transaction = yield sequelize.transaction();
 

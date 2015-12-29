@@ -40,6 +40,9 @@ CKEDITOR.editorConfig = function( config ) {
 	// set the fullPage mode , store the full html page
 	// config.fullPage = true;
 
+	// get token from localStorage
+    var token = JSON.parse(window.localStorage.getItem("token")).token;
+
 	// set the upload path
-	config.filebrowserImageUploadUrl = "/files";
+	config.filebrowserImageUploadUrl = "/files" + "?Authorization=jwt " + window.encodeURIComponent(token);
 };

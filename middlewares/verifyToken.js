@@ -10,17 +10,22 @@ const redisClient = global.redisClient;
 
 module.exports = function* getToken (next) {
     // get token from http request header field 'Authorization'.
-    // or get token from querystring 'token' (only /files needs to get token from querystring)
-    let authorization = this.get("authorization") || this.querystring.token;
+    // or get token from querystring 'Authorization' (only /files needs to get token from querystring)
+    let authorization = this.get("Authorization");
+
     if (!authorization) {
-        this.status = 401;
-        this.body = {
-            statusCode: 401,
-            reasonPhrase: "Unauthorized",
-            description: "there is no token in the http request header field 'Authorization'",
-            errorCode: 1000
-        };
-        return ;
+        authorization = this.query.Authorization;
+
+        if (!authorization) {
+            this.status = 401;
+            this.body = {
+                statusCode: 401,
+                reasonPhrase: "Unauthorized",
+                description: "there is no token in both the http request header field 'Authorization' and query string 'Authorization'",
+                errorCode: 1000
+            };
+            return ;
+        }
     }
 
     // get the token and token's type.
