@@ -9,8 +9,8 @@ const cert = global.jwt.cert;
 const redisClient = global.redisClient;
 
 module.exports = function* getToken (next) {
-    // get token from http request header field 'Authorization'.
-    // or get token from querystring 'Authorization' (only /files needs to get token from querystring)
+    // first: get token from http request header field 'Authorization'.
+    // if have no info then get token from querystring 'Authorization' (only /files needs to get token from querystring)
     let authorization = this.get("Authorization");
 
     if (!authorization) {
