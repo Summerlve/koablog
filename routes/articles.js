@@ -324,16 +324,14 @@ router.put("/:id",
 
 		// 从checkArticle哪里获取的article是视图的实例不能update，所以从表里在检索一次，拿到表的实例就可以update了。
 		// 这是很差的解决方法...
-		let article = yield Article.find({
-			where: {
-				id: articleId
-			}
-		});
 
 		let transaction = yield sequelize.transaction();
 
 		try {
-			yield article.update(updater, {
+			yield Article.update(updater, {
+				where: {
+					id: articleId
+				},
 				transaction: transaction
 			});
 
@@ -342,7 +340,8 @@ router.put("/:id",
 			this.body = {
 				statusCode: 200,
 				reasonPhrase: "OK",
-				description: "update article succeed"
+				description: "update article succeed",
+				articleId: articleId
 			};
 			return ;
 		}
@@ -372,7 +371,8 @@ router.delete("/:id",
 	checkArticle,
 	function* (next) {
 		// get article from checkArticle
-		let article = this.article
+		let article = this.article;
+		let id = article.id;
 
 		let transaction = yield sequelize.transaction();
 

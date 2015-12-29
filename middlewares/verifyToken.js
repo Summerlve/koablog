@@ -1,6 +1,6 @@
 "use strict";
-/* 获取token的中间件
- * 将获取的token添加到context上
+/* this middlewares is used to get the token
+ * and attach the token to context
  *  this.token
  *  this.tokenType
  */
@@ -10,7 +10,8 @@ const redisClient = global.redisClient;
 
 module.exports = function* getToken (next) {
     // get token from http request header field 'Authorization'.
-    let authorization = this.get("authorization");
+    // or get token from querystring 'token' (only /files needs to get token from querystring)
+    let authorization = this.get("authorization") || this.querystring.token;
     if (!authorization) {
         this.status = 401;
         this.body = {

@@ -1,17 +1,28 @@
 "use strict";
 // upload files include images, audios and videos.
 const router = require("koa-router")();
+const prefix = "/files";
+router.prefix(prefix);
+
+// import module
 const parse = require("co-busboy");
 const path = require("path");
 const fs = require("fs");
 const uuid = require("node-uuid");
+const verifyToken = require("../middlewares/verifyToken");
+const getIdentity = require("../middlewares/getIdentity");
+const filter = require("../middlewares/permissionsFilter");
+
+// path
 const staticFilePath = global.path.static;
 
-router.post("/files", function* (next) {
+// upload files
+router.post("/", function* (next) {
+    console.log(this.url);
+
     let parts = parse(this, {
         // extension check , allow only .jpg .gif .png
         checkFile: function (fieldname, file, filename) {
-            console.dir(file);
             if ([".jpg", ".png", ".gif", ".jpeg"].indexOf(path.extname(filename)) === -1) {
                 var error = new Error('invalid file extension allow only .jpg .gif .png');
                 error.status = 400;
@@ -34,6 +45,11 @@ router.post("/files", function* (next) {
     this.status = 200;
     this.body = path.join("/images", fileName);
     return ;
+});
+
+// delete files
+router.delete("/", function* (next) {
+
 });
 
 module.exports = router.routes();
