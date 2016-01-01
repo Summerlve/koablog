@@ -1,6 +1,7 @@
 "use strict";
 const Sequelize = require("sequelize");
-const sequelize = global.sequelize;
+const configs = require("../configs/configs");
+const sequelize = configs.sequelize;
 
 let Permission = sequelize.define("koablog_permission", {
 	id: {

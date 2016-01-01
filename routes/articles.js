@@ -5,15 +5,16 @@ const prefix = "/articles";
 router.prefix(prefix);
 
 // import modules
+const configs = require("../configs/configs");
 const ArticleView = require("../models/Article").ArticleView;
 const Article = require("../models/Article").Article;
 const Tag = require("../models/Tag");
 const views = require("co-views");
 const parse = require("co-body");
-const sequelize = global.sequelize;
+const sequelize = configs.sequelize;
 
 // path
-const viewsPath = global.path.views;
+const viewsPath = configs.path.views;
 
 // page
 const limit = 5;

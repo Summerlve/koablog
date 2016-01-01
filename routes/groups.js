@@ -5,13 +5,14 @@ const prefix = "/groups"; // router's prefix
 router.prefix(prefix); // set router's prefix
 
 // import module
+const configs = require("../configs/configs");
 const permissionsFilter = require("../middlewares/permissionsFilter");
 const verifyToken = require("../middlewares/verifyToken");
 const getIdentity = require("../middlewares/getIdentity");
 const checkGroup = require("../middlewares/checkGroup");
 const Group = require("../models/Group");
 const parse = require("co-body");
-const sequelize = global.sequelize;
+const sequelize = configs.sequelize;
 
 router.get("/",
     verifyToken,

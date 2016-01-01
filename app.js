@@ -3,7 +3,7 @@
 const app = require("koa")();
 
 // loading config file and add to global
-require("./configs/configs");
+const configs = require("./configs/configs");
 
 // gzip compress open by default
 const compress = require("koa-compress");
@@ -15,7 +15,7 @@ app.use(require("./middlewares/unauthorized"));
 
 // static files
 const serve = require("koa-static");
-const staticFilePath = global.path.static;
+const staticFilePath = configs.path.static;
 app.use(serve(staticFilePath));
 
 // session
@@ -36,5 +36,5 @@ app.use(require("./routes/groups"));
 app.use(require("./routes/files"));
 
 // listen, just listen localhost, use ngx to reverse proxy
-const port = global.app.port;
+const port = configs.app.port;
 app.listen(port, "localhost");

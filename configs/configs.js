@@ -30,7 +30,7 @@ const sequelize = new Sequelize(dbName, dbUsername, dbPassword, {
 	}
 });
 
-global.sequelize = sequelize;
+module.exports.sequelize = sequelize;
 
 /* redis
  * use redis to store token
@@ -54,7 +54,7 @@ redisClient.co_exists = function (key) {
     });
 };
 
-global.redisClient = redisClient;
+module.exports.redisClient = redisClient;
 
 /*	path config
  *	set views's path
@@ -62,12 +62,12 @@ global.redisClient = redisClient;
  */
 const root = path.dirname(__dirname); // Located in the root directory of the project
 
-global.path = {};
-global.path.static = path.join(root, "public");
-global.path.views = path.join(root, "views");
+module.exports.path = {};
+module.exports.path.static = path.join(root, "public");
+module.exports.path.views = path.join(root, "views");
 
 // jwt settings
-global.jwt = configs.jwt;
+module.exports.jwt = configs.jwt;
 
 // port
-global.app = configs.app;
+module.exports.app = configs.app;

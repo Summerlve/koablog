@@ -5,6 +5,7 @@ const prefix = "/files";
 router.prefix(prefix);
 
 // import module
+const configs = require("../configs/configs");
 const parse = require("co-busboy");
 const path = require("path");
 const fs = require("fs");
@@ -14,7 +15,7 @@ const getIdentity = require("../middlewares/getIdentity");
 const filter = require("../middlewares/permissionsFilter");
 
 // path
-const staticFilePath = global.path.static;
+const staticFilePath = configs.path.static;
 
 // upload files
 router.post("/",

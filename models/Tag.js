@@ -1,6 +1,7 @@
 "use strict";
 const Sequelize = require("sequelize");
-const sequelize = global.sequelize;
+const configs = require("../configs/configs");
+const sequelize = configs.sequelize;
 
 let Tag = sequelize.define("koablog_tag", {
 	id: {

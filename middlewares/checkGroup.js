@@ -41,6 +41,6 @@ module.exports = function* checkGroup (next) {
 
     // add to context
     this.group = group;
-    
+
     yield next;
 };

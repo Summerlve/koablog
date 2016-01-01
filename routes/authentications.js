@@ -7,15 +7,16 @@ const Group = require("../models/Group");
 const MD5 = require("md5");
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
+const configs = require("../configs/configs");
 
 // use redis to store token.
-const redisClient = global.redisClient;
+const redisClient = configs.redisClient;
 
 // get the cert to decode or encode jwt.
-const cert = global.jwt.cert;
+const cert = configs.jwt.cert;
 
 // get the view's path
-const viewsPath = global.path.views;
+const viewsPath = configs.path.views;
 
 // middlewares
 const verifyToken = require("../middlewares/verifyToken");

@@ -7,7 +7,8 @@
 const MD5 = require("md5");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const cert = global.cert;
+const configs = require("../configs/configs");
+const cert = configs.cert;
 
 // identity
 module.exports = function* getIdentity (next) {

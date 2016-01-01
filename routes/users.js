@@ -5,16 +5,17 @@ const prefix = "/users"; // router's prefix
 router.prefix(prefix); // set router's prefix
 
 // import modules
+const configs = require("../configs/configs");
 const views = require("co-views");
 const User = require("../models/User");
 const Group = require("../models/Group");
 const ArticleView = require("../models/Article").ArticleView;
 const parse = require("co-body");
 const MD5 = require("md5");
-const sequelize = global.sequelize;
+const sequelize = configs.sequelize;
 
 // path
-const viewsPath = global.path.views;
+const viewsPath = configs.path.views;
 
 // render
 const render = views(viewsPath, {

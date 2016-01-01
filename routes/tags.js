@@ -5,13 +5,14 @@ const prefix = "/tags";
 router.prefix(prefix);
 
 // import module
+const configs = require("../configs/configs");
 const Tag = require("../models/Tag");
 const views = require("co-views");
 const parse = require("co-body");
-const sequelize = global.sequelize;
+const sequelize = configs.sequelize;
 
 // path
-const viewsPath = global.path.views;
+const viewsPath = configs.path.views;
 
 // row
 const tagsPerRow = 6; // 每行6个tag

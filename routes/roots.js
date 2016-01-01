@@ -1,9 +1,10 @@
 "use strict";
 const router = require("koa-router")();
 const views = require("co-views");
+const configs = require("../configs/configs");
 
 // get the view's path
-const viewsPath = global.path.views;
+const viewsPath = configs.path.views;
 
 // render
 const render = views(viewsPath, {
