@@ -1,8 +1,6 @@
 "use strict";
-const router = require("koa-router")();
 const views = require("co-views");
 const configs = require("../configs/configs");
-var controller = {};
 
 // path
 const viewsPath = configs.path.views;
@@ -13,10 +11,10 @@ const render = views(viewsPath, {
 	}
 });
 
-controller.get = function* (next) {
+// index
+// GET
+module.exports.index = function* (next) {
 	this.body = yield render("/frontend/abouts/abouts.html", {
 		title: "Abouts"
 	});
 };
-
-module.exports = controller;

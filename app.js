@@ -26,14 +26,11 @@ app.use(session(app));
 // load all router
 app.use(require("./routes/routes"));
 app.use(require("./routes/index"));
-app.use(require("./routes/articles"));
-app.use(require("./routes/authentications"));
 app.use(require("./routes/panels"));
 app.use(require("./routes/roots"));
 app.use(require("./routes/tags"));
 app.use(require("./routes/users"));
 app.use(require("./routes/groups"));
-app.use(require("./routes/files"));
 
 // listen, just listen localhost, use ngx to reverse proxy
 const port = configs.app.port;
