@@ -11,7 +11,7 @@ const File = require("../controllers/File");
 // load middlewares
 const verifyToken = require("../middlewares/verifyToken");
 const getIdentity = require("../middlewares/getIdentity");
-const filter = require("../middlewares/permissionsFilter");
+const filter = require("../middlewares/filter");
 const checkArticle = require("../middlewares/checkArticle");
 
 // /abouts
@@ -53,5 +53,11 @@ router.post("/files", verifyToken, getIdentity, filter({ only: "upload_files" })
 router.delete("/files", verifyToken, getIdentity, filter({ only: "delete_files" }), File.remove);
 
 // /groups
+
+// /panels
+
+// /roots
+// /tags
+// /users
 
 module.exports = router.routes();

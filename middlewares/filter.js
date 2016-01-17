@@ -7,6 +7,10 @@ const PermissionToGroup = require("../models/Permission").PermissionToGroup;
 const Permission = require("../models/Permission").Permission;
 const Article = require("../models/Article").Article;
 
+// load libs
+const getPermissionName = require("../lib/getPermissionName");
+const filterHandler = require("../lib/filterHandler");
+
 module.exports = function permissionsFilter (needs) {
     // 返回一个Generator函数
     return function* permissionsFilter (next) {
@@ -39,7 +43,7 @@ module.exports = function permissionsFilter (needs) {
 
         // filter
         // 将needs中的权限字符串全部取出来
-        let needsStrings = getStrings(needs);
+        let needsStrings = getPermissionName(needs);
 
         // 存放permission 与 false/true，表示用户是否拥有这个permission
         let pair = new Map();
@@ -101,7 +105,7 @@ module.exports = function permissionsFilter (needs) {
         }
 
         // 根据提供的needs（需要的权限关系）来判断用户能否通过filter
-        let isPass = passHandler(needs, pair);
+        let isPass = filterHandler(needs, pair);
 
         if (!isPass) {
             switch (this.accepts(["html", "json"])) {
@@ -130,62 +134,3 @@ module.exports = function permissionsFilter (needs) {
         yield next;
     };
 };
-
-// 从传入的权限描述对象中取出所有的权限名字
-function getStrings (needs) {
-    let strings = [];
-
-    let inner = function inner (value) {
-        if (value instanceof Object) {
-            for (let key in value) {
-                if (key === "and") {
-                    value[key].forEach(value => inner(value));
-                }
-                else if (key === "or") {
-                    value[key].forEach(value => inner(value));
-                }
-                else if (key === "only") {
-                    inner(value[key]);
-                }
-            }
-        }
-        else if (typeof value === "string"){
-            strings.push(value);
-        }
-    };
-
-    inner(needs);
-    return strings;
-}
-
-// 根据提供的needs（需要的权限关系）来判断用户能否通过filter
-function passHandler (value, pair) {
-    if (value instanceof Object) {
-        for (let key in value) {
-            if (key === "and") {
-                if (value[key].length >= 2) {
-                    return value[key].reduce(function (pre, cur) {
-                        return passHandler(pre, pair) && passHandler(cur, pair);
-                    });
-                }
-                else if (value[key].length === 1) {
-                    return passHandler(value[key][0], pair);
-                }
-            } else if (key === "or") {
-                if (value[key].length >= 2) {
-                    return value[key].reduce(function (pre, cur) {
-                        return passHandler(pre, pair) || passHandler(cur, pair);
-                    });
-                }
-                else if (value[key].length === 1) {
-                    return passHandler(needs[key][0], pair);
-                }
-            } else if (key === "only") {
-                return passHandler(value[key], pair);
-            }
-        }
-    }
-    else if (typeof value === "string"){
-        return pair.get(value);
-    }
-}
