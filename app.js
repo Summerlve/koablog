@@ -23,14 +23,8 @@ const session = require("koa-session");
 app.keys = ["koaBlog"];
 app.use(session(app));
 
-// load all router
+// routes
 app.use(require("./routes/routes"));
-app.use(require("./routes/index"));
-app.use(require("./routes/panels"));
-app.use(require("./routes/roots"));
-app.use(require("./routes/tags"));
-app.use(require("./routes/users"));
-app.use(require("./routes/groups"));
 
 // listen, just listen localhost, use ngx to reverse proxy
 const port = configs.app.port;
