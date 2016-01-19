@@ -17,18 +17,7 @@ module.exports.index = function* index (next) {
 // get one of groups
 // GET
 module.exports.one = function* one (next) {
-    let id = parseInt(this.params.id, 10);
-
-    if (isNaN(id)) {
-        this.status = 404;
-        return ;
-    }
-
-    let group = yield Group.find({
-        where: {
-            id: id
-        }
-    });
+    let group = this.group;
 
     switch (this.accepts("html", "json")) {
         case "html": {

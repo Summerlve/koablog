@@ -3,6 +3,7 @@ const router = require("koa-router")();
 const configs = require("../configs/configs");
 
 // load controllers
+const Application = require("../controllers/Application");
 const About = require("../controllers/About");
 const Article = require("../controllers/Article");
 const Authentication = require("../controllers/Authentication");
@@ -21,6 +22,9 @@ const checkArticle = require("../middlewares/checkArticle");
 const checkTag = require("../middlewares/checkTag");
 const checkUser = require("../middlewares/checkUser");
 const checkGroup = require("../middlewares/checkGroup");
+
+// index
+router.get("/", Application.index);
 
 // /abouts
 router.get("/abouts", About.index);
@@ -72,6 +76,7 @@ router.get("/group/:id", verifyToken, getIdentity,
     filter({
         only: "read_groups"
     }),
+    checkGroup,
     Group.one);
 
 router.post("/groups", verifyToken, getIdentity,
